@@ -1,0 +1,10 @@
+# ✨ Feat:            새로운 기능 추가
+# 🐛 Fix:             버그 수정
+# 📄 Docs:            문서 수정
+# ♻️ Refactor:        코드 리팩토링
+# 🔧 Chore:           패키지 매니저 수정, 그 외 기타 수정
+# 🎨 Design:          CSS 등 사용자 UI 디자인 변경
+# 💬 Comment:         필요한 주석 추가 및 변경
+# 🔤 Rename:          파일 또는 폴더 명을 수정
+# 🔥 Remove:          사용하지 않는 파일 제거
+# 💥 BREAKING CHANGE: 커다란 API 변경의 경우
