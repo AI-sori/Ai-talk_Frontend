@@ -1,8 +1,8 @@
 import styled from "styled-components";
 
 const Outer = styled.div`
-  height: 100dvh;
   width: 100vw;
+  height: 100dvh;
   background: #f9f9f9;
   display: flex;
   justify-content: center;
@@ -11,11 +11,21 @@ const Outer = styled.div`
 
 const Container = styled.div`
   width: 100%;
-  max-width: 600px;
+  max-width: 500px;
   height: 100%;
+  background: white;
   overflow-y: auto;
   padding: 1.5rem;
   box-sizing: border-box;
+
+  // 선택: 스크롤바 꾸미기
+  &::-webkit-scrollbar {
+    width: 6px;
+  }
+  &::-webkit-scrollbar-thumb {
+    background-color: rgba(0, 0, 0, 0.1);
+    border-radius: 3px;
+  }
 `;
 
 const Card = styled.div`
@@ -30,7 +40,6 @@ const HomePage = () => {
   return (
     <Outer>
       <Container>
-
         <Card>
           <h3>우리 아이 발달 그래프</h3>
           <div style={{ height: 160, background: "#f0f0ff", borderRadius: 12 }} />
