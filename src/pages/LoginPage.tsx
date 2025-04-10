@@ -5,40 +5,48 @@ import { useNavigate } from "react-router-dom";
 const Outer = styled.div`
   height: 100dvh;
   width: 100vw;
-  background: linear-gradient(180deg, #c9e6ff 0%, #e9f0ff 30%, #f0efff 100%);
+  background: white;
   display: flex;
+   overflow: hidden; 
   justify-content: center;
   align-items: center;
 `;
 
 const Container = styled.div`
-  width: 100%;
-  max-width: 400px;
-  padding: 2rem 1.5rem;
+  width: 375px; 
+  height: 100%; 
   display: flex;
   flex-direction: column;
   align-items: center;
+   overflow: hidden; 
+  justify-content: center;
+  padding: 2rem 1.5rem;
+  background: linear-gradient(180deg, #c9e6ff 0%, #e9f0ff 30%, #f0efff 100%);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05);
 `;
 
+
 const Input = styled.input`
-  width: 350px;
+  width: 320px;
   margin: 0.5rem 0;
   padding: 14px;
   border-radius: 12px;
   border: none;
-   outline: none;
-  font-size: 1rem;
+  height: 25px;
+  outline: none;
+  color: #707070;
+  font-size: 16px;
   background-color: white;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
 `;
 
 const Button = styled.button`
   margin-top: 1.5rem;
-  background-color: #abcfff;
+  background-color: #9FC9FF;
   border: none;
   border-radius: 30px;
   padding: 14px 0;
-  width: 100%;
+   width: 270px;
   font-size: 1rem;
   font-weight: bold;
   color: white;
@@ -46,19 +54,19 @@ const Button = styled.button`
    outline: none;
 
   &:hover {
-    background-color: #94b5e9;
+    background-color: #91B6FF;
       }
 `;
 
 const LinkRow = styled.div`
   margin-top: 1.5rem;
-  font-size: 13px;
-  color: #666;
+  font-size: 14px;
+  color: #7595D3;
   display: flex;
   gap: 8px;
 
   a {
-    color: #7595D3;
+   color: #7595D3;
     text-decoration: none;
     cursor: pointer;
 

@@ -3,18 +3,25 @@ import styled from "styled-components";
 const Outer = styled.div`
   height: 100dvh;
   width: 100vw;
-  background: white;
+  background:rgb(247, 247, 247);
   display: flex;
   justify-content: center;
-   align-items: flex-start; 
-  padding-top: 5vh;
+  align-items: center; 
+  overflow: hidden; 
 `;
 
 const Container = styled.div`
-  width: 100%;
-  max-width: 400px;
+  width: 390px; 
+  height: 100%;
   padding: 2rem 1.5rem;
+  background: white; 
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  justify-content: center; 
 `;
+
+
 
 const Title = styled.h2`
   font-size: 26px;
@@ -38,7 +45,7 @@ const InputWrapper = styled.div`
 `;
 
 const Input = styled.input`
-  width: 100%;
+  width: 350px;
   height: 50px;
   padding: 12px;
   border-radius: 10px;
@@ -69,8 +76,7 @@ const Button = styled.button`
   border: none;
   border-radius: 30px;
   padding: 14px;
-  width: 100%;
-  max-width: 300px; // 선택: 너무 넓지 않게
+  width: 270px;
   font-size: 16px;
   color: white;
   cursor: pointer;
