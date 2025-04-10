@@ -1,3 +1,4 @@
+import React, { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 
 const Outer = styled.div`
@@ -18,7 +19,6 @@ const Container = styled.div`
   padding: 1.5rem;
   box-sizing: border-box;
 
-  // 선택: 스크롤바 꾸미기
   &::-webkit-scrollbar {
     width: 6px;
   }
@@ -36,7 +36,68 @@ const Card = styled.div`
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
 `;
 
+const MapWrapper = styled.div`
+  width: 100%;
+  height: 400px;
+  border-radius: 12px;
+`;
+
 const HomePage = () => {
+  const [loaded, setLoaded] = useState(false);
+  const mapRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!window.kakao) {
+      const script = document.createElement("script");
+      // `autoload=false` 추가
+      script.src = `https://dapi.kakao.com/v2/maps/sdk.js?appkey=${import.meta.env.VITE_KAKAO_MAP_KEY}&autoload=false&libraries=services,clusterer,drawing`;
+      script.async = true;
+      script.onload = () => {
+        console.log("카카오맵 API 로딩 완료");
+        // sdk가 로드되면 load() 호출
+        window.kakao.maps.load(() => {
+          setLoaded(true);
+        });
+      };
+      script.onerror = (e) => {
+        console.error("카카오맵 API 로딩 실패", e);
+      };
+      document.head.appendChild(script);
+    } else {
+      setLoaded(true); // 이미 로드된 경우
+    }
+  }, []);
+
+  useEffect(() => {
+    if (loaded && mapRef.current) {
+      if (window.kakao) {
+        const { kakao } = window;
+
+        const mapContainer = mapRef.current;
+        const mapOption = {
+          center: new kakao.maps.LatLng(37.5665, 126.978),
+          level: 3,
+        };
+
+        const map = new kakao.maps.Map(mapContainer, mapOption);
+
+        const markerPosition1 = new kakao.maps.LatLng(37.5665, 126.978);
+        const marker1 = new kakao.maps.Marker({
+          position: markerPosition1,
+        });
+        marker1.setMap(map);
+
+        const markerPosition2 = new kakao.maps.LatLng(37.5700, 126.978);
+        const marker2 = new kakao.maps.Marker({
+          position: markerPosition2,
+        });
+        marker2.setMap(map);
+      } else {
+        console.error("카카오맵 API가 로드되지 않았습니다.");
+      }
+    }
+  }, [loaded]);
+
   return (
     <Outer>
       <Container>
@@ -55,11 +116,7 @@ const HomePage = () => {
 
         <Card>
           <h3>주변 병원 찾기</h3>
-          <div style={{ height: 160, background: "#eee", borderRadius: 12 }} />
-          <ul style={{ marginTop: "1rem" }}>
-            <li>1. 서울아이발달센터</li>
-            <li>2. 키즈병원부리</li>
-          </ul>
+          <MapWrapper ref={mapRef} />
         </Card>
       </Container>
     </Outer>
