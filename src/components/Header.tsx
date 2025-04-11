@@ -13,11 +13,11 @@ const HeaderOuter = styled.div`
 
 const HeaderInner = styled.header`
   width: 100%;
-  max-width: 500px;
+  max-width: 400px;
   height: 60px;
-   border-bottom: 1px solid #e0e0e0;
+  border-bottom: 1px solid #e0e0e0;
   background: white;
-  padding: 0 2rem;
+  padding: 0 1rem;
   box-sizing: border-box;
 
   display: flex;
@@ -30,36 +30,37 @@ const HeaderInner = styled.header`
 const LeftSection = styled.div`
   display: flex;
   align-items: center;
-  gap: 1rem;
+  gap: 0rem;
 `;
 
 const LogoImg = styled.img`
-  width: 40px;
-  height: 40px;
+  width: 35px;
+  height: 35px;
   object-fit: contain;
 `;
 
 const Brand = styled.span`
-  font-size: 20px;
+  font-size: 18px;
   font-weight: bold;
   color: #9FC9FF;
    white-space: nowrap;
+   font-family: SemiBold;
 `;
 
 const Nav = styled.nav`
   display: flex;
-  gap: 2rem;
-  margin-left: 2rem;
+  gap: 1.6rem;
+  margin-left: 1.5rem;
 `;
 
 const NavItem = styled.span`
-  font-size: 17px; 
+  font-size: 16px; 
    white-space: nowrap;
   font-weight: ${props => (props.active ? 800 : 600)};
   color: ${props => (props.active ? '#6485CF' : '#222')};
   cursor: pointer;
   padding: 6px 0; // 높이 정렬에 도움
-
+ font-family: SemiBold;
   &:hover {
     color: #6485CF;
   }
@@ -68,7 +69,7 @@ const NavItem = styled.span`
 const LogoArea = styled.div`
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: 0.4rem;
   cursor: pointer;
 `;
 
