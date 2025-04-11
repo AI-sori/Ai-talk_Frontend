@@ -2,10 +2,12 @@ import styled from 'styled-components';
 
 const PageWrapper = styled.div`
   width: 100%;
-  max-width: 500px;
+  max-width: 400px;
+  height: 100dvh;  /* 화면 높이 100% */
   margin: 0 auto;
   padding: 1.5rem;
   box-sizing: border-box;
+  overflow-y: auto;  /* 스크롤 생기지 않게 처리 */
 `;
 
 const Card = styled.div`
@@ -13,7 +15,7 @@ const Card = styled.div`
   border-radius: 16px;
   padding: 1.5rem;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
-  margin-bottom: 2rem;
+  margin-bottom: 1.5rem;
 `;
 
 const SectionTitle = styled.h3`
@@ -77,7 +79,7 @@ const StartButton = styled.button`
   }
 `;
 
-const DiagnosisPage = () => {
+const DevelopmentalDiagnosisPage = () => {
   return (
     <PageWrapper>
       {/* 시선추적 테스트 카드 */}
@@ -109,4 +111,4 @@ const DiagnosisPage = () => {
   );
 };
 
-export default DiagnosisPage;
+export default DevelopmentalDiagnosisPage;

@@ -12,7 +12,7 @@ const Outer = styled.div`
 
 const Container = styled.div`
   width: 100%;
-  max-width: 500px;
+  max-width: 400px;
   height: 100%;
   background: white;
   overflow-y: auto;
@@ -32,6 +32,8 @@ const Card = styled.div`
   background: white;
   border-radius: 20px;
   padding: 1.5rem;
+  font-family: SemiBold;
+  font-size: 17px;
   margin: 1rem 0;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
 `;

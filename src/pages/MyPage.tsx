@@ -2,7 +2,7 @@ import styled from 'styled-components';
 
 const Page = styled.div`
   width: 100%;
-  max-width: 500px;
+  max-width: 400px;
   margin: 0 auto;
   padding: 1.5rem;
   box-sizing: border-box;

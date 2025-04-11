@@ -2,7 +2,7 @@ import styled from 'styled-components';
 
 const Page = styled.div`
   width: 100%;
-  max-width: 500px;
+  max-width: 400px;
   margin: 0 auto;
   padding: 1.5rem;
   box-sizing: border-box;
@@ -13,12 +13,15 @@ const Card = styled.div`
   background: white;
   border-radius: 16px;
   padding: 1.5rem;
+  font-family: SemiBold;
+  font-size: 18px;
   margin-bottom: 1.5rem;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
 `;
 
 const SectionTitle = styled.h3`
-  font-size: 16px;
+  font-family: SemiBold;
+  font-size: 18px;
   font-weight: bold;
   margin-bottom: 1rem;
 `;
@@ -36,9 +39,10 @@ const ProgressItem = styled.div`
 `;
 
 const Label = styled.span`
-  font-size: 14px;
   font-weight: 500;
   width: 80px;
+  font-family: SemiBold;
+  font-size: 17px;
 `;
 
 const Gauge = styled.div`
@@ -82,20 +86,23 @@ const Thumbnail = styled.div<{ color?: string }>`
 const MetaRow = styled.div`
   display: flex;
   gap: 1rem;
-  font-size: 12px;
+  font-size: 14px;
   font-weight: 500;
+   font-family: SemiBold;
   color: #777;
   padding: 0.8rem 1rem 0 1rem;
 `;
 
 const ProgramTitle = styled.div`
   font-size: 15px;
+  font-family: SemiBold;
   font-weight: bold;
   padding: 0.3rem 1rem 0 1rem;
 `;
 
 const Description = styled.div`
-  font-size: 13px;
+  font-size: 14px;
+   font-family: SemiBold;
   color: #666;
   padding: 0.3rem 1rem 1rem 1rem;
 `;
