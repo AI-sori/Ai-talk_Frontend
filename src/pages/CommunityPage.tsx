@@ -1,11 +1,21 @@
 import styled from 'styled-components';
 
+const Outer = styled.div`
+  width: 100vw;
+  height: 100dvh;
+  background: #f9f9f9;
+  display: flex;
+  justify-content: center;
+`;
+
 const PageWrapper = styled.div`
   width: 100%;
-  max-width: 500px;
-  margin: 0 auto;
+  max-width: 400px;
+  height: 100%;
+  background: white;
   padding: 1.5rem;
   box-sizing: border-box;
+  overflow-y: auto;
 `;
 
 const TitleRow = styled.div`
@@ -125,43 +135,49 @@ const PostFooter = styled.div`
 
 const CommunityPage = () => {
   return (
-    <PageWrapper>
-      <TitleRow>
-        <Title>커뮤니티</Title>
-        <WriteButton>글쓰기</WriteButton>
-      </TitleRow>
+    <Outer>
+      <PageWrapper>
+        <TitleRow>
+          <Title>커뮤니티</Title>
+          <WriteButton>글쓰기</WriteButton>
+        </TitleRow>
 
-      <CardRow>
-        <InfoCard primary>익명 커뮤니티<br />자유롭게 이야기를 나눌 수 있는 공간입니다</InfoCard>
-        <InfoCard>전문가 상담<br />전문가와 상담할 수 있는 공간입니다</InfoCard>
-      </CardRow>
+        <CardRow>
+          <InfoCard primary>
+            익명 커뮤니티<br />자유롭게 이야기를 나눌 수 있는 공간입니다
+          </InfoCard>
+          <InfoCard>
+            전문가 상담<br />전문가와 상담할 수 있는 공간입니다
+          </InfoCard>
+        </CardRow>
 
-      <CategoryRow>
-        {['전체', '질문', '정보공유', '일상', '후기'].map((label, idx) => (
-          <CategoryButton key={label} active={idx === 0}>
-            {label}
-          </CategoryButton>
-        ))}
-      </CategoryRow>
+        <CategoryRow>
+          {['전체', '질문', '정보공유', '일상', '후기'].map((label, idx) => (
+            <CategoryButton key={label} active={idx === 0}>
+              {label}
+            </CategoryButton>
+          ))}
+        </CategoryRow>
 
-      <SearchBox>
-        <SearchInput placeholder="검색어를 입력하세요" />
-        <SearchIcon>🔍</SearchIcon>
-      </SearchBox>
+        <SearchBox>
+          <SearchInput placeholder="검색어를 입력하세요" />
+          <SearchIcon>🔍</SearchIcon>
+        </SearchBox>
 
-      <PostCard>
-        <PostMeta>질문 · 익명 · 2024.01.15</PostMeta>
-        <PostTitle>아이가 그림을 잘 안그리는데 어떻게 하면 좋을까요?</PostTitle>
-        <PostContent>
-          우리 아이가 그림 그리는 걸 좋아하지 않아요. 어떻게 흥미를 가질 수 있게 할 수 있을까요?
-        </PostContent>
-        <PostFooter>
-          <span>👁 45</span>
-          <span>❤️ 12</span>
-          <span>💬 8</span>
-        </PostFooter>
-      </PostCard>
-    </PageWrapper>
+        <PostCard>
+          <PostMeta>질문 · 익명 · 2024.01.15</PostMeta>
+          <PostTitle>아이가 그림을 잘 안그리는데 어떻게 하면 좋을까요?</PostTitle>
+          <PostContent>
+            우리 아이가 그림 그리는 걸 좋아하지 않아요. 어떻게 흥미를 가질 수 있게 할 수 있을까요?
+          </PostContent>
+          <PostFooter>
+            <span>👁 45</span>
+            <span>❤️ 12</span>
+            <span>💬 8</span>
+          </PostFooter>
+        </PostCard>
+      </PageWrapper>
+    </Outer>
   );
 };
 
