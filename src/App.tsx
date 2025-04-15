@@ -7,6 +7,9 @@ import LearningPage from './pages/LearningPage';
 import DiagnosisPage from './pages/DiagnosisPage';
 import CommunityPage from './pages/CommunityPage';
 import Mypage from './pages/Mypage';
+import WritePage from "./pages/WritePage";
+import ConsultDetailPage from "./pages/ConsultDetailPage"; 
+import CommunityPostDetailPage from "./pages/CommunityPostDetailPage";
 
 function AppLayout() {
   const location = useLocation();
@@ -23,6 +26,12 @@ function AppLayout() {
         <Route path="/diagnosis" element={<DiagnosisPage />} />
         <Route path="/community" element={<CommunityPage />} />
         <Route path="/mypage" element={<Mypage />} />
+        <Route path="/community/write" element={<WritePage type="anon" />} />
+        <Route path="/consult/write" element={<WritePage type="expert" />} />
+        <Route path="/consult/1" element={<ConsultDetailPage hasReply={false} />} />
+        <Route path="/consult/2" element={<ConsultDetailPage hasReply={true} />} />
+        <Route path="/community/1" element={<CommunityPostDetailPage />} />
+
       </Routes>
     </>
   );
