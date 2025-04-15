@@ -20,7 +20,7 @@ const Container = styled.div`
   min-height: 100dvh;
   height: auto;
   max-width: 400px;
-  background: white;
+  background: #F8FAFC;
   padding: 1.5rem;
   box-sizing: border-box;
 `;
