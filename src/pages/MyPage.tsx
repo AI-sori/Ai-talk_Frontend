@@ -1,12 +1,20 @@
 import styled from 'styled-components';
+import { useNavigate } from "react-router-dom";
 
-const Page = styled.div`
+const Outer = styled.div`
+  width: 100vw;
+  min-height: 100dvh;
+  background: #f9f9f9;
+  display: flex;
+  justify-content: center;
+`;
+
+const Wrapper = styled.div`
   width: 100%;
   max-width: 400px;
-  margin: 0 auto;
+  background: #f8fafc;
   padding: 1.5rem;
   box-sizing: border-box;
-  background: #f7f9fb;
 `;
 
 const Card = styled.div`
@@ -24,10 +32,10 @@ const ProfileRow = styled.div`
 `;
 
 const ProfileImg = styled.div`
-  width: 80px;
-  height: 80px;
+  width: 70px;
+  height: 70px;
   background: #ddd;
-  border-radius: 50%;
+  border-radius: 100%;
 `;
 
 const Info = styled.div`
@@ -36,22 +44,28 @@ const Info = styled.div`
 
 const Name = styled.div`
   font-weight: bold;
-  font-size: 18px;
+  font-size: 20px;
+    font-family: Bold;
 `;
 
 const Email = styled.div`
   font-size: 14px;
   color: #666;
   margin-top: 0.3rem;
+    font-family: Regular;
 `;
 
 const EditBtn = styled.button`
   background: #abcfff;
   color: white;
   border: none;
+  width: 95px;
+  height: 35px;
+  white-space: nowrap;
   border-radius: 8px;
   padding: 0.4rem 1rem;
   font-size: 14px;
+    font-family: Regular;
   cursor: pointer;
 
   &:hover {
@@ -60,13 +74,15 @@ const EditBtn = styled.button`
 `;
 
 const SectionTitle = styled.h3`
-  font-size: 16px;
+  font-size: 18px;
   font-weight: bold;
   margin-bottom: 1rem;
+  font-family: Bold;
 `;
 
 const ProgramBox = styled.div`
   margin-bottom: 1rem;
+  font-family: Bold;
 `;
 
 const ProgramTitleRow = styled.div`
@@ -76,6 +92,13 @@ const ProgramTitleRow = styled.div`
   font-size: 14px;
   margin-bottom: 0.3rem;
 `;
+const ProgramCard = styled.div`
+  background: #EEF6FF;
+  border-radius: 12px;
+  padding: 1rem;
+  margin-bottom: 1rem;
+`;
+
 
 const ProgressBar = styled.div`
   background: #eee;
@@ -101,7 +124,10 @@ const BottomRow = styled.div`
 const ContinueBtn = styled.button`
   background: #abcfff;
   color: white;
+  font-family: Regular;
   border: none;
+  width: 80px;
+  height: 35px;
   border-radius: 8px;
   font-size: 13px;
   padding: 0.3rem 0.8rem;
@@ -115,6 +141,7 @@ const ContinueBtn = styled.button`
 const List = styled.ul`
   margin: 0;
   padding: 0;
+  font-family: Regular;
   list-style: none;
 
   li {
@@ -123,6 +150,7 @@ const List = styled.ul`
     font-size: 14px;
     display: flex;
     justify-content: space-between;
+    cursor: pointer;
 
     &:first-child {
       border-top: none;
@@ -142,65 +170,72 @@ const Badge = styled.span`
 `;
 
 const Mypage = () => {
+  const navigate = useNavigate();
+
   return (
-    <Page>
-      <Card>
-        <ProfileRow>
-          <ProfileImg />
-          <Info>
-            <Name>김슈니</Name>
-            <Email>suni@email.com</Email>
-          </Info>
-          <EditBtn>수정하기</EditBtn>
-        </ProfileRow>
-      </Card>
+    <Outer>
+      <Wrapper>
+        <Card>
+          <ProfileRow>
+            <ProfileImg />
+            <Info>
+              <Name>김슈니</Name>
+              <Email>suni@email.com</Email>
+            </Info>
+            <EditBtn onClick={() => navigate("/mypage/edit")}>
+  수정하기
+</EditBtn>
+          </ProfileRow>
+        </Card>
 
-      <Card>
-        <SectionTitle>학습중인 프로그램</SectionTitle>
-        {[
-          { title: '기초 수학', date: '2024-01-15', progress: 65 },
-          { title: '한글 읽기', date: '2024-01-14', progress: 40 },
-          { title: '영어 기초', date: '2024-01-13', progress: 25 },
-        ].map(item => (
-          <ProgramBox key={item.title}>
-            <ProgramTitleRow>
-              <span>{item.title}</span>
-              <span>최근 학습일: {item.date}</span>
-            </ProgramTitleRow>
-            <ProgressBar>
-              <Progress percent={item.progress} />
-            </ProgressBar>
-            <BottomRow>
-              <span>진행률: {item.progress}%</span>
-              <ContinueBtn>계속하기</ContinueBtn>
-            </BottomRow>
-          </ProgramBox>
-        ))}
-      </Card>
+        <Card>
+          <SectionTitle>학습중인 프로그램</SectionTitle>
+          {[
+            { title: '기초 수학', date: '2024-01-15', progress: 65 },
+            { title: '한글 읽기', date: '2024-01-14', progress: 40 },
+            { title: '영어 기초', date: '2024-01-13', progress: 25 },
+          ].map(item => (
+            <ProgramCard key={item.title}>
+  <ProgramBox>
+    <ProgramTitleRow>
+      <span>{item.title}</span>
+      <span>최근 학습일: {item.date}</span>
+    </ProgramTitleRow>
+    <ProgressBar>
+      <Progress percent={item.progress} />
+    </ProgressBar>
+    <BottomRow>
+      <span>진행률: {item.progress}%</span>
+      <ContinueBtn>계속하기</ContinueBtn>
+    </BottomRow>
+  </ProgramBox>
+</ProgramCard>
 
-      <Card>
-        <SectionTitle>커뮤니티 활동</SectionTitle>
-        <List>
-          <li>내 게시글</li>
-          <li>내 댓글</li>
-          <li>좋아요 게시글</li>
-        </List>
-      </Card>
+          ))}
+        </Card>
 
-      <Card>
-        <SectionTitle>설정</SectionTitle>
-        <List>
-          <li>
-            공지사항 <Badge>N</Badge>
-          </li>
-          <li>문의하기</li>
-          <li>로그아웃</li>
-          <li>
-            <RedText>탈퇴하기</RedText>
-          </li>
-        </List>
-      </Card>
-    </Page>
+        <Card>
+          <SectionTitle>커뮤니티 활동</SectionTitle>
+          <List>
+            <li>내 게시글</li>
+            <li>내 댓글</li>
+            <li>좋아요 게시글</li>
+          </List>
+        </Card>
+
+        <Card>
+          <SectionTitle>설정</SectionTitle>
+          <List>
+          <li onClick={() => navigate("/mypage/notice")}>공지사항 <Badge>N</Badge></li>
+          <li onClick={() => navigate("/mypage/inquiry")}>문의하기</li>
+            <li>로그아웃</li>
+            <li>
+              <RedText>탈퇴하기</RedText>
+            </li>
+          </List>
+        </Card>
+      </Wrapper>
+    </Outer>
   );
 };
 
