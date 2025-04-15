@@ -1,42 +1,60 @@
-import styled from 'styled-components';
+import styled from "styled-components";
+import AnonView from "../components/community/AnonView";
+import ExpertView from "../components/community/ExpertView";
+import { useNavigate } from "react-router-dom";
+import { useLocation } from "react-router-dom";
+import { useEffect, useState } from "react";
 
 const Outer = styled.div`
   width: 100vw;
-  height: 100dvh;
+  min-height: 100dvh;
+  height: auto;
   background: #f9f9f9;
   display: flex;
-  justify-content: center;
+  flex-direction: column;
+  align-items: center;
 `;
 
-const PageWrapper = styled.div`
+const Container = styled.div`
   width: 100%;
+  min-height: 100dvh;
+  height: auto;
   max-width: 400px;
-  height: 100%;
   background: white;
   padding: 1.5rem;
   box-sizing: border-box;
-  overflow-y: auto;
 `;
 
 const TitleRow = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
+  font-family: SemiBold;
 `;
 
 const Title = styled.h2`
-  font-size: 20px;
+  font-size: 22px;
   font-weight: bold;
+  font-family: ExtraBold;
 `;
 
-const WriteButton = styled.button`
+
+const TopButton = styled.button`
   background-color: #94b5e9;
   color: white;
   font-size: 14px;
+  font-family: Regular;
   border: none;
-  border-radius: 10px;
+  border-radius: 7px;
   padding: 0.5rem 1rem;
   cursor: pointer;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.07);
+  outline: none;
+
+  &:focus,
+  &:focus-visible {
+    outline: none;
+  }
 
   &:hover {
     background-color: #7ca9e0;
@@ -49,134 +67,91 @@ const CardRow = styled.div`
   margin: 1rem 0;
 `;
 
-const InfoCard = styled.div<{ primary?: boolean }>`
+const InfoCard = styled.div<{ activeType?: 'anon' | 'expert'; tab: 'anon' | 'expert' }>`
   flex: 1;
-  background-color: ${({ primary }) => (primary ? '#e4f0ff' : '#f9f9f9')};
-  padding: 1rem;
+  padding: 1.1rem;
   border-radius: 14px;
   font-size: 14px;
+  width: 215px;
+  height: 80px;
   font-weight: 500;
   color: #333;
-`;
-
-const CategoryRow = styled.div`
-  display: flex;
-  gap: 0.5rem;
-  margin: 1rem 0;
-`;
-
-const CategoryButton = styled.button<{ active?: boolean }>`
-  background-color: ${({ active }) => (active ? '#6485CF' : '#eee')};
-  color: ${({ active }) => (active ? 'white' : '#333')};
-  font-size: 13px;
-  border: none;
-  border-radius: 20px;
-  padding: 6px 14px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+  background-color: ${({ activeType, tab }) => {
+    if (activeType === 'anon' && tab === 'anon') return '#C9E6FF';
+    if (activeType === 'expert' && tab === 'expert') return '#F0EFFF';
+    return '#f9f9f9';
+  }};
   cursor: pointer;
 `;
 
-const SearchBox = styled.div`
-  display: flex;
-  align-items: center;
-  margin: 1rem 0;
-  border: 1px solid #ccc;
-  border-radius: 8px;
-  overflow: hidden;
-`;
-
-const SearchInput = styled.input`
-  flex: 1;
-  border: none;
-  padding: 0.7rem 1rem;
-  font-size: 14px;
-  outline: none;
-`;
-
-const SearchIcon = styled.button`
-  background: white;
-  border: none;
-  padding: 0 1rem;
-  font-size: 16px;
-  cursor: pointer;
-`;
-
-const PostCard = styled.div`
-  background: white;
-  border-radius: 14px;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
-  padding: 1rem;
-  margin-top: 1rem;
-`;
-
-const PostMeta = styled.div`
-  font-size: 13px;
-  color: #888;
-  margin-bottom: 0.5rem;
-`;
-
-const PostTitle = styled.h3`
-  font-size: 16px;
+const CardTitle = styled.div<{ color: string; isActive: boolean }>`
+  font-size: 17px;
   font-weight: bold;
-  margin-bottom: 0.5rem;
+ color: ${({ color }) => color};
+  margin-bottom: 0.4rem;
+  font-family: Bold;
 `;
 
-const PostContent = styled.p`
+const CardText = styled.div`
   font-size: 14px;
-  color: #555;
-`;
-
-const PostFooter = styled.div`
-  margin-top: 0.8rem;
-  display: flex;
-  gap: 1.2rem;
-  font-size: 12px;
-  color: #777;
+  color: #424242;
+  line-height: 1.4;
+  font-family: Regular;
 `;
 
 const CommunityPage = () => {
+  const [tab, setTab] = useState<"anon" | "expert">("anon");
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  const handleWriteClick = () => {
+    if (tab === "anon") navigate("/community/write");
+    else navigate("/consult/write");
+  };
+
+  useEffect(() => {
+    if (location.state?.tab === "expert") {
+      setTab("expert");
+    } else if (location.state?.tab === "anon") {
+      setTab("anon");
+    }
+  }, [location.state]);
+
   return (
     <Outer>
-      <PageWrapper>
+      <Container>
         <TitleRow>
-          <Title>커뮤니티</Title>
-          <WriteButton>글쓰기</WriteButton>
+          <Title>{tab === "anon" ? "커뮤니티" : "전문가 상담"}</Title>
+          <TopButton
+  style={{ backgroundColor: tab === "expert" ? "#C48DEF" : "#94b5e9" }}
+  onClick={handleWriteClick}
+>
+  {tab === "anon" ? "글쓰기" : "상담 신청하기"}
+</TopButton>
+
         </TitleRow>
 
         <CardRow>
-          <InfoCard primary>
-            익명 커뮤니티<br />자유롭게 이야기를 나눌 수 있는 공간입니다
-          </InfoCard>
-          <InfoCard>
-            전문가 상담<br />전문가와 상담할 수 있는 공간입니다
-          </InfoCard>
+        <InfoCard activeType="anon" tab={tab} onClick={() => setTab('anon')}>
+        <CardTitle color="#6485CF" isActive={tab === "anon"}>
+    익명 커뮤니티
+  </CardTitle>
+  <CardText>자유롭게 이야기를 나눌 수 있는 공간입니다</CardText>
+</InfoCard>
+
+<InfoCard activeType="expert" tab={tab} onClick={() => setTab('expert')}>
+<CardTitle color="#C48DEF" isActive={tab === "expert"}>
+    전문가 상담
+  </CardTitle>
+  <CardText>전문가와 상담할 수 있는 공간입니다</CardText>
+</InfoCard>
+
+
         </CardRow>
 
-        <CategoryRow>
-          {['전체', '질문', '정보공유', '일상', '후기'].map((label, idx) => (
-            <CategoryButton key={label} active={idx === 0}>
-              {label}
-            </CategoryButton>
-          ))}
-        </CategoryRow>
-
-        <SearchBox>
-          <SearchInput placeholder="검색어를 입력하세요" />
-          <SearchIcon>🔍</SearchIcon>
-        </SearchBox>
-
-        <PostCard>
-          <PostMeta>질문 · 익명 · 2024.01.15</PostMeta>
-          <PostTitle>아이가 그림을 잘 안그리는데 어떻게 하면 좋을까요?</PostTitle>
-          <PostContent>
-            우리 아이가 그림 그리는 걸 좋아하지 않아요. 어떻게 흥미를 가질 수 있게 할 수 있을까요?
-          </PostContent>
-          <PostFooter>
-            <span>👁 45</span>
-            <span>❤️ 12</span>
-            <span>💬 8</span>
-          </PostFooter>
-        </PostCard>
-      </PageWrapper>
+        {tab === "anon" ? <AnonView /> : <ExpertView />}
+      </Container>
     </Outer>
   );
 };

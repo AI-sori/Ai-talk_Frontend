@@ -6,6 +6,7 @@ import HospitalList from '../components/HospitalList';
 const Outer = styled.div`
   width: 100vw;
   height: auto;
+  min-height: 100dvh;
   background: #f9f9f9;
   display: flex;
   flex-direction: column; 
@@ -102,7 +103,7 @@ const HomePage = () => {
       "HP8",
       (data, status) => {
         if (status === kakao.maps.services.Status.OK) {
-          // ✅ 병원 리스트 저장
+          //  병원 리스트 저장
           setHospitalList(
             data.map((place, idx) => ({
               id: place.id,
