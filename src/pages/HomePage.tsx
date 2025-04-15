@@ -64,6 +64,7 @@ const ControlButton = styled.button`
 `;
 
 
+
 const HomePage = () => {
   const [loaded, setLoaded] = useState(false);
   const mapRef = useRef<HTMLDivElement>(null);
@@ -105,7 +106,7 @@ const HomePage = () => {
         if (status === kakao.maps.services.Status.OK) {
           //  병원 리스트 저장
           setHospitalList(
-            data.map((place, idx) => ({
+            data.slice(0, 3).map((place, idx) => ({
               id: place.id,
               name: place.place_name,
               address: place.address_name,
@@ -253,7 +254,7 @@ new kakao.maps.Circle({
               style={{ width: "100%", height: "100%", borderRadius: "12px" }}
             />
           </MapWrapper>
-          <HospitalList hospitals={hospitalList} />
+         <HospitalList hospitals={hospitalList} />
         </Card>
       </Container>
     </Outer>

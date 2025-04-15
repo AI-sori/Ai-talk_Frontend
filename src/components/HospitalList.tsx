@@ -1,4 +1,3 @@
-// components/HospitalList.tsx
 import styled from "styled-components";
 
 const List = styled.ul`
@@ -6,7 +5,8 @@ const List = styled.ul`
   display: flex;
   flex-direction: column;
   gap: 0.75rem;
-  
+  align-items: center;
+  margin-right: 40px;
 `;
 
 const Item = styled.li`
@@ -14,8 +14,11 @@ const Item = styled.li`
   align-items: center;
   background: #f9faff;
   border-radius: 14px;
-  padding: 0.8rem 1rem;
+  padding: 0.8rem ;
   gap: 1rem;
+  width: 290px;
+   
+  height: 50px;
 `;
 
 const NumberCircle = styled.div`
@@ -46,7 +49,10 @@ const Address = styled.div`
   color: #777;
   margin-top: 2px;
 `;
-
+const ListWrapper = styled.div`
+  display: flex;
+  justify-content: center;  
+`;
 type Hospital = {
   id: string;
   name: string;
@@ -55,6 +61,7 @@ type Hospital = {
 
 const HospitalList = ({ hospitals }: { hospitals: Hospital[] }) => {
   return (
+    <ListWrapper>
     <List>
       {hospitals.map((h, i) => (
         <Item key={h.id}>
@@ -66,6 +73,7 @@ const HospitalList = ({ hospitals }: { hospitals: Hospital[] }) => {
         </Item>
       ))}
     </List>
+    </ListWrapper>
   );
 };
 
