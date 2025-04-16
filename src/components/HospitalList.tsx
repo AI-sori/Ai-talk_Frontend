@@ -17,7 +17,6 @@ const Item = styled.li`
   padding: 0.8rem ;
   gap: 1rem;
   width: 290px;
-   
   height: 50px;
 `;
 
