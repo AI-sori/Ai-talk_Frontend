@@ -1,5 +1,7 @@
 import styled from 'styled-components';
 import { useNavigate } from "react-router-dom";
+import { useState } from "react";
+import Modal from "../components/mypage/Modal"; 
 
 const Outer = styled.div`
   width: 100vw;
@@ -171,7 +173,30 @@ const Badge = styled.span`
 
 const Mypage = () => {
   const navigate = useNavigate();
+  const [modalType, setModalType] = useState<null | 'logout' | 'withdraw'>(null);
+  
+  const handleLogout = () => {
+    setModalType('logout');
+  };
 
+  const handleWithdraw = () => {
+    setModalType('withdraw');
+  };
+
+  const handleCancel = () => setModalType(null);
+
+  const handleConfirm = () => {
+    if (modalType === 'logout') {
+      // 로그아웃 로직
+      console.log("로그아웃 완료");
+      // navigate('/login');
+    } else {
+      // 탈퇴 로직
+      console.log("탈퇴 완료");
+      // navigate('/goodbye');
+    }
+    setModalType(null);
+  };
   return (
     <Outer>
       <Wrapper>
@@ -228,11 +253,19 @@ const Mypage = () => {
           <List>
           <li onClick={() => navigate("/mypage/notice")}>공지사항 <Badge>N</Badge></li>
           <li onClick={() => navigate("/mypage/inquiry")}>문의하기</li>
-            <li>로그아웃</li>
-            <li>
-              <RedText>탈퇴하기</RedText>
-            </li>
-          </List>
+          <li onClick={handleLogout}>로그아웃</li>
+  <li onClick={handleWithdraw}>
+    <RedText>탈퇴하기</RedText>
+  </li>
+</List>
+
+{modalType && (
+  <Modal
+    type={modalType}
+    onCancel={handleCancel}
+    onConfirm={handleConfirm}
+  />
+)}
         </Card>
       </Wrapper>
     </Outer>
