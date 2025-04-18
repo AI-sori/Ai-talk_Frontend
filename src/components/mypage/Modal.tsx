@@ -50,15 +50,15 @@ const CancelButton = styled.button`
   border-radius: 8px;
   font-family: Regular;
   cursor: pointer;
-  width: 130px;
-  height: 47px;
+  width: 120px;
+  height: 42px;
   font-size: 14px;
 `;
 
 const ActionButton = styled.button<{ red?: boolean }>`
   flex: 1;
-  width: 130px;
-  height: 47px;
+  width: 120px;
+  height: 42px;
   padding: 0.5rem 0;
   font-family: Regular;
   background: ${({ red }) => (red ? '#ffffff' : '#9FC9FF')};
