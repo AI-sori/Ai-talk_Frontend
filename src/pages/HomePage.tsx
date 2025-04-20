@@ -2,6 +2,15 @@ import React, { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 import { createHospitalOverlay } from '../utils/createHospitalOverlay';
 import HospitalList from '../components/HospitalList';
+import {
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  ResponsiveContainer,
+} from 'recharts';
 
 const Outer = styled.div`
   width: 100vw;
@@ -29,7 +38,7 @@ const Card = styled.div`
   padding: 1.5rem;
   font-family: SemiBold;
   font-size: 17px;
-  margin: 1rem 0;
+  margin: 0.9rem 0;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 `;
 
@@ -71,6 +80,66 @@ const HomePage = () => {
   const mapInstance = useRef<any>(null);
   const hospitalOverlays = useRef<kakao.maps.CustomOverlay[]>([]);
   const [hospitalList, setHospitalList] = useState<Hospital[]>([]);
+
+  const data = [
+    { month: '3월', 언어발달: 60, 인지발달: 40, 사회성발달: 20, 운동발달: 55, 정서발달: 35 },
+    { month: '4월', 언어발달: 55, 인지발달: 30, 사회성발달: 35, 운동발달: 70, 정서발달: 40 },
+    { month: '5월', 언어발달: 70, 인지발달: 25, 사회성발달: 50, 운동발달: 60, 정서발달: 30 },
+    { month: '6월', 언어발달: 65, 인지발달: 50, 사회성발달: 80, 운동발달: 50, 정서발달: 60 },
+  ];
+  
+  const colorMap = {
+    언어발달: '#a2b7f3',
+    인지발달: '#3f52dd',
+    사회성발달: '#8bb4f9',
+    운동발달: '#c49cf2',
+    정서발달: '#e2dcfc',
+  };
+  
+  const DevelopmentGraph = () => (
+    <div style={{ width: '100%', height: 200 }}>
+      {/* 그래프만 왼쪽으로 이동 */}
+      <div style={{ width: '100%', height: 160, marginLeft: '-30px' }}>
+        <ResponsiveContainer width="100%" height="100%">
+          <LineChart data={data} margin={{ top: 10, right: 0, left: 0, bottom: 10 }}>
+            <CartesianGrid stroke="#f0f0f0" vertical={false} />
+            <XAxis dataKey="month" tick={{ fontSize: 12 }} />
+            <YAxis domain={[0, 100]} tick={{ fontSize: 12 }} />
+            <Tooltip />
+            {Object.keys(colorMap).map((key) => (
+              <Line
+                key={key}
+                type="linear"
+                dataKey={key}
+                stroke={colorMap[key as keyof typeof colorMap]}
+                strokeWidth={2}
+                dot={false}
+              />
+            ))}
+          </LineChart>
+        </ResponsiveContainer>
+      </div>
+  
+      {/* 범례는 고정 위치에서 따로 아래 그려줌 */}
+      <div style={{ display: 'flex', justifyContent: 'center', flexWrap: 'wrap', marginTop: 6 }}>
+        {Object.entries(colorMap).map(([label, color]) => (
+          <div key={label} style={{ display: 'flex', alignItems: 'center', margin: '0 8px' }}>
+            <div
+              style={{
+                width: 8,
+                height: 8,
+                borderRadius: '50%',
+                backgroundColor: color,
+                marginRight: 6,
+              }}
+            />
+            <span style={{ fontSize: 12 }}>{label}</span>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+  
   // 초기 카카오맵 로딩
   useEffect(() => {
     if (!window.kakao) {
@@ -209,13 +278,10 @@ new kakao.maps.Circle({
   return (
     <Outer>
       <Container>
-        <Card>
-          <h3>우리 아이 발달 그래프</h3>
-          <div
-            style={{ height: 160, background: "#f0f0ff", borderRadius: 12 }}
-          />
-        </Card>
-
+      <Card>
+  <h3>우리 아이 발달 그래프</h3>
+  <DevelopmentGraph />
+</Card>
         <Card>
           <h3>맞춤 학습 프로그램</h3>
           <div style={{ display: "flex", gap: "1rem", overflowX: "auto" }}>
