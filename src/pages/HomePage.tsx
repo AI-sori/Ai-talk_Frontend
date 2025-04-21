@@ -46,16 +46,18 @@ const MapWrapper = styled.div`
   width: 100%; 
   height: 400px;
   border-radius: 12px;
+  position: relative; /* 지도 안에 절대 위치 배치 위해 추가 */
+  overflow: hidden;
 `;
 
 const MapControl = styled.div`
   position: absolute;
-  top: 10px;
-  right: 10px;
+  top: 12px;
+  right: 12px;
   display: flex;
   flex-direction: column;
   gap: 8px;
-  z-index: 2;
+  z-index: 10; /* 지도 위에 보이도록 충분히 높은 값 */
 `;
 
 const ControlButton = styled.button`
@@ -66,9 +68,14 @@ const ControlButton = styled.button`
   border-radius: 8px;
   font-size: 13px;
   cursor: pointer;
+  white-space: nowrap;
 
   &:hover {
     background-color: #7ca9e0;
+  }
+    &:focus,
+  &:focus-visible {
+    outline: none;
   }
 `;
 

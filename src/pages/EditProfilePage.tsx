@@ -49,6 +49,11 @@ const BackBtn = styled.button`
   border: none;
   color: #888;
   cursor: pointer;
+  
+  &:focus,
+  &:focus-visible {
+    outline: none;
+  }
 `;
 
 const ProfileImageWrapper = styled.div`
@@ -130,6 +135,10 @@ const SaveBtn = styled.button`
   border-radius: 10px;
   cursor: pointer;
 
+  &:focus,
+  &:focus-visible {
+    outline: none;
+  }
   &:hover {
     background: #94b5e9;
   }
@@ -144,6 +153,11 @@ const CancelBtn = styled.button`
   cursor: pointer;
   font-size: 15px;
     font-family: Regular;
+    
+  &:focus,
+  &:focus-visible {
+    outline: none;
+  }
 `;
 
 const EditProfilePage = () => {

@@ -69,6 +69,11 @@ const EditBtn = styled.button`
   font-size: 14px;
     font-family: Regular;
   cursor: pointer;
+  
+  &:focus,
+  &:focus-visible {
+    outline: none;
+  }
 
   &:hover {
     background: #94b5e9;
