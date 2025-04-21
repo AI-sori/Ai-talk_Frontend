@@ -15,6 +15,11 @@ const Back = styled.button`
   font-weight: bold;
   color: #333; 
   font-family: ExtraBold;
+  
+  &:focus,
+  &:focus-visible {
+    outline: none;
+  }
 `;
 
 const Label = styled.div`
@@ -28,6 +33,11 @@ const CategoryRow = styled.div`
   display: flex;
   gap: 0.5rem;
   margin-bottom: 1.5rem;
+  
+  &:focus,
+  &:focus-visible {
+    outline: none;
+  }
 `;
 
 const CategoryButton = styled.button<{ active?: boolean }>`
@@ -39,6 +49,11 @@ const CategoryButton = styled.button<{ active?: boolean }>`
   padding: 8px 14px;
   cursor: pointer;
     font-family: Regular;
+    
+  &:focus,
+  &:focus-visible {
+    outline: none;
+  }
 `;
 
 const Input = styled.input`
@@ -82,6 +97,11 @@ const CancelBtn = styled.button`
   cursor: pointer;
   font-size: 15px;
     font-family: Regular;
+    
+  &:focus,
+  &:focus-visible {
+    outline: none;
+  }
 `;
 
 const SubmitBtn = styled.button`
@@ -95,6 +115,10 @@ const SubmitBtn = styled.button`
   font-size: 15px;
     font-family: Regular;
 
+    &:focus,
+    &:focus-visible {
+      outline: none;
+    }
   &:hover {
     background: #b278e0;
   }

@@ -42,6 +42,11 @@ const Back = styled.button`
   font-weight: bold;
   color: #333; 
   font-family: ExtraBold;
+  
+  &:focus,
+  &:focus-visible {
+    outline: none;
+  }
 `;
 
 
@@ -136,6 +141,11 @@ const Btn = styled.button<{ bg: string; color: string }>`
   border-radius: 8px;
   cursor: pointer;
   font-family: Regular;
+  
+  &:focus,
+  &:focus-visible {
+    outline: none;
+  }
 `;
 
 const ConsultDetailPage = ({ hasReply }: ConsultDetailProps) => {

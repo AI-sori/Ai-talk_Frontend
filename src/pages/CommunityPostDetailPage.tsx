@@ -38,6 +38,11 @@ const Back = styled.button`
   font-weight: bold;
   color: #333; 
   font-family: ExtraBold;
+  
+  &:focus,
+  &:focus-visible {
+    outline: none;
+  }
 `;
 
 const Meta = styled.div`
