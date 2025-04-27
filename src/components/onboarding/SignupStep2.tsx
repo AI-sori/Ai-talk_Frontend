@@ -113,37 +113,60 @@ const Title = styled.h2`
   margin: 0;
 `;
 
-
-interface Props {
-    onBack: () => void;
-  }
-
-
-  const SignupStep2: React.FC<Props> = ({ onBack }) => {
-  const handleComplete = () => {
-    alert("회원가입이 완료되었습니다!");
+const SignupStep2 = ({
+  onBack,
+  nickname,
+  setNickname,
+  profileImage,
+  setProfileImage,
+  handleComplete,
+}: {
+  onBack: () => void;
+  nickname: string;
+  setNickname: (nickname: string) => void;
+  profileImage: string;
+  setProfileImage: (profileImage: string) => void;
+  handleComplete: () => void;
+}) => {
+  
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        if (typeof reader.result === "string") {
+          setProfileImage(reader.result); // base64 문자열 저장
+        }
+      };
+      reader.readAsDataURL(file);
+    }
   };
 
   return (
     <Outer>
       <Container>
-      <HeaderWrapper>
-  <BackButton onClick={onBack}>
-    <img src={back} alt="뒤로가기" />
-  </BackButton>
-  <Title>회원가입</Title>
-</HeaderWrapper>
+        <HeaderWrapper>
+          <BackButton onClick={onBack}>
+            <img src={back} alt="뒤로가기" />
+          </BackButton>
+          <Title>회원가입</Title>
+        </HeaderWrapper>
 
         <ProfileWrapper>
-          <ProfileImage>이미지</ProfileImage>
-          <ProfileLabel>프로필 사진</ProfileLabel>
+          <ProfileImage>
+            {profileImage ? <img src={profileImage} alt="프로필" style={{ width: "100%", height: "100%", borderRadius: "50%" }} /> : "이미지"}
+          </ProfileImage>
+          <ProfileLabel>
+            <input type="file" accept="image/*" onChange={handleImageChange} />
+          </ProfileLabel>
         </ProfileWrapper>
 
         <Label>*닉네임</Label>
-        <Input placeholder="닉네임을 입력하세요" />
-
-        <Label>*대표 소개</Label>
-        <Input placeholder="소개를 입력하세요" />
+        <Input
+          placeholder="닉네임을 입력하세요"
+          value={nickname}
+          onChange={(e) => setNickname(e.target.value)}
+        />
 
         <Button onClick={handleComplete}>완료</Button>
       </Container>
