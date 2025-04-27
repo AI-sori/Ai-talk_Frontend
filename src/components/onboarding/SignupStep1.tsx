@@ -89,7 +89,31 @@ const Button = styled.button`
 `;
 
 
-const SignupStep1 = ({ onNext }: { onNext: () => void }) => {
+const SignupStep1 = ({
+  onNext,
+  onBack,
+  email,
+  setEmail,
+  password,
+  setPassword,
+}: {
+  onNext: () => void;
+  onBack: () => void;
+  email: string;
+  setEmail: (email: string) => void;
+  password: string;
+  setPassword: (password: string) => void;
+}) => {
+  const [confirmPassword, setConfirmPassword] = useState("");
+
+  const handleNext = () => {
+    if (password !== confirmPassword) {
+      alert("비밀번호가 일치하지 않습니다!");
+      return;
+    }
+    onNext();
+  };
+
   return (
     <Outer>
       <Container>
@@ -97,17 +121,32 @@ const SignupStep1 = ({ onNext }: { onNext: () => void }) => {
 
         <Label>*이메일</Label>
         <InputWrapper>
-          <Input type="email" placeholder="이메일을 입력하세요" />
+          <Input
+            type="email"
+            placeholder="이메일을 입력하세요"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+          />
           <InlineButton>중복 확인</InlineButton>
         </InputWrapper>
 
         <Label>*비밀번호</Label>
-        <Input type="password" placeholder="영문/숫자 조합 8~16자 이내로 입력하세요" />
+        <Input
+          type="password"
+          placeholder="비밀번호를 입력하세요"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+        />
 
         <Label>*비밀번호 확인</Label>
-        <Input type="password" placeholder="비밀번호를 한 번 더 입력하세요" />
+        <Input
+          type="password"
+          placeholder="비밀번호를 한 번 더 입력하세요"
+          value={confirmPassword}
+          onChange={(e) => setConfirmPassword(e.target.value)}
+        />
 
-        <Button onClick={onNext}>다음</Button>
+        <Button onClick={handleNext}>다음</Button>
       </Container>
     </Outer>
   );

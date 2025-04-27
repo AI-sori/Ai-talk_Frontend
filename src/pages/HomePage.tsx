@@ -239,48 +239,52 @@ const HomePage = () => {
 
   useEffect(() => {
     if (!loaded || !mapRef.current) return;
-
     const { kakao } = window;
-
-    navigator.geolocation.getCurrentPosition(
+  
+    const map = new kakao.maps.Map(mapRef.current, {
+      center: new kakao.maps.LatLng(37.5665, 126.978), // 초기 fallback 위치
+      level: 4,
+    });
+    mapInstance.current = map;
+  
+    const watchId = navigator.geolocation.watchPosition(
       (position) => {
         const userPos = new kakao.maps.LatLng(
           position.coords.latitude,
           position.coords.longitude
         );
-
-        const map = new kakao.maps.Map(mapRef.current, {
+  
+        map.setCenter(userPos);
+  
+        // 내 위치 표시용 원
+        new kakao.maps.Circle({
           center: userPos,
-          level: 4,
+          radius: 10,
+          strokeWeight: 2,
+          strokeColor: '#6495cf',
+          strokeOpacity: 0.8,
+          fillColor: '#6495cf',
+          fillOpacity: 0.5,
+          map,
         });
-
-      // 내 위치 원 표시
-new kakao.maps.Circle({
-  center: userPos,
-  radius: 10, // 미터 단위
-  strokeWeight: 2,
-  strokeColor: '#6495cf',
-  strokeOpacity: 0.8,
-  fillColor: '#6495cf',
-  fillOpacity: 0.5,
-  map,
-});
-
-
-        mapInstance.current = map;
+  
         searchHospitals(userPos);
       },
-      () => {
-        const fallbackPos = new kakao.maps.LatLng(37.5665, 126.978); // fallback: 서울 시청
-        const map = new kakao.maps.Map(mapRef.current, {
-          center: fallbackPos,
-          level: 4,
-        });
-        mapInstance.current = map;
-        searchHospitals(fallbackPos);
+      (err) => {
+        console.error("위치 추적 실패", err);
+      },
+      {
+        enableHighAccuracy: true,
+        timeout: 10000,
+        maximumAge: 0,
       }
     );
+  
+    return () => {
+      navigator.geolocation.clearWatch(watchId); // 언마운트 시 추적 중단
+    };
   }, [loaded]);
+  
 
   return (
     <Outer>
