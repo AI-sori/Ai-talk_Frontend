@@ -1,6 +1,8 @@
 import styled from "styled-components";
-import logo from "../assets/logo.svg"; 
+import logo from "../assets/logo.svg";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import axiosInstance from "../api/axiosInstance";
 
 const Outer = styled.div`
   height: 100dvh;
@@ -80,17 +82,48 @@ const LogoImg = styled.img`
   height: auto;
   margin-bottom: 3rem;
 `;
+
 const LoginPage = () => {
-    const navigate = useNavigate();
+  const navigate = useNavigate();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
+  const handleLogin = async () => {
+    try {
+      const response = await axiosInstance.post("/members/login", {
+        email,
+        password,
+      });
+  
+      console.log(response.data);
+      alert("로그인 성공!");
+      navigate("/home"); 
+    } catch (error) {
+      console.error(error);
+      alert("로그인 실패 ");
+    }
+  };
+  
+
   return (
     <Outer>
       <Container>
-      <LogoImg src={logo} alt="Ai-Talk 로고" />
-        <Input type="email" placeholder="이메일" />
-        <Input type="password" placeholder="비밀번호" />
-        <Button>로그인</Button>
+        <LogoImg src={logo} alt="Ai-Talk 로고" />
+        <Input
+          type="email"
+          placeholder="이메일"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+        />
+        <Input
+          type="password"
+          placeholder="비밀번호"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+        />
+        <Button onClick={handleLogin}>로그인</Button>
         <LinkRow>
-        <a onClick={() => navigate("/onboarding")}>회원가입</a>
+          <a onClick={() => navigate("/onboarding")}>회원가입</a>
         </LinkRow>
       </Container>
     </Outer>
