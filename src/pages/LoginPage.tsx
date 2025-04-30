@@ -2,7 +2,7 @@ import styled from "styled-components";
 import logo from "../assets/logo.svg";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import axiosInstance from "../api/axiosInstance";
+
 
 const Outer = styled.div`
   height: 100dvh;
@@ -90,19 +90,32 @@ const LoginPage = () => {
 
   const handleLogin = async () => {
     try {
-      const response = await axiosInstance.post("/members/login", {
-        email,
-        password,
+      const response = await fetch("https://port-0-ai-talk-backend-m95cwvb00db2ddb5.sel4.cloudtype.app/members/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include", // 세션 쿠키 주고받기 위해 필요
+        body: JSON.stringify({
+          email,
+          password,
+        }),
       });
   
-      console.log(response.data);
+      if (!response.ok) {
+        throw new Error("로그인 실패");
+      }
+  
+      const data = await response.json();
+      console.log(data);
       alert("로그인 성공!");
       navigate("/home"); 
     } catch (error) {
       console.error(error);
-      alert("로그인 실패 ");
+      alert("로그인 실패");
     }
   };
+  
   
 
   return (
