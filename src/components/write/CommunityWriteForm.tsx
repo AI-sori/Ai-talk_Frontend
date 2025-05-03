@@ -1,6 +1,8 @@
 import styled from "styled-components";
 import BackSvg from "../../assets/community/Back.svg";
 import { useNavigate } from "react-router-dom";
+import { useState } from "react";
+import axiosInstance from "../../api/axiosInstance";
 
 const Back = styled.button`
   display: flex;
@@ -135,40 +137,108 @@ const SubmitBtn = styled.button`
     background: #7ca9e0;
   }
 `;
-
+const HiddenFileInput = styled.input`
+  display: none;
+`;
 const CommunityWriteForm = () => {
   const navigate = useNavigate();
+  const [category, setCategory] = useState("질문");
+  const [title, setTitle] = useState("");
+  const [content, setContent] = useState("");
+  const [image, setImage] = useState(""); // base64 string
+  const [previewUrl, setPreviewUrl] = useState(""); // 이미지 미리보기용
+
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      const base64 = reader.result as string;
+      setImage(base64);
+      setPreviewUrl(base64);
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const fileInputRef = React.useRef<HTMLInputElement>(null);
+
+  const handleSubmit = async () => {
+    try {
+      const response = await axiosInstance.post("/community/post", {
+        category,
+        title,
+        content,
+        image,
+      });
+      console.log("등록 성공:", response.data);
+      navigate("/community", { state: { tab: "anon" } });
+    } catch (error) {
+      console.error("등록 실패:", error);
+      alert("글 등록에 실패했습니다.");
+    }
+  };
+  
 
   return (
     <>
-          <Back onClick={() => navigate("/community", { state: { tab: "anon" } })}>
+      <Back onClick={() => navigate("/community", { state: { tab: "anon" } })}>
         <img src={BackSvg} alt="뒤로가기" width={20} height={20} />
         글쓰기
       </Back>
 
       <Label>카테고리 선택</Label>
       <CategoryRow>
-        {["질문", "정보공유", "일상", "후기"].map((cat, i) => (
-          <CategoryButton key={cat} active={i === 0}>
+        {["질문", "정보공유", "일상", "후기"].map((cat) => (
+          <CategoryButton
+            key={cat}
+            active={cat === category}
+            onClick={() => setCategory(cat)}
+          >
             {cat}
           </CategoryButton>
         ))}
       </CategoryRow>
 
       <Label>제목</Label>
-      <Input placeholder="제목을 입력해주세요" />
+      <Input
+        placeholder="제목을 입력해주세요"
+        value={title}
+        onChange={(e) => setTitle(e.target.value)}
+      />
 
       <Label>내용</Label>
-      <Textarea placeholder="내용을 입력해주세요" />
+      <Textarea
+        placeholder="내용을 입력해주세요"
+        value={content}
+        onChange={(e) => setContent(e.target.value)}
+      />
 
       <Label>
-        사진 첨부 <span style={{ fontWeight: "normal", color: "#888" }}>(0/5)</span>
+        사진 첨부{" "}
+        <span style={{ fontWeight: "normal", color: "#888" }}>
+          ({image ? "1" : "0"}/5)
+        </span>
       </Label>
-      <ImageUploadBox>+</ImageUploadBox>
+      <ImageUploadBox onClick={() => fileInputRef.current?.click()}>
+        {previewUrl ? (
+          <img src={previewUrl} alt="preview" style={{ width: "100%", height: "100%", borderRadius: "12px" }} />
+        ) : (
+          "+"
+        )}
+      </ImageUploadBox>
+      <HiddenFileInput
+        type="file"
+        accept="image/*"
+        ref={fileInputRef}
+        onChange={handleImageChange}
+      />
 
       <ButtonRow>
-        <CancelBtn>취소</CancelBtn>
-        <SubmitBtn>등록하기</SubmitBtn>
+        <CancelBtn onClick={() => navigate("/community", { state: { tab: "anon" } })}>
+          취소
+        </CancelBtn>
+        <SubmitBtn onClick={handleSubmit}>등록하기</SubmitBtn>
       </ButtonRow>
     </>
   );
