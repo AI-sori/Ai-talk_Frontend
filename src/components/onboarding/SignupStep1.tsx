@@ -56,21 +56,6 @@ const Input = styled.input`
    outline: none;
 `;
 
-const InlineButton = styled.button`
-  position: absolute;
-  top: 50%;
-  right: 8px;
-  transform: translateY(-50%);
-  background-color: #9FC9FF;
-  color: white;
-  border-radius: 15px;
-  padding: 6px 10px;
-  font-size: 12px;
-  cursor: pointer;
-  outline: none;
-
-`;
-
 const Button = styled.button`
   margin: 1.2rem auto 0; // 가운데 정렬
   background-color: #a8cbff;
@@ -92,7 +77,6 @@ const Button = styled.button`
 
 const SignupStep1 = ({
   onNext,
-  onBack,
   email,
   setEmail,
   password,
@@ -128,7 +112,6 @@ const SignupStep1 = ({
             value={email}
             onChange={(e) => setEmail(e.target.value)}
           />
-          <InlineButton>중복 확인</InlineButton>
         </InputWrapper>
 
         <Label>*비밀번호</Label>

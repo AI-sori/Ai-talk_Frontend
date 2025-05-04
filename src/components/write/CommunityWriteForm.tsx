@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import React from "react";
 import BackSvg from "../../assets/community/Back.svg";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
