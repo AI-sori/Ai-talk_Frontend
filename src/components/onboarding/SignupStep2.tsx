@@ -125,21 +125,20 @@ const SignupStep2 = ({
   nickname: string;
   setNickname: (nickname: string) => void;
   profileImage: string;
-  setProfileImage: (profileImage: string) => void;
+  setProfileImage: (base64: string) => void;
   handleComplete: () => void;
 }) => {
-  
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        if (typeof reader.result === "string") {
-          setProfileImage(reader.result); // base64 문자열 저장
-        }
-      };
-      reader.readAsDataURL(file);
-    }
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      if (typeof reader.result === "string") {
+        setProfileImage(reader.result); 
+      }
+    };
+    reader.readAsDataURL(file); 
   };
 
   return (
@@ -154,7 +153,15 @@ const SignupStep2 = ({
 
         <ProfileWrapper>
           <ProfileImage>
-            {profileImage ? <img src={profileImage} alt="프로필" style={{ width: "100%", height: "100%", borderRadius: "50%" }} /> : "이미지"}
+            {profileImage ? (
+              <img
+                src={profileImage}
+                alt="프로필"
+                style={{ width: "100%", height: "100%", objectFit: "cover", borderRadius: "50%" }}
+              />
+            ) : (
+              "이미지"
+            )}
           </ProfileImage>
           <ProfileLabel>
             <input type="file" accept="image/*" onChange={handleImageChange} />
