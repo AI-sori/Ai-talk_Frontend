@@ -12,6 +12,12 @@ import {
   ResponsiveContainer,
 } from 'recharts';
 
+type Hospital = {
+  id: string;
+  name: string;
+  address: string;
+};
+
 const Outer = styled.div`
   width: 100vw;
   height: auto;
@@ -85,7 +91,7 @@ const HomePage = () => {
   const [loaded, setLoaded] = useState(false);
   const mapRef = useRef<HTMLDivElement>(null);
   const mapInstance = useRef<any>(null);
-  const hospitalOverlays = useRef<kakao.maps.CustomOverlay[]>([]);
+ const hospitalOverlays = useRef<any[]>([]);
   const [hospitalList, setHospitalList] = useState<Hospital[]>([]);
 
   const data = [
@@ -168,21 +174,20 @@ const HomePage = () => {
 
   // 병원 검색 함수
   const searchHospitals = (center: kakao.maps.LatLng) => {
-    const { kakao } = window;
     const map = mapInstance.current;
   
     // 기존 마커 제거
     hospitalOverlays.current.forEach(marker => marker.setMap(null));
     hospitalOverlays.current = [];
   
-    const ps = new kakao.maps.services.Places();
+    const ps = new (window as any).kakao.maps.services.Places();
     ps.categorySearch(
       "HP8",
       (data, status) => {
         if (status === kakao.maps.services.Status.OK) {
           //  병원 리스트 저장
           setHospitalList(
-            data.slice(0, 3).map((place, idx) => ({
+            data.slice(0, 3).map((place) => ({
               id: place.id,
               name: place.place_name,
               address: place.address_name,

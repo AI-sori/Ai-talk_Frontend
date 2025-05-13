@@ -56,8 +56,8 @@ const Nav = styled.nav`
 const NavItem = styled.span`
   font-size: 16px; 
    white-space: nowrap;
-  font-weight: ${props => (props.active ? 800 : 600)};
-  color: ${props => (props.active ? '#6485CF' : '#222')};
+  font-weight: ${({ active }) => (active ? 800 : 600)};
+  color: ${({ active }) => (active ? '#6485CF' : '#222')};
   cursor: pointer;
   padding: 6px 0; // 높이 정렬에 도움
  font-family: SemiBold;
