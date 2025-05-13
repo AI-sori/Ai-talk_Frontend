@@ -97,7 +97,7 @@ const LoginPage = () => {
         password,
       });
   
-      login({ email }); 
+     login({ email, nickname: 'temp' });
     alert("로그인 성공!");
     console.log(response.data); 
 
