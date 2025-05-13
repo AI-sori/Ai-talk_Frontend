@@ -1,4 +1,4 @@
-export {};
+export {}; // 글로벌 선언을 모듈로 감싸기 위해 필요
 
 declare global {
   interface Window {
@@ -7,8 +7,14 @@ declare global {
 
   namespace kakao {
     namespace maps {
+      // ✅ load 함수 타입 정의 (autoload=false 대응)
+      function load(callback: () => void): void;
+
       class Map {
-        constructor(container: HTMLElement, options: any);
+        constructor(container: HTMLElement, options: {
+          center: LatLng;
+          level: number;
+        });
         setCenter(latlng: LatLng): void;
         getCenter(): LatLng;
       }
@@ -18,12 +24,24 @@ declare global {
       }
 
       class Marker {
-        constructor(options: { position: LatLng; map?: Map });
+        constructor(options: {
+          position: LatLng;
+          map?: Map;
+        });
         setMap(map: Map | null): void;
       }
 
       class Circle {
-        constructor(options: any);
+        constructor(options: {
+          center: LatLng;
+          radius: number;
+          strokeWeight: number;
+          strokeColor: string;
+          strokeOpacity: number;
+          fillColor: string;
+          fillOpacity: number;
+          map?: Map;
+        });
         setMap(map: Map | null): void;
       }
 
@@ -37,20 +55,8 @@ declare global {
       }
 
       namespace services {
-        class Places {
-          categorySearch(
-            code: string,
-            callback: (
-              data: PlacesSearchResult[],
-              status: Status,
-              pagination: Pagination
-            ) => void,
-            options?: {
-              location: LatLng;
-              radius?: number;
-            }
-          ): void;
-        }
+        // ✅ Status 정의
+        type Status = "OK" | "ZERO_RESULT" | "ERROR";
 
         interface PlacesSearchResult {
           id: string;
@@ -62,11 +68,24 @@ declare global {
           y: string;
         }
 
-        type Status = 'OK' | 'ZERO_RESULT' | 'ERROR';
-
         interface Pagination {
           hasNextPage: () => boolean;
           nextPage: () => void;
+        }
+
+        class Places {
+          categorySearch(
+            category: string,
+            callback: (
+              data: PlacesSearchResult[],
+              status: Status,
+              pagination: Pagination
+            ) => void,
+            options?: {
+              location: LatLng;
+              radius?: number;
+            }
+          ): void;
         }
       }
     }
