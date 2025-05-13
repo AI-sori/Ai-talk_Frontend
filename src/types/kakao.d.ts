@@ -1,18 +1,16 @@
-// src/types/kakao.d.ts
-export {}; // 모듈로 인식되도록 강제
+export {};
 
 declare global {
   interface Window {
-    kakao: any;
+    kakao: typeof kakao;
   }
 
   namespace kakao {
     namespace maps {
       class Map {
         constructor(container: HTMLElement, options: any);
-        setCenter(latlng: any): void;
-        setLevel(level: number): void;
-        // 필요 시 더 추가
+        setCenter(latlng: LatLng): void;
+        getCenter(): LatLng;
       }
 
       class LatLng {
@@ -20,17 +18,57 @@ declare global {
       }
 
       class Marker {
-        constructor(options: any);
-        setMap(map: any): void;
+        constructor(options: { position: LatLng; map?: Map });
+        setMap(map: Map | null): void;
       }
 
-      class InfoWindow {
+      class Circle {
         constructor(options: any);
-        open(map: any, marker: any): void;
-        close(): void;
+        setMap(map: Map | null): void;
       }
 
-      // 등등 필요한 것들 추가
+      class CustomOverlay {
+        constructor(options: {
+          position: LatLng;
+          content: string;
+          yAnchor?: number;
+        });
+        setMap(map: Map | null): void;
+      }
+
+      namespace services {
+        class Places {
+          categorySearch(
+            code: string,
+            callback: (
+              data: PlacesSearchResult[],
+              status: Status,
+              pagination: Pagination
+            ) => void,
+            options?: {
+              location: LatLng;
+              radius?: number;
+            }
+          ): void;
+        }
+
+        interface PlacesSearchResult {
+          id: string;
+          place_name: string;
+          address_name: string;
+          road_address_name: string;
+          phone: string;
+          x: string;
+          y: string;
+        }
+
+        type Status = 'OK' | 'ZERO_RESULT' | 'ERROR';
+
+        interface Pagination {
+          hasNextPage: () => boolean;
+          nextPage: () => void;
+        }
+      }
     }
   }
 }
