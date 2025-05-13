@@ -182,8 +182,11 @@ const HomePage = () => {
   
     const ps = new (window as any).kakao.maps.services.Places();
     ps.categorySearch(
-      "HP8",
-      (data, status) => {
+  "HP8",
+  (
+    data: kakao.maps.services.PlacesSearchResult[],
+    status: kakao.maps.services.Status
+  ) => {
         if (status === kakao.maps.services.Status.OK) {
           //  병원 리스트 저장
           setHospitalList(
