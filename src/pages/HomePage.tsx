@@ -187,7 +187,7 @@ const HomePage = () => {
     data: kakao.maps.services.PlacesSearchResult[],
     status: kakao.maps.services.Status
   ) => {
-        if (status === kakao.maps.services.Status.OK) {
+        if (status === 'OK') {
           //  병원 리스트 저장
           setHospitalList(
             data.slice(0, 3).map((place) => ({
