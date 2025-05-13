@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import logo from "../assets/logo.svg";
+import logo from "../assets/Logo.svg";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axiosInstance from "../api/axiosInstance";
