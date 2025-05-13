@@ -53,9 +53,9 @@ const Nav = styled.nav`
   margin-left: 1.5rem;
 `;
 
-const NavItem = styled.span`
-  font-size: 16px; 
-   white-space: nowrap;
+const NavItem = styled.span<{ active?: boolean }>`
+  font-size: 16px;
+  white-space: nowrap;
   font-weight: ${({ active }) => (active ? 800 : 600)};
   color: ${({ active }) => (active ? '#6485CF' : '#222')};
   cursor: pointer;
