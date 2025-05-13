@@ -3,6 +3,7 @@ import logo from "../assets/logo.svg";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axiosInstance from "../api/axiosInstance";
+import useAuthStore from "../stores/useAuthStore";
 
 const Outer = styled.div`
   height: 100dvh;
@@ -87,6 +88,7 @@ const LoginPage = () => {
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const login = useAuthStore((state) => state.login);
 
   const handleLogin = async () => {
     try {
@@ -95,14 +97,16 @@ const LoginPage = () => {
         password,
       });
   
-      console.log(response.data);
-      alert("로그인 성공!");
-      navigate("/home");
-    } catch (error) {
-      console.error(error);
-      alert("로그인 실패");
-    }
-  };
+      login({ email }); 
+    alert("로그인 성공!");
+    console.log(response.data); 
+
+    navigate("/home");
+  } catch (error) {
+    console.error(error);
+    alert("로그인 실패");
+  }
+};
   
   
 

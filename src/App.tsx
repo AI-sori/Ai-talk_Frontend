@@ -6,13 +6,21 @@ import Header from './components/Header';
 import LearningPage from './pages/LearningPage';
 import DiagnosisPage from './pages/DiagnosisPage';
 import CommunityPage from './pages/CommunityPage';
-import Mypage from './pages/Mypage';
+import Mypage from './pages/MyPage';
 import WritePage from "./pages/WritePage";
 import ConsultDetailPage from "./pages/ConsultDetailPage"; 
 import CommunityPostDetailPage from "./pages/CommunityPostDetailPage";
 import EditProfilePage from "./pages/EditProfilePage";
 import NoticePage from "./pages/NoticePage";
 import InquiryPage from "./pages/InquiryPage";
+import useAuthStore from "./stores/useAuthStore";
+import { Navigate } from "react-router-dom";
+
+
+const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
+  const user = useAuthStore((state) => state.user);
+  return user ? <>{children}</> : <Navigate to="/" />;
+};
 
 function AppLayout() {
   const location = useLocation();
@@ -22,21 +30,24 @@ function AppLayout() {
     <>
       {!isPublic && <Header />}
       <Routes>
+     
         <Route path="/" element={<LoginPage />} />
         <Route path="/onboarding" element={<OnboardingPage />} />
-        <Route path="/home" element={<HomePage />} />
-        <Route path="/learning" element={<LearningPage />} />
-        <Route path="/diagnosis" element={<DiagnosisPage />} />
-        <Route path="/community" element={<CommunityPage />} />
-        <Route path="/mypage" element={<Mypage />} />
-        <Route path="/community/write" element={<WritePage type="anon" />} />
-        <Route path="/consult/write" element={<WritePage type="expert" />} />
-        <Route path="/consult/1" element={<ConsultDetailPage hasReply={false} />} />
-        <Route path="/consult/2" element={<ConsultDetailPage hasReply={true} />} />
-        <Route path="/community/1" element={<CommunityPostDetailPage />} />
-        <Route path="/mypage/edit" element={<EditProfilePage />} />
-        <Route path="/mypage/notice" element={<NoticePage />} />
-        <Route path="/mypage/inquiry" element={<InquiryPage />} />
+
+        {/* (로그인 필요) */}
+        <Route path="/home" element={<ProtectedRoute><HomePage /></ProtectedRoute>} />
+        <Route path="/learning" element={<ProtectedRoute><LearningPage /></ProtectedRoute>} />
+        <Route path="/diagnosis" element={<ProtectedRoute><DiagnosisPage /></ProtectedRoute>} />
+        <Route path="/community" element={<ProtectedRoute><CommunityPage /></ProtectedRoute>} />
+        <Route path="/mypage" element={<ProtectedRoute><Mypage /></ProtectedRoute>} />
+        <Route path="/community/write" element={<ProtectedRoute><WritePage type="anon" /></ProtectedRoute>} />
+        <Route path="/consult/write" element={<ProtectedRoute><WritePage type="expert" /></ProtectedRoute>} />
+        <Route path="/consult/1" element={<ProtectedRoute><ConsultDetailPage hasReply={false} /></ProtectedRoute>} />
+        <Route path="/consult/2" element={<ProtectedRoute><ConsultDetailPage hasReply={true} /></ProtectedRoute>} />
+        <Route path="/community/1" element={<ProtectedRoute><CommunityPostDetailPage /></ProtectedRoute>} />
+        <Route path="/mypage/edit" element={<ProtectedRoute><EditProfilePage /></ProtectedRoute>} />
+        <Route path="/mypage/notice" element={<ProtectedRoute><NoticePage /></ProtectedRoute>} />
+        <Route path="/mypage/inquiry" element={<ProtectedRoute><InquiryPage /></ProtectedRoute>} />
       </Routes>
     </>
   );
@@ -45,7 +56,7 @@ function AppLayout() {
 function App() {
   return (
     <Router>
-      <AppLayout /> {/* ✅ useLocation은 Router 안에서만 호출 가능 */}
+      <AppLayout />
     </Router>
   );
 }

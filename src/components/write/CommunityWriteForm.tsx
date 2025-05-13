@@ -170,7 +170,7 @@ const CommunityWriteForm = () => {
         category,
         title,
         content,
-        image,
+        image: image || "",
       });
       console.log("등록 성공:", response.data);
       navigate("/community", { state: { tab: "anon" } });
@@ -179,7 +179,6 @@ const CommunityWriteForm = () => {
       alert("글 등록에 실패했습니다.");
     }
   };
-  
 
   return (
     <>
