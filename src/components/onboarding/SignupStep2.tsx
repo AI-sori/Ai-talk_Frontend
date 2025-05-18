@@ -61,6 +61,7 @@ const Input = styled.input`
   height: 50px;
   padding: 12px;
   border-radius: 10px;
+   background-color: white;
   border: 1.2px solid #7595D3;
   font-size: 14px;
   box-sizing: border-box;
@@ -113,6 +114,13 @@ const Title = styled.h2`
   margin: 0;
 `;
 
+const ErrorMessage = styled.div`
+  color: red;
+  font-size: 13px;
+  margin-top: 8px;
+  text-align: center;
+`;
+
 const SignupStep2 = ({
   onBack,
   nickname,
@@ -128,6 +136,8 @@ const SignupStep2 = ({
   setProfileImage: (base64: string) => void;
   handleComplete: () => void;
 }) => {
+  const [error, setError] = useState("");
+
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
@@ -135,10 +145,19 @@ const SignupStep2 = ({
     const reader = new FileReader();
     reader.onloadend = () => {
       if (typeof reader.result === "string") {
-        setProfileImage(reader.result); 
+        setProfileImage(reader.result);
       }
     };
-    reader.readAsDataURL(file); 
+    reader.readAsDataURL(file);
+  };
+
+  const handleClick = () => {
+    if (!nickname.trim()) {
+      setError("닉네임을 입력해주세요.");
+      return;
+    }
+    setError("");
+    handleComplete();
   };
 
   return (
@@ -157,7 +176,12 @@ const SignupStep2 = ({
               <img
                 src={profileImage}
                 alt="프로필"
-                style={{ width: "100%", height: "100%", objectFit: "cover", borderRadius: "50%" }}
+                style={{
+                  width: "100%",
+                  height: "100%",
+                  objectFit: "cover",
+                  borderRadius: "50%",
+                }}
               />
             ) : (
               "이미지"
@@ -175,7 +199,9 @@ const SignupStep2 = ({
           onChange={(e) => setNickname(e.target.value)}
         />
 
-        <Button onClick={handleComplete}>완료</Button>
+        {error && <ErrorMessage>{error}</ErrorMessage>}
+
+        <Button onClick={handleClick}>완료</Button>
       </Container>
     </Outer>
   );
