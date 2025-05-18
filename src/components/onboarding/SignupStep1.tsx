@@ -54,10 +54,18 @@ const Input = styled.input`
   font-size: 14px;
   box-sizing: border-box;
    outline: none;
+    background-color: white;
+`;
+
+const ErrorMessage = styled.div`
+  color: red;
+  font-size: 13px;
+  margin-top: 8px;
+  text-align: center;
 `;
 
 const Button = styled.button`
-  margin: 1.2rem auto 0; // 가운데 정렬
+  margin: 1.2rem auto 0;
   background-color: #a8cbff;
   border: none;
   border-radius: 30px;
@@ -67,13 +75,16 @@ const Button = styled.button`
   color: white;
   cursor: pointer;
   display: block;
-   outline: none;
+  outline: none;
 
   &:hover {
     background-color: #94b5e9;
   }
+    &:focus {
+    outline: none;
+    box-shadow: none;
+  }
 `;
-
 
 const SignupStep1 = ({
   onNext,
@@ -90,12 +101,28 @@ const SignupStep1 = ({
   setPassword: (password: string) => void;
 }) => {
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [error, setError] = useState("");
+
+  const isEmailValid = (email: string) =>
+    /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 
   const handleNext = () => {
-    if (password !== confirmPassword) {
-      alert("비밀번호가 일치하지 않습니다!");
+    if (!email || !password || !confirmPassword) {
+      setError("모든 입력란을 작성해주세요.");
       return;
     }
+
+    if (!isEmailValid(email)) {
+      setError("유효한 이메일 형식이 아닙니다.");
+      return;
+    }
+
+    if (password !== confirmPassword) {
+      setError("비밀번호가 일치하지 않습니다.");
+      return;
+    }
+
+    setError(""); // 에러 초기화
     onNext();
   };
 
@@ -129,6 +156,8 @@ const SignupStep1 = ({
           value={confirmPassword}
           onChange={(e) => setConfirmPassword(e.target.value)}
         />
+
+        {error && <ErrorMessage>{error}</ErrorMessage>}
 
         <Button onClick={handleNext}>다음</Button>
       </Container>
