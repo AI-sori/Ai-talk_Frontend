@@ -1,5 +1,7 @@
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import axiosInstance from "../api/axiosInstance";
 import BackSvg from "../assets/community/Back.svg";
 import CameraSvg from "../assets/mypage/Camera.svg";
 
@@ -108,14 +110,10 @@ const Input = styled.input`
   font-size: 14px;
   font-family: Regular;
   background: white;
-`;
-
-const CheckboxWrapper = styled.label`
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  font-size: 14px;
-  margin-top: 0.3rem;
+  &:focus,
+  &:focus-visible {
+    outline: none;
+  }
 `;
 
 const ButtonRow = styled.div`
@@ -139,9 +137,6 @@ const SaveBtn = styled.button`
   &:focus-visible {
     outline: none;
   }
-  &:hover {
-    background: #94b5e9;
-  }
 `;
 
 const CancelBtn = styled.button`
@@ -158,10 +153,69 @@ const CancelBtn = styled.button`
   &:focus-visible {
     outline: none;
   }
+     &:hover {
+    background: #fff;
+    border: 1px solid #aaa;
+    color: inherit;
+  }
 `;
 
 const EditProfilePage = () => {
   const navigate = useNavigate();
+
+  // 원래 서버에서 받아온 초기 데이터
+  const [original, setOriginal] = useState({
+    email: "",
+    nickname: "",
+    profileImage: "",
+  });
+
+  // 입력값 (기본값은 비워두되, 제출 시 fallback으로 original 값 사용)
+  const [email, setEmail] = useState("");
+  const [nickname, setNickname] = useState("");
+  const [profileImage, setProfileImage] = useState("");
+  const [password, setPassword] = useState("");
+
+  // 초기 데이터 로딩
+  useEffect(() => {
+    const fetchProfile = async () => {
+      try {
+        const res = await axiosInstance.get("/members/profile");
+        const data = res.data.result;
+        setOriginal(data);
+        setEmail(data.email);
+        setNickname(data.nickname);
+        setProfileImage(data.profileImage);
+      } catch (err) {
+        console.error("프로필 불러오기 실패:", err);
+      }
+    };
+    fetchProfile();
+  }, []);
+
+  // 저장 요청
+  const handleSave = async () => {
+    try {
+      const payload = {
+  member: {
+    email: email || original.email,
+    ...(password && { password }), // password가 있을 때만 포함
+  },
+  updateRequestDTO: {
+    nickname: nickname || original.nickname,
+    profileImage: profileImage || original.profileImage,
+  },
+};
+
+      const res = await axiosInstance.put("/members/profile", payload);
+      console.log("[프로필 수정 성공] response:", res.data);
+      alert("프로필이 수정되었습니다.");
+      window.location.href = "/mypage";
+    } catch (error) {
+      console.error("프로필 수정 실패:", error);
+      alert("프로필 수정 중 오류가 발생했습니다.");
+    }
+  };
 
   return (
     <Outer>
@@ -176,11 +230,11 @@ const EditProfilePage = () => {
           </Header>
 
           <ProfileImageWrapper>
-            <ProfileImage>120 × 120
-            <CameraIcon>
-  <img src={CameraSvg} alt="카메라" width={16} height={16} />
-</CameraIcon>
-
+            <ProfileImage>
+              120 × 120
+              <CameraIcon>
+                <img src={CameraSvg} alt="카메라" width={16} height={16} />
+              </CameraIcon>
             </ProfileImage>
             <div style={{ fontSize: "13px", color: "#999", marginTop: "0.5rem" }}>
               프로필 사진 변경
@@ -189,29 +243,35 @@ const EditProfilePage = () => {
 
           <Label>이름</Label>
           <InputWrapper>
-          <Input placeholder="이름을 입력하세요" />
+            <Input
+              placeholder="이름을 입력하세요"
+              value={nickname}
+              onChange={(e) => setNickname(e.target.value)}
+            />
           </InputWrapper>
 
           <Label>이메일</Label>
           <InputWrapper>
-          <Input placeholder="이메일을 입력하세요" />
+            <Input
+              placeholder="이메일을 입력하세요"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+            />
           </InputWrapper>
+
           <Label>비밀번호</Label>
           <InputWrapper>
-          <Input type="password" placeholder="비밀번호를 입력하세요" />
+            <Input
+              type="password"
+              placeholder="비밀번호를 입력하세요"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+            />
           </InputWrapper>
-          <Label>소개</Label>
-          <InputWrapper>
-          <Input placeholder="간단한 소개를 입력하세요" />
-          </InputWrapper>
-          <CheckboxWrapper>
-            <input type="checkbox" />
-            학습 알림 받기
-          </CheckboxWrapper>
 
           <ButtonRow>
-            <SaveBtn>저장하기</SaveBtn>
-            <CancelBtn onClick={() => navigate(-1)}>취소</CancelBtn>
+            <SaveBtn onClick={handleSave}>저장하기</SaveBtn>
+            <CancelBtn onClick={() => navigate("/mypage")}>취소</CancelBtn>
           </ButtonRow>
         </Container>
       </Wrapper>
