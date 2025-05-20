@@ -279,7 +279,7 @@ const EditProfilePage = () => {
 
           <ButtonRow>
             <SaveBtn onClick={handleSave}>저장하기</SaveBtn>
-            <CancelBtn onClick={() => navigate(/mypage)}>취소</CancelBtn>
+            <CancelBtn onClick={() => navigate("/mypage")}>취소</CancelBtn>
           </ButtonRow>
         </Container>
       </Wrapper>
