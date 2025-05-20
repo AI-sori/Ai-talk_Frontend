@@ -116,14 +116,6 @@ const Input = styled.input`
   }
 `;
 
-const CheckboxWrapper = styled.label`
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  font-size: 14px;
-  margin-top: 0.3rem;
-`;
-
 const ButtonRow = styled.div`
   display: flex;
   gap: 1rem;
@@ -205,20 +197,20 @@ const EditProfilePage = () => {
   const handleSave = async () => {
     try {
       const payload = {
-        member: {
-          email: email || original.email,
-          password: password, // 입력 안 했으면 빈 문자열 (서버가 무시해야 함)
-        },
-        updateRequestDTO: {
-          nickname: nickname || original.nickname,
-          profileImage: profileImage || original.profileImage,
-        },
-      };
+  member: {
+    email: email || original.email,
+    ...(password && { password }), // password가 있을 때만 포함
+  },
+  updateRequestDTO: {
+    nickname: nickname || original.nickname,
+    profileImage: profileImage || original.profileImage,
+  },
+};
 
       const res = await axiosInstance.put("/members/profile", payload);
       console.log("[프로필 수정 성공] response:", res.data);
       alert("프로필이 수정되었습니다.");
-     navigate("/mypage");
+      window.location.href = "/mypage";
     } catch (error) {
       console.error("프로필 수정 실패:", error);
       alert("프로필 수정 중 오류가 발생했습니다.");
