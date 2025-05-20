@@ -1,7 +1,8 @@
 import styled from 'styled-components';
 import { useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Modal from "../components/mypage/Modal"; 
+import axiosInstance from "../api/axiosInstance";
 
 const Outer = styled.div`
   width: 100vw;
@@ -34,10 +35,23 @@ const ProfileRow = styled.div`
 `;
 
 const ProfileImg = styled.div`
-  width: 70px;
-  height: 70px;
-  background: #ddd;
-  border-radius: 100%;
+  width: 60px;
+  height: 60px;               
+  border-radius: 50%;
+  overflow: hidden;
+  background-color: #ddd;
+  flex-shrink: 0;             
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
 `;
 
 const Info = styled.div`
@@ -176,10 +190,17 @@ const Badge = styled.span`
   font-weight: bold;
 `;
 
+interface Profile {
+  email: string;
+  nickname: string;
+  profileImage: string;
+}
+
 const Mypage = () => {
   const navigate = useNavigate();
   const [modalType, setModalType] = useState<null | 'logout' | 'withdraw'>(null);
-  
+  const [profile, setProfile] = useState<Profile | null>(null);
+
   const handleLogout = () => {
     setModalType('logout');
   };
@@ -189,7 +210,7 @@ const Mypage = () => {
   };
 
   const handleCancel = () => setModalType(null);
-
+  
   const handleConfirm = () => {
     if (modalType === 'logout') {
       // 로그아웃 로직
@@ -202,45 +223,64 @@ const Mypage = () => {
     }
     setModalType(null);
   };
+
+  useEffect(() => {
+    const fetchProfile = async () => {
+      try {
+        const res = await axiosInstance.get("/members/profile");
+        setProfile(res.data.result);
+         console.log("프로필 조회:", res.data.result);
+      } catch (error) {
+        console.error("프로필 조회 실패:", error);
+      }
+    };
+    fetchProfile();
+  }, []);
+
   return (
     <Outer>
       <Wrapper>
         <Card>
           <ProfileRow>
-            <ProfileImg />
+            <ProfileImg
+              style={{
+                backgroundImage: profile?.profileImage
+                  ? `url(${profile.profileImage})`
+                  : undefined,
+                backgroundSize: "cover",
+                backgroundPosition: "center",
+              }}
+            />
             <Info>
-              <Name>김슈니</Name>
-              <Email>suni@email.com</Email>
+              <Name>{profile?.nickname ?? "닉네임"}</Name>
+              <Email>{profile?.email ?? "이메일"}</Email>
             </Info>
-            <EditBtn onClick={() => navigate("/mypage/edit")}>
-  수정하기
-</EditBtn>
+            <EditBtn onClick={() => navigate("/mypage/edit")}>수정하기</EditBtn>
           </ProfileRow>
         </Card>
 
         <Card>
           <SectionTitle>학습중인 프로그램</SectionTitle>
           {[
-            { title: '기초 수학', date: '2024-01-15', progress: 65 },
-            { title: '한글 읽기', date: '2024-01-14', progress: 40 },
-            { title: '영어 기초', date: '2024-01-13', progress: 25 },
-          ].map(item => (
+            { title: "기초 수학", date: "2024-01-15", progress: 65 },
+            { title: "한글 읽기", date: "2024-01-14", progress: 40 },
+            { title: "영어 기초", date: "2024-01-13", progress: 25 },
+          ].map((item) => (
             <ProgramCard key={item.title}>
-  <ProgramBox>
-    <ProgramTitleRow>
-      <span>{item.title}</span>
-      <span>최근 학습일: {item.date}</span>
-    </ProgramTitleRow>
-    <ProgressBar>
-      <Progress percent={item.progress} />
-    </ProgressBar>
-    <BottomRow>
-      <span>진행률: {item.progress}%</span>
-      <ContinueBtn>계속하기</ContinueBtn>
-    </BottomRow>
-  </ProgramBox>
-</ProgramCard>
-
+              <ProgramBox>
+                <ProgramTitleRow>
+                  <span>{item.title}</span>
+                  <span>최근 학습일: {item.date}</span>
+                </ProgramTitleRow>
+                <ProgressBar>
+                  <Progress percent={item.progress} />
+                </ProgressBar>
+                <BottomRow>
+                  <span>진행률: {item.progress}%</span>
+                  <ContinueBtn>계속하기</ContinueBtn>
+                </BottomRow>
+              </ProgramBox>
+            </ProgramCard>
           ))}
         </Card>
 
@@ -256,21 +296,23 @@ const Mypage = () => {
         <Card>
           <SectionTitle>설정</SectionTitle>
           <List>
-          <li onClick={() => navigate("/mypage/notice")}>공지사항 <Badge>N</Badge></li>
-          <li onClick={() => navigate("/mypage/inquiry")}>문의하기</li>
-          <li onClick={handleLogout}>로그아웃</li>
-  <li onClick={handleWithdraw}>
-    <RedText>탈퇴하기</RedText>
-  </li>
-</List>
+            <li onClick={() => navigate("/mypage/notice")}>
+              공지사항 <Badge>N</Badge>
+            </li>
+            <li onClick={() => navigate("/mypage/inquiry")}>문의하기</li>
+            <li onClick={handleLogout}>로그아웃</li>
+            <li onClick={handleWithdraw}>
+              <RedText>탈퇴하기</RedText>
+            </li>
+          </List>
 
-{modalType && (
-  <Modal
-    type={modalType}
-    onCancel={handleCancel}
-    onConfirm={handleConfirm}
-  />
-)}
+          {modalType && (
+            <Modal
+              type={modalType}
+              onCancel={handleCancel}
+              onConfirm={handleConfirm}
+            />
+          )}
         </Card>
       </Wrapper>
     </Outer>

@@ -1,4 +1,6 @@
 import styled from 'styled-components';
+import axiosInstance from "../../api/axiosInstance";
+import { useNavigate } from "react-router-dom";
 
 const ModalBackground = styled.div`
   position: fixed;
@@ -76,6 +78,23 @@ interface ModalProps {
 }
 
 const Modal = ({ type, onCancel, onConfirm }: ModalProps) => {
+  const navigate = useNavigate();
+
+  const handleAction = async () => {
+    if (type === 'logout') {
+      try {
+        const response = await axiosInstance.post("/members/logout");
+        console.log("로그아웃 성공:", response.data);
+        navigate("/");
+      } catch (error) {
+        console.error("로그아웃 실패:", error);
+        alert("로그아웃에 실패했습니다.");
+      }
+    } else {
+      onConfirm(); // 탈퇴는 외부에서 처리
+    }
+  };
+
   return (
     <ModalBackground>
       <ModalContainer>
@@ -92,7 +111,7 @@ const Modal = ({ type, onCancel, onConfirm }: ModalProps) => {
         )}
         <ButtonRow>
           <CancelButton onClick={onCancel}>취소</CancelButton>
-          <ActionButton red={type === 'withdraw'} onClick={onConfirm}>
+          <ActionButton red={type === 'withdraw'} onClick={handleAction}>
             {type === 'logout' ? '로그아웃' : '탈퇴하기'}
           </ActionButton>
         </ButtonRow>
