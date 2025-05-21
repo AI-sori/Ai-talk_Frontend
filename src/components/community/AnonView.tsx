@@ -106,9 +106,19 @@ const PostFooter = styled.div`
   color: #777;
 `;
 
+type Post = {
+  postId: number;
+  nickname: string;
+  category: string;
+  title: string;
+  content: string;
+  image: string;
+  likeCount: number;
+};
+
 const AnonView = () => {
   const navigate = useNavigate();
-  const [posts, setPosts] = useState([]);
+ const [posts, setPosts] = useState<Post[]>([]);
 
   useEffect(() => {
     const fetchCommunityPosts = async () => {
