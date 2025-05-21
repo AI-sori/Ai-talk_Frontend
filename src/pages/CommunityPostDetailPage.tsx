@@ -116,7 +116,7 @@ const CommentTitle = styled.div`
   font-family: Regular;
 `;
 
-const Comment = styled.div`
+/* const Comment = styled.div`
   margin-bottom: 1rem;
   font-family: Regular;
 `;
@@ -139,7 +139,7 @@ const CommentDate = styled.div`
   color: #aaa;
   font-family: Regular;
 `;
-
+*/ 
 const CommentInputWrapper = styled.div`
   margin-top: 1rem;
   display: flex;
@@ -165,11 +165,19 @@ const SubmitButton = styled.button`
   font-family: Regular;
   cursor: pointer;
 `;
-
+type Post = {
+  postId: number;
+  nickname: string;
+  category: string;
+  title: string;
+  content: string;
+  image: string;
+  likeCount: number;
+};
 const CommunityPostDetailPage = () => {
   const navigate = useNavigate();
   const { id } = useParams(); // URL에서 postId 추출
-  const [post, setPost] = useState(null);
+const [post, setPost] = useState<Post | null>(null);
 
   useEffect(() => {
     const fetchPost = async () => {
