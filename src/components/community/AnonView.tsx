@@ -1,7 +1,8 @@
+import { useEffect, useState } from "react";
 import styled from "styled-components";
+import axios from "axios";
 import SearchSvg from '../../assets/community/Search.svg';
 import LikeSvg from '../../assets/community/Like.svg';
-import WriteSvg from '../../assets/community/Write.svg';
 import { useNavigate } from "react-router-dom";
 
 const CategoryRow = styled.div`
@@ -107,6 +108,28 @@ const PostFooter = styled.div`
 
 const AnonView = () => {
   const navigate = useNavigate();
+  const [posts, setPosts] = useState([]);
+
+  useEffect(() => {
+    const fetchCommunityPosts = async () => {
+      try {
+        const response = await axios.get("/community", {
+          params: {
+            page: 0,
+            size: 5,
+            sortBy: "id",
+            direction: "desc",
+          },
+        });
+         console.log("API 응답 데이터:", response.data);
+        setPosts(response.data.content);
+      } catch (error) {
+        console.error("커뮤니티 글 불러오기 실패:", error);
+      }
+    };
+
+    fetchCommunityPosts();
+  }, []);
 
   return (
     <>
@@ -121,29 +144,23 @@ const AnonView = () => {
       <SearchBox>
         <SearchInput placeholder="검색어를 입력하세요" />
         <SearchIcon>
-  <img src={SearchSvg} alt="검색" width={20} height={20} />
-</SearchIcon>
+          <img src={SearchSvg} alt="검색" width={20} height={20} />
+        </SearchIcon>
       </SearchBox>
 
-      <PostCard onClick={() => navigate("/community/1")} style={{ cursor: "pointer" }}>
-
-        <PostMeta>질문 · 익명 · 2024.01.15</PostMeta>
-        <PostTitle>아이가 그림을 잘 안그리는데 어떻게 하면 좋을까요?</PostTitle>
-        <PostContent>
-          우리 아이가 그림 그리는 걸 좋아하지 않아요. 어떻게 흥미를 가질 수 있게 할 수 있을까요?
-        </PostContent>
-        <PostFooter>
-          <span>👁 45</span>
-          <span style={{ display: "flex", alignItems: "center", gap: "4px" }}>
-    <img src={LikeSvg} alt="좋아요" width={14} height={14} />
-    12
-  </span>
-  <span style={{ display: "flex", alignItems: "center", gap: "4px" }}>
-    <img src={WriteSvg} alt="좋아요" width={14} height={14} />
-    8
-  </span>
-        </PostFooter>
-      </PostCard>
+      {posts.map((post) => (
+        <PostCard key={post.postId} onClick={() => navigate(`/community/${post.postId}`)} style={{ cursor: "pointer" }}>
+          <PostMeta>{post.category} · {post.nickname}</PostMeta>
+          <PostTitle>{post.title}</PostTitle>
+          <PostContent>{post.content}</PostContent>
+          <PostFooter>
+            <span style={{ display: "flex", alignItems: "center", gap: "4px" }}>
+              <img src={LikeSvg} alt="좋아요" width={14} height={14} />
+              {post.likeCount}
+            </span>
+          </PostFooter>
+        </PostCard>
+      ))}
     </>
   );
 };

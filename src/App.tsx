@@ -35,9 +35,8 @@ function AppLayout() {
         <Route path="/mypage" element={<Mypage />} />
         <Route path="/community/write" element={<WritePage type="anon" />} />
         <Route path="/consult/write" element={<WritePage type="expert" />} />
-        <Route path="/consult/1" element={<ConsultDetailPage hasReply={false} />} />
-        <Route path="/consult/2" element={<ConsultDetailPage hasReply={true} />} />
-        <Route path="/community/1" element={<CommunityPostDetailPage />} />
+        <Route path="/community/:id" element={<CommunityPostDetailPage />} />
+         <Route path="/consult/1" element={<ConsultDetailPage hasReply={false} />} />
         <Route path="/mypage/edit" element={<EditProfilePage />} />
         <Route path="/mypage/notice" element={<NoticePage />} />
         <Route path="/mypage/inquiry" element={<InquiryPage />} />

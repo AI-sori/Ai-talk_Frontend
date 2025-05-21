@@ -1,6 +1,8 @@
-import styled from "styled-components";
+import { useEffect, useState } from "react";
+import { useParams, useNavigate } from "react-router-dom";
+import axios from "axios";
+ import styled from "styled-components";
 import BackSvg from "../assets/community/Back.svg";
-import { useNavigate } from "react-router-dom";
 
 const Outer = styled.div`
   width: 100vw;
@@ -166,6 +168,22 @@ const SubmitButton = styled.button`
 
 const CommunityPostDetailPage = () => {
   const navigate = useNavigate();
+  const { id } = useParams(); // URL에서 postId 추출
+  const [post, setPost] = useState(null);
+
+  useEffect(() => {
+    const fetchPost = async () => {
+      try {
+        const response = await axios.get(`/community/${id}`);
+        console.log("✅ 게시글 상세 응답:", response.data);
+        setPost(response.data);
+      } catch (error) {
+        console.error("❌ 게시글 상세 불러오기 실패:", error);
+      }
+    };
+
+    if (id) fetchPost();
+  }, [id]);
 
   return (
     <Outer>
@@ -176,43 +194,41 @@ const CommunityPostDetailPage = () => {
             커뮤니티
           </Back>
 
-          <Meta>
-            <Tag>질문</Tag>
-            <span>익명</span>
-            <span>2024.01.15</span>
-          </Meta>
+          {post ? (
+            <>
+              <Meta>
+                <Tag>{post.category || "카테고리"}</Tag>
+                <span>{post.nickname || "익명"}</span>
+                <span>날짜 없음</span> {/* 날짜 데이터가 없으므로 하드코딩 or 추후 백엔드 제공 필요 */}
+              </Meta>
 
-          <Title>아이가 그림을 잘 안그리는데 어떻게 하면 좋을까요?</Title>
-          <Content>
-            우리 아이가 그림 그리는 걸 좋아하지 않아요. 어떻게 흥미를 가질 수 있게 할 수 있을까요?
-            다른 부모님들은 어떻게 하시나요?
-          </Content>
+              <Title>{post.title}</Title>
+              <Content>{post.content}</Content>
 
-          <ImageBox>400 × 400</ImageBox>
+              {post.image ? (
+                <img
+                  src={post.image}
+                  alt="게시글 이미지"
+                  style={{ width: "100%", borderRadius: "12px", marginBottom: "1rem" }}
+                />
+              ) : (
+                <ImageBox>이미지 없음</ImageBox>
+              )}
 
-          <StatusRow>
-            <span>🤍 좋아요 12</span>
-            <span>👁 조회 45</span>
-          </StatusRow>
+              <StatusRow>
+                <span>🤍 좋아요 {post.likeCount}</span>
+              </StatusRow>
 
-          <CommentTitle>댓글 2</CommentTitle>
+              <CommentTitle>댓글 0</CommentTitle> {/* 댓글 기능 구현 전이므로 0으로 표시 */}
 
-          <Comment>
-            <CommentAuthor>초등맘</CommentAuthor>
-            <CommentText>저희 아이도 처음엔 그랬어요. 아이가 좋아하는 캐릭터부터 시작해보세요.</CommentText>
-            <CommentDate>2024.01.15</CommentDate>
-          </Comment>
-
-          <Comment>
-            <CommentAuthor>미술쌤</CommentAuthor>
-            <CommentText>색연필보다 크레파스나 물감으로 시작하면 더 재미있어 할 수 있어요.</CommentText>
-            <CommentDate>2024.01.15</CommentDate>
-          </Comment>
-
-          <CommentInputWrapper>
-            <CommentInput placeholder="댓글을 입력해주세요" />
-            <SubmitButton>등록</SubmitButton>
-          </CommentInputWrapper>
+              <CommentInputWrapper>
+                <CommentInput placeholder="댓글을 입력해주세요" />
+                <SubmitButton>등록</SubmitButton>
+              </CommentInputWrapper>
+            </>
+          ) : (
+            <p>로딩 중...</p>
+          )}
         </Container>
       </Wrapper>
     </Outer>
