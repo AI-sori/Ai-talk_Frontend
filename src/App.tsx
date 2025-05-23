@@ -13,7 +13,11 @@ import CommunityPostDetailPage from "./pages/CommunityPostDetailPage";
 import EditProfilePage from "./pages/EditProfilePage";
 import NoticePage from "./pages/NoticePage";
 import InquiryPage from "./pages/InquiryPage";
-
+import WriteInquiryPage from './components/write/WriteInquiryPage';
+import InquiryDetailPage from './pages/InquiryDetailPage'; 
+import MyPosts from './components/mypage/MyPosts';
+import MyComments from './components/mypage/MyComments';
+import MyLikes from './components/mypage/MyLikes';
 
 
 function AppLayout() {
@@ -40,6 +44,11 @@ function AppLayout() {
         <Route path="/mypage/edit" element={<EditProfilePage />} />
         <Route path="/mypage/notice" element={<NoticePage />} />
         <Route path="/mypage/inquiry" element={<InquiryPage />} />
+        <Route path="/mypage/inquiry/:id" element={<InquiryDetailPage />} />
+        <Route path="/mypage/inquiry/write" element={<WriteInquiryPage />} />
+        <Route path="/mypage/myposts" element={<MyPosts />} />
+        <Route path="/mypage/mycomments" element={<MyComments />} />
+        <Route path="/mypage/mylikes" element={<MyLikes />} />
       </Routes>
     </>
   );
