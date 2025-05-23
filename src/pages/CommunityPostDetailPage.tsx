@@ -1,8 +1,10 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import axios from "axios";
- import styled from "styled-components";
+import axiosInstance from "../api/axiosInstance";
+import styled from "styled-components";
 import BackSvg from "../assets/community/Back.svg";
+import LikeIcon from "../assets/Like.svg";
+import LikeAfterIcon from "../assets/Likeafter.svg";
 
 const Outer = styled.div`
   width: 100vw;
@@ -116,15 +118,28 @@ const CommentTitle = styled.div`
   font-family: Regular;
 `;
 
-/* const Comment = styled.div`
-  margin-bottom: 1rem;
+const Comment = styled.div`
+  padding: 0.8rem 0;
+  border-bottom: 1px solid #eee;
+`;
+
+const CommentHeader = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.4rem;
+`;
+
+const CommentAuthor = styled.span`
+  font-size: 14px;
+  font-weight: bold;
+  color: #111;
   font-family: Regular;
 `;
 
-const CommentAuthor = styled.div`
-  font-size: 13px;
-  font-weight: bold;
-  margin-bottom: 0.2rem;
+const CommentDate = styled.span`
+  font-size: 12px;
+  color: #999;
   font-family: Regular;
 `;
 
@@ -132,14 +147,11 @@ const CommentText = styled.p`
   font-size: 14px;
   color: #444;
   font-family: Regular;
+  line-height: 1.5;
+  white-space: pre-line;
 `;
 
-const CommentDate = styled.div`
-  font-size: 12px;
-  color: #aaa;
-  font-family: Regular;
-`;
-*/ 
+
 const CommentInputWrapper = styled.div`
   margin-top: 1rem;
   display: flex;
@@ -165,6 +177,24 @@ const SubmitButton = styled.button`
   font-family: Regular;
   cursor: pointer;
 `;
+
+const LikeBox = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+
+  img {
+    width: 18px;
+    height: 18px;
+  }
+
+  span {
+    font-size: 14px;
+    color: #777;
+  }
+`;
+
 type Post = {
   postId: number;
   nickname: string;
@@ -174,30 +204,73 @@ type Post = {
   image: string;
   likeCount: number;
 };
+type Comment = {
+  id: number;
+  nickname: string;
+  content: string;
+  createdAt: string;
+};
 const CommunityPostDetailPage = () => {
   const navigate = useNavigate();
-  const { id } = useParams(); // URL에서 postId 추출
-const [post, setPost] = useState<Post | null>(null);
+  const { id } = useParams();
+  const [post, setPost] = useState<Post | null>(null);
+  const [liked, setLiked] = useState(false);
+  const [likeCount, setLikeCount] = useState(0);
+  const [comment, setComment] = useState("");
+
+  const fetchPost = async () => {
+    try {
+      const res = await axiosInstance.get(`/community/${id}`);
+      setPost(res.data);
+      setLiked(res.data.liked);
+      setLikeCount(res.data.likeCount);
+    } catch (error) {
+      console.error("게시글 상세 불러오기 실패:", error);
+    }
+  };
 
   useEffect(() => {
-    const fetchPost = async () => {
-      try {
-        const response = await axios.get(`/community/${id}`);
-        console.log("✅ 게시글 상세 응답:", response.data);
-        setPost(response.data);
-      } catch (error) {
-        console.error("❌ 게시글 상세 불러오기 실패:", error);
-      }
-    };
-
     if (id) fetchPost();
   }, [id]);
+
+  const handleLikeToggle = async () => {
+    if (!id) return;
+
+    try {
+      if (liked) {
+        await axiosInstance.delete(`/community/${id}/like`);
+        setLiked(false);
+        setLikeCount((prev) => prev - 1);
+      } else {
+        await axiosInstance.post(`/community/${id}/like`);
+        setLiked(true);
+        setLikeCount((prev) => prev + 1);
+      }
+    } catch (error) {
+      console.error("좋아요 처리 실패:", error);
+    }
+  };
+
+  const handleSubmitComment = async () => {
+    if (!id || !comment.trim()) return;
+
+    try {
+      await axiosInstance.post("/community/comments", {
+        postId: Number(id),
+        content: comment.trim(),
+      });
+      setComment("");
+      fetchPost(); // 등록 후 게시글 다시 불러오기
+    } catch (error) {
+      console.error("댓글 등록 실패:", error);
+    }
+  };
 
   return (
     <Outer>
       <Wrapper>
         <Container>
-          <Back onClick={() => navigate(-1)}>
+          <Back onClick={() => navigate("/community")}>
             <img src={BackSvg} alt="뒤로가기" width={20} height={20} />
             커뮤니티
           </Back>
@@ -205,9 +278,8 @@ const [post, setPost] = useState<Post | null>(null);
           {post ? (
             <>
               <Meta>
-                <Tag>{post.category || "카테고리"}</Tag>
-                <span>{post.nickname || "익명"}</span>
-                <span>날짜 없음</span> {/* 날짜 데이터가 없으므로 하드코딩 or 추후 백엔드 제공 필요 */}
+                <Tag>{post.category}</Tag>
+                <span>{post.nickname}</span>
               </Meta>
 
               <Title>{post.title}</Title>
@@ -224,14 +296,32 @@ const [post, setPost] = useState<Post | null>(null);
               )}
 
               <StatusRow>
-                <span>🤍 좋아요 {post.likeCount}</span>
+                <LikeBox onClick={handleLikeToggle}>
+                  <img src={liked ? LikeAfterIcon : LikeIcon} alt="좋아요" />
+                  <span>{likeCount}</span>
+                </LikeBox>
               </StatusRow>
 
-              <CommentTitle>댓글 0</CommentTitle> {/* 댓글 기능 구현 전이므로 0으로 표시 */}
+              <CommentTitle>댓글 {post.comments.length}</CommentTitle>
+
+             {post.comments.map((c) => (
+  <Comment key={c.id}>
+    <CommentHeader>
+      <CommentText>{c.content}</CommentText>
+      <CommentDate>{c.createdAt.slice(0, 10)}</CommentDate>
+    </CommentHeader>
+     <CommentAuthor>{c.nickname}</CommentAuthor>
+  </Comment>
+))}
+
 
               <CommentInputWrapper>
-                <CommentInput placeholder="댓글을 입력해주세요" />
-                <SubmitButton>등록</SubmitButton>
+                <CommentInput
+                  placeholder="댓글을 입력해주세요"
+                  value={comment}
+                  onChange={(e) => setComment(e.target.value)}
+                />
+                <SubmitButton onClick={handleSubmitComment}>등록</SubmitButton>
               </CommentInputWrapper>
             </>
           ) : (

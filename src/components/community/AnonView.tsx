@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import styled from "styled-components";
-import axios from "axios";
+import axiosInstance from "../../api/axiosInstance"; 
 import SearchSvg from '../../assets/community/Search.svg';
 import LikeSvg from '../../assets/community/Like.svg';
 import { useNavigate } from "react-router-dom";
@@ -123,7 +123,7 @@ const AnonView = () => {
   useEffect(() => {
     const fetchCommunityPosts = async () => {
       try {
-        const response = await axios.get("/community", {
+        const response = await axiosInstance.get("/community", {
           params: {
             page: 0,
             size: 5,
@@ -132,7 +132,7 @@ const AnonView = () => {
           },
         });
          console.log("API 응답 데이터:", response.data);
-        setPosts(response.data.content);
+        setPosts(response.data); 
       } catch (error) {
         console.error("커뮤니티 글 불러오기 실패:", error);
       }
