@@ -1,5 +1,3 @@
-// src/pages/NoticePage.tsx
-
 import styled from "styled-components";
 import BackSvg from "../assets/community/Back.svg";
 import { useNavigate } from "react-router-dom";
@@ -12,7 +10,7 @@ const NoticePage = () => {
       <Wrapper>
         <Container>
           <Header>
-            <img src={BackSvg} alt="back" width={20} onClick={() => navigate(-1)} />
+            <img src={BackSvg} alt="back" width={20} onClick={() => navigate("/mypage")} />
             <Title>공지사항</Title>
           </Header>
 

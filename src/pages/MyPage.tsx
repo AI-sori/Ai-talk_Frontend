@@ -242,15 +242,14 @@ const Mypage = () => {
       <Wrapper>
         <Card>
           <ProfileRow>
-            <ProfileImg
-              style={{
-                backgroundImage: profile?.profileImage
-                  ? `url(${profile.profileImage})`
-                  : undefined,
-                backgroundSize: "cover",
-                backgroundPosition: "center",
-              }}
-            />
+            <ProfileImg>
+  {profile?.profileImage ? (
+    <img src={profile.profileImage} alt="프로필 이미지" />
+  ) : (
+    <span>이미지 없음</span>
+  )}
+</ProfileImg>
+
             <Info>
               <Name>{profile?.nickname ?? "닉네임"}</Name>
               <Email>{profile?.email ?? "이메일"}</Email>
@@ -287,10 +286,11 @@ const Mypage = () => {
         <Card>
           <SectionTitle>커뮤니티 활동</SectionTitle>
           <List>
-            <li>내 게시글</li>
-            <li>내 댓글</li>
-            <li>좋아요 게시글</li>
+            <li onClick={() => navigate("/mypage/myposts")}>내 게시글</li>
+            <li onClick={() => navigate("/mypage/mycomments")}>내 댓글</li>
+            <li onClick={() => navigate("/mypage/mylikes")}>좋아요 게시글</li>
           </List>
+
         </Card>
 
         <Card>

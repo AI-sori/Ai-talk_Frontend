@@ -90,25 +90,28 @@ const LoginPage = () => {
   const [password, setPassword] = useState("");
   const login = useAuthStore((state) => state.login);
 
-  const handleLogin = async () => {
-    try {
-      const response = await axiosInstance.post("/members/login", {
-        email,
-        password,
-      });
-  
-     login({ email, nickname: 'temp' });
-    alert("로그인 성공!");
-    console.log(response.data); 
+const handleLogin = async () => {
+  try {
+    const response = await axiosInstance.post("/members/login", {
+      email,
+      password,
+    });
 
+    // 로그인 실패 응답 
+    if (response.data.resultCode === "ERROR") {
+      alert(response.data.result.message || "로그인 실패");
+      return;
+    }
+
+    // 성공 처리
+    login({ email, nickname: 'temp' }); 
+    alert("로그인 성공!");
     navigate("/home");
-  } catch (error) {
-    console.error(error);
-    alert("로그인 실패");
+  } catch (error: any) {
+    console.error("로그인 요청 실패:", error);
+    alert("서버 오류로 로그인에 실패했습니다.");
   }
-};
-  
-  
+};  
 
   return (
     <Outer>

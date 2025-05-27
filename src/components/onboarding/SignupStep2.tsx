@@ -134,23 +134,18 @@ const SignupStep2 = ({
   nickname: string;
   setNickname: (nickname: string) => void;
   profileImage: string;
-  setProfileImage: (base64: string) => void;
+setProfileImage: (file: File) => void;
   handleComplete: () => void;
 }) => {
   const [error, setError] = useState("");
 
-  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
+const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const file = e.target.files?.[0];
+  if (!file) return;
 
-    const reader = new FileReader();
-    reader.onloadend = () => {
-      if (typeof reader.result === "string") {
-        setProfileImage(reader.result);
-      }
-    };
-    reader.readAsDataURL(file);
-  };
+  setProfileImage(file); // 이제 파일 자체 저장
+};
+
 
   const handleClick = () => {
     if (!nickname.trim()) {
@@ -173,20 +168,20 @@ const SignupStep2 = ({
 
         <ProfileWrapper>
           <ProfileImage>
-            {profileImage ? (
-              <img
-                src={profileImage}
-                alt="프로필"
-                style={{
-                  width: "100%",
-                  height: "100%",
-                  objectFit: "cover",
-                  borderRadius: "50%",
-                }}
-              />
-            ) : (
-              "이미지"
-            )}
+{profileImage ? (
+  <img
+    src={URL.createObjectURL(profileImage)}
+    alt="프로필"
+    style={{
+      width: "100%",
+      height: "100%",
+      objectFit: "cover",
+      borderRadius: "50%",
+    }}
+  />
+) : (
+  "이미지"
+)}
           </ProfileImage>
           <ProfileLabel>
             <input type="file" accept="image/*" onChange={handleImageChange} />
