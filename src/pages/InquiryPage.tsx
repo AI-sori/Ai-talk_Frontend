@@ -1,44 +1,56 @@
-// src/pages/InquiryPage.tsx
-
 import styled from "styled-components";
 import BackSvg from "../assets/community/Back.svg";
 import { useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import axiosInstance from "../api/axiosInstance";
+
+interface Inquiry {
+  id: number;
+  title: string;
+  content: string;
+  reply: string;
+  memberId: number;
+}
 
 const InquiryPage = () => {
   const navigate = useNavigate();
+  const [inquiries, setInquiries] = useState<Inquiry[]>([]);
+
+  useEffect(() => {
+    const fetchInquiries = async () => {
+      try {
+        const response = await axiosInstance.get<Inquiry[]>("/qna");
+        setInquiries(response.data);
+      } catch (error) {
+        console.error("문의 내역 조회 실패:", error);
+      }
+    };
+
+    fetchInquiries();
+  }, []);
 
   return (
     <Outer>
       <Wrapper>
         <Container>
           <Header>
-            <img src={BackSvg} alt="back" width={20} onClick={() => navigate(-1)} />
+            <img src={BackSvg} alt="back" width={20} onClick={() => navigate("/mypage")} />
             <Title>문의내역</Title>
           </Header>
 
-          <AskButton>새 문의하기</AskButton>
+          <AskButton onClick={() => navigate("/mypage/inquiry/write")}>
+            새 문의하기
+          </AskButton>
 
-          {[
-            {
-              title: "학습 진도 초기화 문의",
-              status: "답변완료",
-              reply: "고객님, 학습 진도 복구를 도와드리겠습니다. 걱정마세요...",
-              date: "2024.01.15",
-            },
-            {
-              title: "결제 내역 확인",
-              status: "답변대기",
-              reply: "",
-              date: "2024.01.14",
-            },
-          ].map(({ title, status, reply, date }) => (
-            <InquiryCard key={title}>
+          {inquiries.map(({ id, title, reply }) => (
+             <InquiryCard key={id} onClick={() => navigate(`/mypage/inquiry/${id}`)}>
               <InquiryTitleRow>
                 <strong>{title}</strong>
-                <StatusTag status={status}>{status}</StatusTag>
+                <StatusTag status={reply ? "답변완료" : "답변대기"}>
+                  {reply ? "답변완료" : "답변대기"}
+                </StatusTag>
               </InquiryTitleRow>
               {reply && <p>{reply}</p>}
-              <Date>{date}</Date>
             </InquiryCard>
           ))}
         </Container>
@@ -48,6 +60,7 @@ const InquiryPage = () => {
 };
 
 export default InquiryPage;
+
 
 // ------------------------ 스타일 ------------------------
 
@@ -112,6 +125,7 @@ const InquiryCard = styled.div`
    font-family: Regular;
   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
   margin-bottom: 1rem;
+   cursor: pointer;
 `;
 
 const InquiryTitleRow = styled.div`
@@ -132,11 +146,4 @@ const StatusTag = styled.span<{ status: string }>`
   border-radius: 15px;
    font-family: Regular;
   font-weight: 500;
-`;
-
-const Date = styled.div`
-  font-size: 12px;
-  color: #999;
-   font-family: Regular;
-  margin-top: 0.5rem;
 `;

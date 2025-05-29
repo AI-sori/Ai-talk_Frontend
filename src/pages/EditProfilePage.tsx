@@ -3,7 +3,6 @@ import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import axiosInstance from "../api/axiosInstance";
 import BackSvg from "../assets/community/Back.svg";
-import CameraSvg from "../assets/mypage/Camera.svg";
 
 const Outer = styled.div`
   width: 100vw;
@@ -63,9 +62,10 @@ const ProfileImageWrapper = styled.div`
   flex-direction: column;
   align-items: center;
   margin-bottom: 2rem;
+  position: relative;
 `;
 
-const ProfileImage = styled.div`
+const ProfileImage = styled.label`
   width: 120px;
   height: 120px;
   border-radius: 100%;
@@ -74,20 +74,20 @@ const ProfileImage = styled.div`
   align-items: center;
   justify-content: center;
   font-size: 14px;
+  overflow: hidden;
   position: relative;
-`;
+  cursor: pointer;
 
-const CameraIcon = styled.div`
-  width: 28px;
-  height: 28px;
-  background: #abcfff;
-  border-radius: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  position: absolute;
-  bottom: 4px;
-  right: 4px;
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  input {
+    display: none;
+  }
 `;
 
 const Label = styled.label`
@@ -163,29 +163,26 @@ const CancelBtn = styled.button`
 const EditProfilePage = () => {
   const navigate = useNavigate();
 
-  // 원래 서버에서 받아온 초기 데이터
   const [original, setOriginal] = useState({
     email: "",
     nickname: "",
     profileImage: "",
   });
 
-  // 입력값 (기본값은 비워두되, 제출 시 fallback으로 original 값 사용)
-  const [email, setEmail] = useState("");
   const [nickname, setNickname] = useState("");
-  const [profileImage, setProfileImage] = useState("");
-  const [password, setPassword] = useState("");
+  const [email, setEmail] = useState("");
+  const [profileImagePreview, setProfileImagePreview] = useState<string>("");
+  const [profileImageFile, setProfileImageFile] = useState<File | null>(null);
 
-  // 초기 데이터 로딩
   useEffect(() => {
     const fetchProfile = async () => {
       try {
         const res = await axiosInstance.get("/members/profile");
         const data = res.data.result;
         setOriginal(data);
-        setEmail(data.email);
         setNickname(data.nickname);
-        setProfileImage(data.profileImage);
+        setEmail(data.email);
+        setProfileImagePreview(data.profileImage);
       } catch (err) {
         console.error("프로필 불러오기 실패:", err);
       }
@@ -193,24 +190,31 @@ const EditProfilePage = () => {
     fetchProfile();
   }, []);
 
-  // 저장 요청
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setProfileImageFile(file);
+    setProfileImagePreview(URL.createObjectURL(file));
+  };
+
   const handleSave = async () => {
     try {
-      const payload = {
-  member: {
-    email: email || original.email,
-    ...(password && { password }), // password가 있을 때만 포함
-  },
-  updateRequestDTO: {
-    nickname: nickname || original.nickname,
-    profileImage: profileImage || original.profileImage,
-  },
-};
+      const formData = new FormData();
+      formData.append("nickname", nickname || original.nickname);
+      if (profileImageFile) {
+        formData.append("profileImage", profileImageFile);
+      }
 
-      const res = await axiosInstance.put("/members/profile", payload);
-      console.log("[프로필 수정 성공] response:", res.data);
+      const res = await axiosInstance.put("/members/profile", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+
+      console.log("프로필 수정 성공:", res.data);
       alert("프로필이 수정되었습니다.");
-      window.location.href = "/mypage";
+      navigate("/mypage");
     } catch (error) {
       console.error("프로필 수정 실패:", error);
       alert("프로필 수정 중 오류가 발생했습니다.");
@@ -223,7 +227,7 @@ const EditProfilePage = () => {
         <Container>
           <Header>
             <Title>프로필 수정</Title>
-            <BackBtn onClick={() => navigate(-1)}>
+            <BackBtn onClick={() => navigate("/mypage")}>
               <img src={BackSvg} alt="뒤로가기" width={18} />
               뒤로가기
             </BackBtn>
@@ -231,10 +235,16 @@ const EditProfilePage = () => {
 
           <ProfileImageWrapper>
             <ProfileImage>
-              120 × 120
-              <CameraIcon>
-                <img src={CameraSvg} alt="카메라" width={16} height={16} />
-              </CameraIcon>
+              {profileImagePreview ? (
+                <img src={profileImagePreview} alt="프로필 이미지" />
+              ) : (
+                "이미지 없음"
+              )}
+              <input
+                type="file"
+                accept="image/*"
+                onChange={handleImageChange}
+              />
             </ProfileImage>
             <div style={{ fontSize: "13px", color: "#999", marginTop: "0.5rem" }}>
               프로필 사진 변경
@@ -252,21 +262,12 @@ const EditProfilePage = () => {
 
           <Label>이메일</Label>
           <InputWrapper>
-            <Input
-              placeholder="이메일을 입력하세요"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-            />
+            <Input value={email} readOnly />
           </InputWrapper>
 
           <Label>비밀번호</Label>
           <InputWrapper>
-            <Input
-              type="password"
-              placeholder="비밀번호를 입력하세요"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-            />
+            <Input value="********" readOnly />
           </InputWrapper>
 
           <ButtonRow>

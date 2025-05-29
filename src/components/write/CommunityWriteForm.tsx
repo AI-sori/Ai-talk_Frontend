@@ -146,39 +146,42 @@ const CommunityWriteForm = () => {
   const [category, setCategory] = useState("질문");
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
-  const [image, setImage] = useState(""); // base64 string
+  const [imageFile, setImageFile] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState(""); // 이미지 미리보기용
 
-  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
+const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const file = e.target.files?.[0];
+  if (!file) return;
 
-    const reader = new FileReader();
-    reader.onloadend = () => {
-      const base64 = reader.result as string;
-      setImage(base64);
-      setPreviewUrl(base64);
-    };
-    reader.readAsDataURL(file);
-  };
+  setImageFile(file);
+  setPreviewUrl(URL.createObjectURL(file)); // 이미지 미리보기
+};
+
 
   const fileInputRef = React.useRef<HTMLInputElement>(null);
 
   const handleSubmit = async () => {
-    try {
-      const response = await axiosInstance.post("/community/post", {
-        category,
-        title,
-        content,
-        image: image || "",
-      });
-      console.log("등록 성공:", response.data);
-      navigate("/community", { state: { tab: "anon" } });
-    } catch (error) {
-      console.error("등록 실패:", error);
-      alert("글 등록에 실패했습니다.");
-    }
-  };
+  try {
+    const formData = new FormData();
+    formData.append("category", category);
+    formData.append("title", title);
+    formData.append("content", content);
+    if (imageFile) formData.append("image", imageFile);
+
+    const response = await axiosInstance.post("/community/post", formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
+
+    console.log("등록 성공:", response.data);
+    navigate("/community", { state: { tab: "anon" } });
+  } catch (error) {
+    console.error("등록 실패:", error);
+    alert("글 등록에 실패했습니다.");
+  }
+};
+
 
   return (
     <>
@@ -217,8 +220,9 @@ const CommunityWriteForm = () => {
       <Label>
         사진 첨부{" "}
         <span style={{ fontWeight: "normal", color: "#888" }}>
-          ({image ? "1" : "0"}/5)
-        </span>
+  ({imageFile ? "1" : "0"}/5)
+</span>
+
       </Label>
       <ImageUploadBox onClick={() => fileInputRef.current?.click()}>
         {previewUrl ? (

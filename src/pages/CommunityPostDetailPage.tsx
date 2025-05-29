@@ -213,7 +213,7 @@ type Comment = {
 const CommunityPostDetailPage = () => {
   const navigate = useNavigate();
   const { id } = useParams();
-  const [post, setPost] = useState<Post | null>(null);
+  const [post, setPost] = useState<any>(null);
   const [liked, setLiked] = useState(false);
   const [likeCount, setLikeCount] = useState(0);
   const [comment, setComment] = useState("");
@@ -235,7 +235,6 @@ const CommunityPostDetailPage = () => {
 
   const handleLikeToggle = async () => {
     if (!id) return;
-
     try {
       if (liked) {
         await axiosInstance.delete(`/community/${id}/like`);
@@ -253,17 +252,21 @@ const CommunityPostDetailPage = () => {
 
   const handleSubmitComment = async () => {
     if (!id || !comment.trim()) return;
-
     try {
       await axiosInstance.post("/community/comments", {
         postId: Number(id),
         content: comment.trim(),
       });
       setComment("");
-      fetchPost(); // 등록 후 게시글 다시 불러오기
+      fetchPost(); // 새로고침 없이 최신 댓글 반영
     } catch (error) {
       console.error("댓글 등록 실패:", error);
     }
+  };
+
+  const formatDate = (dateStr: string) => {
+    const date = new Date(dateStr);
+    return `${date.getFullYear()}.${(date.getMonth() + 1).toString().padStart(2, "0")}.${date.getDate().toString().padStart(2, "0")}`;
   };
 
   return (
@@ -304,16 +307,15 @@ const CommunityPostDetailPage = () => {
 
               <CommentTitle>댓글 {post.comments.length}</CommentTitle>
 
-             {post.comments.map((c) => (
-  <Comment key={c.id}>
-    <CommentHeader>
-      <CommentText>{c.content}</CommentText>
-      <CommentDate>{c.createdAt.slice(0, 10)}</CommentDate>
-    </CommentHeader>
-     <CommentAuthor>{c.nickname}</CommentAuthor>
-  </Comment>
-))}
-
+              {post.comments.map((c: any) => (
+                <Comment key={c.id}>
+                  <CommentHeader>
+                    <CommentAuthor>{c.nickname}</CommentAuthor>
+                    <CommentDate>{formatDate(c.createdAt)}</CommentDate>
+                  </CommentHeader>
+                  <CommentText>{c.content}</CommentText>
+                </Comment>
+              ))}
 
               <CommentInputWrapper>
                 <CommentInput

@@ -74,26 +74,33 @@ const ActionButton = styled.button<{ red?: boolean }>`
 interface ModalProps {
   type: 'logout' | 'withdraw';
   onCancel: () => void;
-  onConfirm: () => void;
+
 }
 
-const Modal = ({ type, onCancel, onConfirm }: ModalProps) => {
+const Modal = ({ type, onCancel }: ModalProps) => {
   const navigate = useNavigate();
 
-  const handleAction = async () => {
-    if (type === 'logout') {
-      try {
-        const response = await axiosInstance.post("/members/logout");
-        console.log("로그아웃 성공:", response.data);
-        navigate("/");
-      } catch (error) {
-        console.error("로그아웃 실패:", error);
-        alert("로그아웃에 실패했습니다.");
-      }
-    } else {
-      onConfirm(); // 탈퇴는 외부에서 처리
+ const handleAction = async () => {
+  if (type === 'logout') {
+    try {
+      const response = await axiosInstance.post("/members/logout");
+      console.log("로그아웃 성공:", response.data);
+      navigate("/");
+    } catch (error) {
+      console.error("로그아웃 실패:", error);
+      alert("로그아웃에 실패했습니다.");
     }
-  };
+  } else if (type === 'withdraw') {
+    try {
+      await axiosInstance.delete("/members/delete");
+      alert("회원 탈퇴가 완료되었습니다.");
+      navigate("/");
+    } catch (error) {
+      console.error("탈퇴 실패:", error);
+      alert("회원 탈퇴에 실패했습니다.");
+    }
+  }
+};
 
   return (
     <ModalBackground>
