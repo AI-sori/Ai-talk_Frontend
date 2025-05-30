@@ -74,7 +74,7 @@ const ActionButton = styled.button<{ red?: boolean }>`
 interface ModalProps {
   type: 'logout' | 'withdraw';
   onCancel: () => void;
-
+onConfirm: () => void;
 }
 
 const Modal = ({ type, onCancel }: ModalProps) => {
