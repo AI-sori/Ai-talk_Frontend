@@ -5,6 +5,7 @@ import styled from "styled-components";
 import BackSvg from "../assets/community/Back.svg";
 import LikeIcon from "../assets/Like.svg";
 import LikeAfterIcon from "../assets/Likeafter.svg";
+import useAuthStore from "../stores/useAuthStore";
 
 const Outer = styled.div`
   width: 100vw;
@@ -194,16 +195,21 @@ const LikeBox = styled.div`
     color: #777;
   }
 `;
+const RightMeta = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+`;
 
-type Post = {
-  postId: number;
-  nickname: string;
-  category: string;
-  title: string;
-  content: string;
-  image: string;
-  likeCount: number;
-};
+const Action = styled.button`
+  background: none;
+  border: none;
+  font-size: 12px;
+  color: #555;
+  cursor: pointer;
+  font-family: Regular;
+`;
+
 type Comment = {
   id: number;
   nickname: string;
@@ -217,11 +223,21 @@ const CommunityPostDetailPage = () => {
   const [liked, setLiked] = useState(false);
   const [likeCount, setLikeCount] = useState(0);
   const [comment, setComment] = useState("");
+  const { user } = useAuthStore();
 
   const fetchPost = async () => {
     try {
       const res = await axiosInstance.get(`/community/${id}`);
-      setPost(res.data);
+      const fixedComments = res.data.comments.map((c: any) => ({
+      id: c.id,
+      nickname: c.content, 
+      content: c.nickname, 
+      createdAt: c.createdAt,
+    }));
+      setPost({
+      ...res.data,
+      comments: fixedComments,
+    });
       setLiked(res.data.liked);
       setLikeCount(res.data.likeCount);
     } catch (error) {
@@ -263,7 +279,19 @@ const CommunityPostDetailPage = () => {
       console.error("댓글 등록 실패:", error);
     }
   };
-
+const handleUpdateComment = async (commentId: number, oldContent: string) => {
+    const newContent = prompt("댓글을 수정하세요", oldContent);
+    if (!newContent || newContent === oldContent) return;
+    try {
+      await axiosInstance.put(`/community/comments/${commentId}`, {
+        postId: Number(id),
+        content: newContent,
+      });
+      fetchPost();
+    } catch (error) {
+      console.error("댓글 수정 실패:", error);
+    }
+  };
   const formatDate = (dateStr: string) => {
     const date = new Date(dateStr);
     return `${date.getFullYear()}.${(date.getMonth() + 1).toString().padStart(2, "0")}.${date.getDate().toString().padStart(2, "0")}`;
@@ -307,13 +335,19 @@ const CommunityPostDetailPage = () => {
 
               <CommentTitle>댓글 {post.comments.length}</CommentTitle>
 
-              {post.comments.map((c: any) => (
+             {post.comments.map((c: any) => (
                 <Comment key={c.id}>
                   <CommentHeader>
-                    <CommentAuthor>{c.nickname}</CommentAuthor>
-                    <CommentDate>{formatDate(c.createdAt)}</CommentDate>
+                     <CommentAuthor>{c.nickname}</CommentAuthor>
+                    <RightMeta>
+                       <CommentDate>{formatDate(c.createdAt)}</CommentDate>
+        {console.log("내 닉네임:", user?.nickname, "댓글 작성자:", c.nickname)}
+        {user?.nickname === c.nickname && (
+          <Action onClick={() => handleUpdateComment(c.id, c.content)}>수정</Action>
+        )}
+                    </RightMeta>
                   </CommentHeader>
-                  <CommentText>{c.content}</CommentText>
+                    <CommentText>{c.content}</CommentText>
                 </Comment>
               ))}
 
