@@ -133,7 +133,7 @@ const SignupStep2 = ({
   onBack: () => void;
   nickname: string;
   setNickname: (nickname: string) => void;
-  profileImage: string;
+   profileImage: File | null;
 setProfileImage: (file: File) => void;
   handleComplete: () => void;
 }) => {
