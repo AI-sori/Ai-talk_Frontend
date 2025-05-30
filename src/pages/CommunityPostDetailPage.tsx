@@ -341,7 +341,6 @@ const handleUpdateComment = async (commentId: number, oldContent: string) => {
                      <CommentAuthor>{c.nickname}</CommentAuthor>
                     <RightMeta>
                        <CommentDate>{formatDate(c.createdAt)}</CommentDate>
-        {console.log("내 닉네임:", user?.nickname, "댓글 작성자:", c.nickname)}
         {user?.nickname === c.nickname && (
           <Action onClick={() => handleUpdateComment(c.id, c.content)}>수정</Action>
         )}
