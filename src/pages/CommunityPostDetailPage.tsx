@@ -6,6 +6,7 @@ import BackSvg from "../assets/community/Back.svg";
 import LikeIcon from "../assets/Like.svg";
 import LikeAfterIcon from "../assets/Likeafter.svg";
 import useAuthStore from "../stores/useAuthStore";
+import DeleteModal from "../components/DeleteModal";
 
 const Outer = styled.div`
   width: 100vw;
@@ -224,14 +225,19 @@ const CommunityPostDetailPage = () => {
   const [likeCount, setLikeCount] = useState(0);
   const [comment, setComment] = useState("");
   const { user } = useAuthStore();
+  const [editCommentId, setEditCommentId] = useState<number | null>(null);
+  const [editContent, setEditContent] = useState("");
+  const [deleteTargetId, setDeleteTargetId] = useState<number | null>(null);
 
   const fetchPost = async () => {
     try {
       const res = await axiosInstance.get(`/community/${id}`);
+       console.log("📦 게시글 상세 응답:", res.data);
       const fixedComments = res.data.comments.map((c: any) => ({
       id: c.id,
-      nickname: c.content, 
-      content: c.nickname, 
+      userId: c.userId,
+      nickname: c.nickname,
+      content: c.content,
       createdAt: c.createdAt,
     }));
       setPost({
@@ -279,23 +285,40 @@ const CommunityPostDetailPage = () => {
       console.error("댓글 등록 실패:", error);
     }
   };
-const handleUpdateComment = async (commentId: number, oldContent: string) => {
-    const newContent = prompt("댓글을 수정하세요", oldContent);
-    if (!newContent || newContent === oldContent) return;
-    try {
-      await axiosInstance.put(`/community/comments/${commentId}`, {
-        postId: Number(id),
-        content: newContent,
-      });
-      fetchPost();
-    } catch (error) {
-      console.error("댓글 수정 실패:", error);
-    }
-  };
+const handleUpdateComment = async (commentId: number) => {
+  if (!editContent.trim()) return;
+  try {
+    await axiosInstance.put(`/community/comments/${commentId}`, {
+      postId: Number(id),
+      content: editContent,
+    });
+    setEditCommentId(null);
+    setEditContent("");
+    fetchPost();
+  } catch (error) {
+    console.error("댓글 수정 실패:", error);
+  }
+};
+const handleStartEdit = (commentId: number, content: string) => {
+  setEditCommentId(commentId);
+  setEditContent(content);
+};
+
   const formatDate = (dateStr: string) => {
     const date = new Date(dateStr);
     return `${date.getFullYear()}.${(date.getMonth() + 1).toString().padStart(2, "0")}.${date.getDate().toString().padStart(2, "0")}`;
   };
+
+  const handleDeleteConfirm = async () => {
+  if (!deleteTargetId) return;
+  try {
+    await axiosInstance.delete(`/community/comments/${deleteTargetId}`);
+    setDeleteTargetId(null);
+    fetchPost(); // 최신 목록 갱신
+  } catch (error) {
+    console.error("댓글 삭제 실패:", error);
+  }
+};
 
   return (
     <Outer>
@@ -335,20 +358,51 @@ const handleUpdateComment = async (commentId: number, oldContent: string) => {
 
               <CommentTitle>댓글 {post.comments.length}</CommentTitle>
 
-             {post.comments.map((c: any) => (
-                <Comment key={c.id}>
-                  <CommentHeader>
-                     <CommentAuthor>{c.nickname}</CommentAuthor>
-                    <RightMeta>
-                       <CommentDate>{formatDate(c.createdAt)}</CommentDate>
-        {user?.nickname === c.nickname && (
-          <Action onClick={() => handleUpdateComment(c.id, c.content)}>수정</Action>
-        )}
-                    </RightMeta>
-                  </CommentHeader>
-                    <CommentText>{c.content}</CommentText>
-                </Comment>
-              ))}
+        {post.comments.map((c: any) => (
+  <Comment key={c.id}>
+    <CommentHeader>
+      <div style={{ display: "flex", gap: "8px", alignItems: "center" }}>
+        <CommentAuthor>{c.nickname}</CommentAuthor>
+        <span>·</span>
+        <CommentDate>{formatDate(c.createdAt)}</CommentDate>
+      </div>
+
+      {user?.userId === c.userId && (
+        <RightMeta>
+          <Action onClick={() => handleStartEdit(c.id, c.content)}>수정</Action>
+          <Action onClick={() => setDeleteTargetId(c.id)}>삭제</Action>
+        </RightMeta>
+      )}
+    </CommentHeader>
+
+    {editCommentId === c.id ? (
+      <>
+        <textarea
+          value={editContent}
+          onChange={(e) => setEditContent(e.target.value)}
+          style={{
+            width: "100%",
+            height: "80px",
+            fontSize: "14px",
+            borderRadius: "8px",
+            padding: "0.5rem",
+            border: "1px solid #ccc",
+            marginBottom: "0.5rem",
+          }}
+        />
+        <div style={{ display: "flex", justifyContent: "flex-end", gap: "0.5rem" }}>
+          <Action onClick={() => setEditCommentId(null)}>취소</Action>
+          <Action onClick={() => handleUpdateComment(c.id)} style={{ color: "#4171d6" }}>
+            저장
+          </Action>
+        </div>
+      </>
+    ) : (
+      <CommentText>{c.content}</CommentText>
+    )}
+  </Comment>
+))}
+
 
               <CommentInputWrapper>
                 <CommentInput
@@ -363,6 +417,12 @@ const handleUpdateComment = async (commentId: number, oldContent: string) => {
             <p>로딩 중...</p>
           )}
         </Container>
+        {deleteTargetId !== null && (
+  <DeleteModal
+    onCancel={() => setDeleteTargetId(null)}
+    onConfirm={handleDeleteConfirm}
+  />
+)}
       </Wrapper>
     </Outer>
   );

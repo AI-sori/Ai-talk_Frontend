@@ -97,21 +97,25 @@ const handleLogin = async () => {
       password,
     });
 
-    // 로그인 실패 응답 
+    console.log("로그인 응답:", response.data);
+
     if (response.data.resultCode === "ERROR") {
       alert(response.data.result.message || "로그인 실패");
       return;
     }
 
-    // 성공 처리
-    login({ email, nickname: 'temp' }); 
+    const { email: loginEmail, userId } = response.data.result;
+
+    login({ email: loginEmail, userId });
+
     alert("로그인 성공!");
     navigate("/home");
   } catch (error: any) {
-    console.error("로그인 요청 실패:", error);
+    console.error(" 로그인 요청 실패:", error);
     alert("서버 오류로 로그인에 실패했습니다.");
   }
-};  
+};
+
 
   return (
     <Outer>

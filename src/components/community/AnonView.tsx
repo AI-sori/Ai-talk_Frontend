@@ -118,28 +118,36 @@ type Post = {
 
 const AnonView = () => {
   const navigate = useNavigate();
- const [posts, setPosts] = useState<Post[]>([]);
+  const [allPosts, setAllPosts] = useState<Post[]>([]);
+  const [currentPage, setCurrentPage] = useState(0);
+  const pageSize = 5;
 
   useEffect(() => {
-    const fetchCommunityPosts = async () => {
+    const fetchAllPosts = async () => {
       try {
         const response = await axiosInstance.get("/community", {
           params: {
-            page: 0,
-            size: 5,
             sortBy: "id",
             direction: "desc",
           },
         });
-         console.log("API 응답 데이터:", response.data);
-        setPosts(response.data); 
+
+        const allData: Post[] = response.data;
+          console.log("전체 게시글 불러오기 성공:", allData);
+        setAllPosts(allData);
       } catch (error) {
         console.error("커뮤니티 글 불러오기 실패:", error);
       }
     };
 
-    fetchCommunityPosts();
+    fetchAllPosts();
   }, []);
+
+  const totalPages = Math.ceil(allPosts.length / pageSize);
+  const paginatedPosts = allPosts.slice(
+    currentPage * pageSize,
+    (currentPage + 1) * pageSize
+  );
 
   return (
     <>
@@ -158,8 +166,12 @@ const AnonView = () => {
         </SearchIcon>
       </SearchBox>
 
-      {posts.map((post) => (
-        <PostCard key={post.postId} onClick={() => navigate(`/community/${post.postId}`)} style={{ cursor: "pointer" }}>
+      {paginatedPosts.map((post) => (
+        <PostCard
+          key={post.postId}
+          onClick={() => navigate(`/community/${post.postId}`)}
+          style={{ cursor: "pointer" }}
+        >
           <PostMeta>{post.category} · {post.nickname}</PostMeta>
           <PostTitle>{post.title}</PostTitle>
           <PostContent>{post.content}</PostContent>
@@ -171,6 +183,27 @@ const AnonView = () => {
           </PostFooter>
         </PostCard>
       ))}
+
+      {/* 숫자 페이지 버튼 */}
+      <div style={{ marginTop: "1.5rem", textAlign: "center" }}>
+        {Array.from({ length: totalPages }, (_, i) => (
+          <button
+            key={i}
+            onClick={() => setCurrentPage(i)}
+            style={{
+              margin: "0 5px",
+              padding: "6px 12px",
+              borderRadius: "6px",
+              border: currentPage === i ? "2px solid #7595D3" : "1px solid #ccc",
+              backgroundColor: currentPage === i ? "#7595D3" : "#fff",
+              color: currentPage === i ? "white" : "#333",
+              cursor: "pointer",
+            }}
+          >
+            {i + 1}
+          </button>
+        ))}
+      </div>
     </>
   );
 };
