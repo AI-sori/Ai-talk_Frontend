@@ -1,4 +1,5 @@
 import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import LoginPage from './pages/LoginPage';
 import OnboardingPage from './pages/OnboardingPage';
 import HomePage from './pages/HomePage';
@@ -19,6 +20,7 @@ import MyPosts from './components/mypage/MyPosts';
 import MyComments from './components/mypage/MyComments';
 import MyLikes from './components/mypage/MyLikes';
 
+const queryClient = new QueryClient();
 
 function AppLayout() {
   const location = useLocation();
@@ -56,9 +58,11 @@ function AppLayout() {
 
 function App() {
   return (
+    <QueryClientProvider client={queryClient}>
     <Router>
       <AppLayout />
     </Router>
+        </QueryClientProvider>
   );
 }
 

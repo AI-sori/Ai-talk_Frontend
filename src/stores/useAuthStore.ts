@@ -1,8 +1,8 @@
 import { create } from "zustand";
 
 interface User {
+  userId: number;
   email: string;
-  nickname: string;
 }
 
 interface AuthStore {

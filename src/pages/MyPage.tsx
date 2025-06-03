@@ -125,12 +125,12 @@ const ProgressBar = styled.div`
   background: #eee;
   border-radius: 10px;
   height: 8px;
-  overflow: hidden;
+  overflow: hidden; 
 `;
 
 const Progress = styled.div<{ percent: number }>`
   width: ${({ percent }) => percent}%;
-  height: 100%;
+  height: 100%; 
   background: #9fc9ff;
 `;
 
