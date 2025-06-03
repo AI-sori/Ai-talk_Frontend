@@ -153,7 +153,6 @@ const CommentText = styled.p`
   white-space: pre-line;
 `;
 
-
 const CommentInputWrapper = styled.div`
   margin-top: 1rem;
   display: flex;
@@ -200,6 +199,7 @@ const RightMeta = styled.div`
   display: flex;
   align-items: center;
   gap: 0.8rem;
+  font-family: Regular;
 `;
 
 const Action = styled.button`
@@ -217,6 +217,7 @@ type Comment = {
   content: string;
   createdAt: string;
 };
+
 const CommunityPostDetailPage = () => {
   const navigate = useNavigate();
   const { id } = useParams();
@@ -307,6 +308,7 @@ const handleStartEdit = (commentId: number, content: string) => {
   const formatDate = (dateStr: string) => {
     const date = new Date(dateStr);
     return `${date.getFullYear()}.${(date.getMonth() + 1).toString().padStart(2, "0")}.${date.getDate().toString().padStart(2, "0")}`;
+
   };
 
   const handleDeleteConfirm = async () => {
@@ -381,10 +383,11 @@ const handleStartEdit = (commentId: number, content: string) => {
           value={editContent}
           onChange={(e) => setEditContent(e.target.value)}
           style={{
-            width: "100%",
+            width: "280px",
             height: "80px",
             fontSize: "14px",
             borderRadius: "8px",
+            fontFamily: "Regular",
             padding: "0.5rem",
             border: "1px solid #ccc",
             marginBottom: "0.5rem",
@@ -428,4 +431,4 @@ const handleStartEdit = (commentId: number, content: string) => {
   );
 };
 
-export default CommunityPostDetailPage;
+export default CommunityPostDetailPage; 

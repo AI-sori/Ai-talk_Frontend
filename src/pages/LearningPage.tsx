@@ -1,4 +1,6 @@
 import styled from 'styled-components';
+import { useEffect, useState } from 'react';
+import axiosInstance from '../api/axiosInstance';
 
 const Outer = styled.div`
   width: 100vw;
@@ -142,91 +144,80 @@ const Description = styled.div`
 `;
 
 const LearningPage = () => {
+  const [programs, setPrograms] = useState([]);
+
+  useEffect(() => {
+    const fetchPrograms = async () => {
+      try {
+        const response = await axiosInstance.get('/program');
+        console.log('/program 응답 데이터:', response.data);
+        setPrograms(response.data);
+      } catch (error) {
+        console.error('프로그램 데이터를 불러오는 중 오류 발생:', error);
+      }
+    };
+    fetchPrograms();
+  }, []);
+
+  const filterByCategory = (category: string) =>
+    programs.filter((item: any) => item.category === category);
+
+  const renderProgramCards = (category: string) => {
+    const filtered = filterByCategory(category);
+    return (
+      <Card>
+        <SectionTitle>{category}</SectionTitle>
+        <HorizontalScroll>
+          {filtered.map((item: any) => (
+            <ProgramCard key={item.id}>
+              <Video src={item.videoUrl} allowFullScreen />
+              <MetaRow>
+                <span style={{ color: '#7595D3' }}>{item.type}</span>
+                <span>{item.duration}분</span>
+              </MetaRow>
+              <ProgramTitle>{item.title}</ProgramTitle>
+              <Description>{item.description}</Description>
+            </ProgramCard>
+          ))}
+        </HorizontalScroll>
+      </Card>
+    );
+  };
+
   return (
     <Outer>
       <Wrapper>
-        {/* 진행중인 학습 */}
+        {/* 진행중인 학습*/}
         <Card>
-  <SectionTitle>진행중인 학습</SectionTitle>
-  <OngoingCard>
-  <ThumbnailBox>
-  <iframe
-    width="80"
-    height="80"
-    src="https://www.youtube.com/embed/P2zGhgMYyrA?si=jh3LMiiTI5j3mu_4" 
-    title="YouTube video"
-    frameBorder="0"
-    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-    allowFullScreen
-  />
-</ThumbnailBox>
-    <InfoBox>
-      <TagRow>
-        <Tag>운동발달</Tag>
-        <TimeText>20분</TimeText>
-      </TagRow>
-      <OngoingTitle>소근육 발달 미술활동</OngoingTitle>
-      <OngoingBar>
-        <OngoingFill />
-      </OngoingBar>
-    </InfoBox>
-  </OngoingCard>
-</Card>
-
-        {/* 언어발달 */}
-        <Card>
-          <SectionTitle>언어발달</SectionTitle>
-          <HorizontalScroll>
-            <ProgramCard>
-              <Video src="https://www.youtube.com/embed/DJMdtEw8utE?si=NA0VuFbVLlMYlFlG"  allowFullScreen />
-              <MetaRow>
-                <span style={{ color: '#7595D3' }}>동영상</span>
-                <span>16분</span>
-              </MetaRow>
-              <ProgramTitle>언어 발달 동요</ProgramTitle>
-              <Description>영역별 감성 동요</Description>
-            </ProgramCard>
-
-            <ProgramCard>
-              <Video src="https://www.youtube.com/embed/9F8WEROhEnw?si=lS0fZp2Z_5BPmvZw" allowFullScreen />
-              <MetaRow>
-                <span style={{ color: '#7595D3' }}>동영상</span>
-                <span>2분</span>
-                <span>중급</span>
-              </MetaRow>
-              <ProgramTitle>두뇌 발달 놀이</ProgramTitle>
-              <Description>두뇌 발달 놀이</Description>
-            </ProgramCard>
-          </HorizontalScroll>
+          <SectionTitle>진행중인 학습</SectionTitle>
+          <OngoingCard>
+            <ThumbnailBox>
+              <iframe
+                width="80"
+                height="80"
+                src="https://www.youtube.com/embed/P2zGhgMYyrA?si=jh3LMiiTI5j3mu_4"
+                title="YouTube video"
+                frameBorder="0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowFullScreen
+              />
+            </ThumbnailBox>
+            <InfoBox>
+              <TagRow>
+                <Tag>운동발달</Tag>
+                <TimeText>20분</TimeText>
+              </TagRow>
+              <OngoingTitle>소근육 발달 미술활동</OngoingTitle>
+              <OngoingBar>
+                <OngoingFill />
+              </OngoingBar>
+            </InfoBox>
+          </OngoingCard>
         </Card>
 
-        {/* 인지발달 */}
-        <Card>
-          <SectionTitle>인지발달</SectionTitle>
-          <HorizontalScroll>
-            <ProgramCard>
-              <Video     src="https://www.youtube.com/embed/P2zGhgMYyrA?si=jh3LMiiTI5j3mu_4"  allowFullScreen />
-              <MetaRow>
-                <span style={{ color: '#7595D3' }}>동영상</span>
-                <span>12분</span>
-                <span>초급</span>
-              </MetaRow>
-              <ProgramTitle>도형 맞추기</ProgramTitle>
-              <Description>도형을 구별하고 맞춰보는 활동</Description>
-            </ProgramCard>
-
-            <ProgramCard>
-              <Video src="https://www.youtube.com/embed/sbP5-ZKYy-g" allowFullScreen />
-              <MetaRow>
-                <span style={{ color: '#7595D3' }}>동영상</span>
-                <span>20분</span>
-                <span>중급</span>
-              </MetaRow>
-              <ProgramTitle>패턴 찾기 놀이</ProgramTitle>
-              <Description>반복되는 규칙을 익히는 연습</Description>
-            </ProgramCard>
-          </HorizontalScroll>
-        </Card>
+        {renderProgramCards('언어발달')}
+        {renderProgramCards('인지발달')}
+        {renderProgramCards('운동발달')}
       </Wrapper>
     </Outer>
   );

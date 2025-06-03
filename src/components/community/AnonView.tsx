@@ -1,9 +1,10 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import styled from "styled-components";
-import axiosInstance from "../../api/axiosInstance"; 
-import SearchSvg from '../../assets/community/Search.svg';
-import LikeSvg from '../../assets/community/Like.svg';
+import axiosInstance from "../../api/axiosInstance";
+import SearchSvg from "../../assets/community/Search.svg";
+import LikeSvg from "../../assets/community/Like.svg";
 import { useNavigate } from "react-router-dom";
+import { useQuery } from "@tanstack/react-query";
 
 const CategoryRow = styled.div`
   display: flex;
@@ -21,11 +22,6 @@ const CategoryButton = styled.button<{ active?: boolean }>`
   border-radius: 20px;
   padding: 6px 14px;
   cursor: pointer;
-
-  &:focus,
-  &:focus-visible {
-    outline: none;
-  }
 `;
 
 const SearchBox = styled.div`
@@ -53,14 +49,9 @@ const SearchIcon = styled.button`
   border: none;
   padding: 0 1rem;
   cursor: pointer;
-
   display: flex;
   align-items: center;
   justify-content: center;
-  &:focus,
-  &:focus-visible {
-    outline: none;
-  }
 `;
 
 const PostCard = styled.div`
@@ -70,12 +61,10 @@ const PostCard = styled.div`
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
   padding: 1.1rem;
   margin-top: 1rem;
-  border-left: 5px solid #C9E6FF; 
-
+  border-left: 5px solid #C9E6FF;
   display: flex;
   flex-direction: column;
 `;
-
 
 const PostMeta = styled.div`
   font-size: 13px;
@@ -92,7 +81,7 @@ const PostTitle = styled.h3`
 `;
 
 const PostContent = styled.p`
-   font-size: 14px;
+  font-size: 14px;
   color: #424242;
   line-height: 1.4;
   font-family: Regular;
@@ -116,52 +105,81 @@ type Post = {
   likeCount: number;
 };
 
+const fetchAllPosts = async () => {
+  const res = await axiosInstance.get("/community", {
+    params: { sortBy: "id", direction: "desc" },
+  });
+  return res.data;
+};
+
+const fetchSearchPosts = async (keyword: string) => {
+  const res = await axiosInstance.get("/community/search", {
+    params: { keyword },
+  });
+  return res.data;
+};
+
 const AnonView = () => {
   const navigate = useNavigate();
-  const [allPosts, setAllPosts] = useState<Post[]>([]);
+  const [selectedCategory, setSelectedCategory] = useState("전체");
   const [currentPage, setCurrentPage] = useState(0);
+  const [keyword, setKeyword] = useState("");
+  const [searchText, setSearchText] = useState("");
+
   const pageSize = 5;
 
-  useEffect(() => {
-    const fetchAllPosts = async () => {
-      try {
-        const response = await axiosInstance.get("/community", {
-          params: {
-            sortBy: "id",
-            direction: "desc",
-          },
-        });
+  const { data: allPosts = [] } = useQuery({
+    queryKey: ["allPosts"],
+    queryFn: fetchAllPosts,
+  });
 
-        const allData: Post[] = response.data;
-          console.log("전체 게시글 불러오기 성공:", allData);
-        setAllPosts(allData);
-      } catch (error) {
-        console.error("커뮤니티 글 불러오기 실패:", error);
-      }
-    };
+  const { data: searchedPosts = [], refetch } = useQuery({
+    queryKey: ["search", searchText],
+    queryFn: () => fetchSearchPosts(searchText),
+    enabled: !!searchText,
+  });
 
-    fetchAllPosts();
-  }, []);
+  const filteredPosts = (searchText ? searchedPosts : allPosts).filter((post) =>
+    selectedCategory === "전체" ? true : post.category === selectedCategory
+  );
 
-  const totalPages = Math.ceil(allPosts.length / pageSize);
-  const paginatedPosts = allPosts.slice(
+  const totalPages = Math.ceil(filteredPosts.length / pageSize);
+  const paginatedPosts = filteredPosts.slice(
     currentPage * pageSize,
     (currentPage + 1) * pageSize
   );
 
+  const handleSearch = () => {
+    setSearchText(keyword);
+    setCurrentPage(0);
+    refetch();
+  };
+
   return (
     <>
       <CategoryRow>
-        {["전체", "질문", "정보공유", "일상", "후기"].map((label, idx) => (
-          <CategoryButton key={label} active={idx === 0}>
+        {["전체", "질문", "정보공유", "일상", "후기"].map((label) => (
+          <CategoryButton
+            key={label}
+            active={selectedCategory === label}
+            onClick={() => {
+              setSelectedCategory(label);
+              setCurrentPage(0);
+            }}
+          >
             {label}
           </CategoryButton>
         ))}
       </CategoryRow>
 
       <SearchBox>
-        <SearchInput placeholder="검색어를 입력하세요" />
-        <SearchIcon>
+        <SearchInput
+          value={keyword}
+          onChange={(e) => setKeyword(e.target.value)}
+          onKeyDown={(e) => e.key === "Enter" && handleSearch()}
+          placeholder="검색어를 입력하세요"
+        />
+        <SearchIcon onClick={handleSearch}>
           <img src={SearchSvg} alt="검색" width={20} height={20} />
         </SearchIcon>
       </SearchBox>
@@ -184,19 +202,25 @@ const AnonView = () => {
         </PostCard>
       ))}
 
-      {/* 숫자 페이지 버튼 */}
-      <div style={{ marginTop: "1.5rem", textAlign: "center" }}>
+      <div style={{ marginTop: "1.5rem", textAlign: "center", display: "flex", justifyContent: "center", gap: "8px" }}>
         {Array.from({ length: totalPages }, (_, i) => (
           <button
             key={i}
             onClick={() => setCurrentPage(i)}
             style={{
-              margin: "0 5px",
               padding: "6px 12px",
+              width: "32px",
+              height: "32px",
+              border: "1px solid #ccc",
               borderRadius: "6px",
-              border: currentPage === i ? "2px solid #7595D3" : "1px solid #ccc",
+              fontFamily: "Regular",
+              fontSize: "15px",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
               backgroundColor: currentPage === i ? "#7595D3" : "#fff",
-              color: currentPage === i ? "white" : "#333",
+              color: currentPage === i ? "#fff" : "#333",
+              fontWeight: currentPage === i ? "bold" : "normal",
               cursor: "pointer",
             }}
           >
