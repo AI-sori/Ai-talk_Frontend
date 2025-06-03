@@ -184,7 +184,7 @@ const AnonView = () => {
         </SearchIcon>
       </SearchBox>
 
-      {paginatedPosts.map((post) => (
+      {paginatedPosts.map((post: Post) => (
         <PostCard
           key={post.postId}
           onClick={() => navigate(`/community/${post.postId}`)}
