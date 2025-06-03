@@ -139,9 +139,10 @@ const AnonView = () => {
     enabled: !!searchText,
   });
 
-  const filteredPosts = (searchText ? searchedPosts : allPosts).filter((post) =>
-    selectedCategory === "전체" ? true : post.category === selectedCategory
-  );
+const filteredPosts = (searchText ? searchedPosts : allPosts).filter(
+  (post: Post) => selectedCategory === "전체" ? true : post.category === selectedCategory
+);
+
 
   const totalPages = Math.ceil(filteredPosts.length / pageSize);
   const paginatedPosts = filteredPosts.slice(
