@@ -7,6 +7,7 @@ import LikeIcon from "../assets/Like.svg";
 import LikeAfterIcon from "../assets/Likeafter.svg";
 import useAuthStore from "../stores/useAuthStore";
 import DeleteModal from "../components/DeleteModal";
+import DeletePostModal from "../components/DeletePostModal";
 
 const Outer = styled.div`
   width: 100vw;
@@ -206,6 +207,7 @@ const Action = styled.button`
   background: none;
   border: none;
   font-size: 12px;
+   white-space: nowrap;
   color: #555;
   cursor: pointer;
   font-family: Regular;
@@ -229,6 +231,8 @@ const CommunityPostDetailPage = () => {
   const [editCommentId, setEditCommentId] = useState<number | null>(null);
   const [editContent, setEditContent] = useState("");
   const [deleteTargetId, setDeleteTargetId] = useState<number | null>(null);
+  const [showPostActions, setShowPostActions] = useState(false);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
 
   const fetchPost = async () => {
     try {
@@ -322,6 +326,19 @@ const handleStartEdit = (commentId: number, content: string) => {
   }
 };
 
+const handleDeletePost = async () => {
+  try {
+    if (!post?.postId) return;
+    await axiosInstance.delete(`/community/post/${post.postId}`);
+    setShowDeleteModal(false);
+    navigate("/community");
+  } catch (error) {
+    console.error("게시글 삭제 실패:", error);
+  }
+};
+
+
+
   return (
     <Outer>
       <Wrapper>
@@ -333,10 +350,41 @@ const handleStartEdit = (commentId: number, content: string) => {
 
           {post ? (
             <>
-              <Meta>
-                <Tag>{post.category}</Tag>
-                <span>{post.nickname}</span>
-              </Meta>
+             <Meta>
+  <Tag>{post.category}</Tag>
+  <span>{post.nickname}</span>
+  {user?.userId === post.userId && (
+    <div style={{ marginLeft: "auto", position: "relative" }}>
+      <button
+        onClick={() => setShowPostActions((prev) => !prev)}
+        style={{ background: "none", border: "none", cursor: "pointer" }}
+      >
+        ⋮
+      </button>
+      {showPostActions && (
+        <div
+          style={{
+            position: "absolute",
+            top: "20px",
+            right: 0,
+            background: "white",
+            border: "1px solid #ccc",
+            borderRadius: "8px",
+            boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
+            zIndex: 10,
+          }}
+        >
+         <Action onClick={() => navigate(`/community/edit/${post.postId}`)}>수정</Action>
+          <Action onClick={() => {
+            setShowPostActions(false);
+            setShowDeleteModal(true);
+          }}>삭제</Action>
+        </div>
+      )}
+    </div>
+  )}
+</Meta>
+
 
               <Title>{post.title}</Title>
               <Content>{post.content}</Content>
@@ -405,8 +453,6 @@ const handleStartEdit = (commentId: number, content: string) => {
     )}
   </Comment>
 ))}
-
-
               <CommentInputWrapper>
                 <CommentInput
                   placeholder="댓글을 입력해주세요"
@@ -426,6 +472,13 @@ const handleStartEdit = (commentId: number, content: string) => {
     onConfirm={handleDeleteConfirm}
   />
 )}
+{showDeleteModal && (
+  <DeletePostModal
+    onCancel={() => setShowDeleteModal(false)}
+    onConfirm={handleDeletePost}
+  />
+)}
+
       </Wrapper>
     </Outer>
   );

@@ -19,6 +19,8 @@ import InquiryDetailPage from './pages/InquiryDetailPage';
 import MyPosts from './components/mypage/MyPosts';
 import MyComments from './components/mypage/MyComments';
 import MyLikes from './components/mypage/MyLikes';
+import CommunityEditPage from './pages/CommunityEditPage'; 
+
 
 const queryClient = new QueryClient();
 
@@ -51,6 +53,7 @@ function AppLayout() {
         <Route path="/mypage/myposts" element={<MyPosts />} />
         <Route path="/mypage/mycomments" element={<MyComments />} />
         <Route path="/mypage/mylikes" element={<MyLikes />} />
+        <Route path="/community/edit/:id" element={<CommunityEditPage />} />
       </Routes>
     </>
   );
