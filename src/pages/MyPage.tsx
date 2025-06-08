@@ -157,6 +157,10 @@ const ContinueBtn = styled.button`
   &:hover {
     background: #94b5e9;
   }
+    &:focus {
+    outline: none;
+    box-shadow: none;
+  }
 `;
 
 const List = styled.ul`

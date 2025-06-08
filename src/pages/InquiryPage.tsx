@@ -116,6 +116,10 @@ const AskButton = styled.button`
   font-weight: 600;
   margin-bottom: 1.5rem;
   cursor: pointer;
+  &:focus {
+    outline: none;
+    box-shadow: none;
+  }
 `;
 
 const InquiryCard = styled.div`
