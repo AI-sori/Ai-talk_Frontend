@@ -59,6 +59,10 @@ const Button = styled.button`
   &:hover {
     background-color: #91B6FF;
       }
+    &:focus {
+    outline: none;
+    box-shadow: none;
+  }
 `;
 
 const LinkRow = styled.div`

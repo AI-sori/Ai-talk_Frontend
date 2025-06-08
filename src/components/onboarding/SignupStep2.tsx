@@ -14,6 +14,7 @@ const Outer = styled.div`
 
 const Container = styled.div`
   width: 390px; 
+  margin-top: -150px;
   height: 100%;
   padding: 2rem 1.5rem;
   background: white; 
@@ -54,7 +55,8 @@ const Label = styled.label`
   font-weight: bold;
   color: #7b9acc;
   margin-bottom: 0.3rem;
-  margin-top: 1rem;
+  margin-top: -10px;
+
 `;
 
 const Input = styled.input`
@@ -73,6 +75,7 @@ const Button = styled.button`
   margin: 1.2rem auto 0; 
   background-color: #a8cbff;
   border: none;
+  outline: none;
   border-radius: 30px;
   padding: 14px;
   width: 270px;
@@ -83,6 +86,10 @@ const Button = styled.button`
 
   &:hover {
     background-color: #94b5e9;
+  }
+    &:focus {
+    outline: none;
+    box-shadow: none;
   }
 `;
 const HeaderWrapper = styled.div`

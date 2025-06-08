@@ -14,6 +14,7 @@ const Outer = styled.div`
 const Container = styled.div`
   width: 390px; 
   height: 100%;
+  margin-top: -150px;
   padding: 2rem 1.5rem;
   background: white; 
   box-sizing: border-box;

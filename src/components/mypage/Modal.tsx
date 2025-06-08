@@ -55,6 +55,10 @@ const CancelButton = styled.button`
   width: 120px;
   height: 42px;
   font-size: 14px;
+  &:focus {
+    outline: none;
+    box-shadow: none;
+  }
 `;
 
 const ActionButton = styled.button<{ red?: boolean }>`
@@ -69,6 +73,10 @@ const ActionButton = styled.button<{ red?: boolean }>`
   border-radius: 8px;
   cursor: pointer;
   font-size: 14px;
+  &:focus {
+    outline: none;
+    box-shadow: none;
+  }
 `;
 
 interface ModalProps {
