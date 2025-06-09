@@ -451,15 +451,14 @@ const handleDeletePost = async () => {
               <Title>{post.title}</Title>
               <Content>{post.content}</Content>
 
-              {post.image ? (
-                <img
-                  src={post.image}
-                  alt="게시글 이미지"
-                  style={{ width: "100%", borderRadius: "12px", marginBottom: "1rem" }}
-                />
-              ) : (
-                <ImageBox>이미지 없음</ImageBox>
-              )}
+              {post.image && (
+  <img
+    src={post.image}
+    alt="게시글 이미지"
+    style={{ width: "100%", borderRadius: "12px", marginBottom: "1rem" }}
+  />
+)}
+
 
               <StatusRow>
                 <LikeBox onClick={handleLikeToggle}>

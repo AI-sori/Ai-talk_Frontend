@@ -53,6 +53,7 @@ const Input = styled.input`
   border-radius: 10px;
   border: 1.2px solid #7595D3;
   font-size: 14px;  
+  color: black;
   box-sizing: border-box;
    outline: none;
     background-color: white;

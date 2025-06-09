@@ -219,9 +219,9 @@ const LearningPage = () => {
           </OngoingCard>
         </Card>
 
-        {renderProgramCards('언어발달')}
-        {renderProgramCards('인지발달')}
-        {renderProgramCards('운동발달')}
+        {renderProgramCards('동요')}
+        {renderProgramCards('동화')} 
+        {renderProgramCards('한글')} 
       </Wrapper>
     </Outer>
   );
