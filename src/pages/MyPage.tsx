@@ -253,11 +253,22 @@ const Mypage = () => {
           <ProfileRow>
            <ProfileImg>
   {profile?.profileImage ? (
-    <img src={profile.profileImage} alt="프로필 이미지" />
+    <img
+      src={profile.profileImage}
+      alt="프로필 이미지"
+      style={{
+        width: '100%',
+        height: '100%',
+        borderRadius: '50%',
+        objectFit: 'cover',
+        imageRendering: 'auto', // 'crisp-edges'나 'high-quality'도 실험 가능
+      }}
+    />
   ) : (
     <FaUserCircle />
   )}
 </ProfileImg>
+
             <Info>
               <Name>{profile?.nickname ?? "닉네임"}</Name>
               <Email>{profile?.email ?? "이메일"}</Email>
