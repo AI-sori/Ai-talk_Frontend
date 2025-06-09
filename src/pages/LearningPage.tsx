@@ -23,6 +23,7 @@ const Card = styled.div`
   background: white;
   border-radius: 16px;
   padding: 1.5rem;
+   color: black;
   margin-bottom: 1.5rem;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
 `;
@@ -31,6 +32,7 @@ const Card = styled.div`
 const SectionTitle = styled.h3`
   font-family: Bold;
   font-size: 18px;
+   color: black;
   margin-bottom: 1rem;
 `;
 
@@ -39,6 +41,7 @@ const OngoingCard = styled.div`
   background: #F8FAFC;
   border-radius: 14px;
   display: flex;
+   color: black;
   align-items: center;
   padding: 1rem;
   gap: 1rem;
@@ -82,6 +85,7 @@ const TimeText = styled.span`
 const OngoingTitle = styled.div`
   font-size: 15px;
   font-weight: bold;
+   color: black;
   margin-bottom: 0.4rem;
 `;
 

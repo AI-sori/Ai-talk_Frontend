@@ -11,6 +11,7 @@ import {
   Tooltip,
   ResponsiveContainer,
 } from 'recharts';
+import axiosInstance from "../api/axiosInstance";
 
 type Hospital = {
   id: string;
@@ -41,6 +42,7 @@ const Container = styled.div`
 const Card = styled.div`
   background: white;
   border-radius: 20px;
+   color: black;
   padding: 1.5rem;
   font-family: SemiBold;
   font-size: 17px;
@@ -85,14 +87,29 @@ const ControlButton = styled.button`
   }
 `;
 
+type Program = {
+  id: number;
+  category: string;
+  title: string;
+  type: string;
+  duration: number;
+  description: string;
+  videoUrl: string;
+};
 
 
 const HomePage = () => {
   const [loaded, setLoaded] = useState(false);
   const mapRef = useRef<HTMLDivElement>(null);
   const mapInstance = useRef<any>(null);
- const hospitalOverlays = useRef<any[]>([]);
+  const hospitalOverlays = useRef<any[]>([]);
   const [hospitalList, setHospitalList] = useState<Hospital[]>([]);
+  const [programs, setPrograms] = useState<Program[]>([]);
+
+const getRandomPrograms = (arr: Program[], count: number) => {
+  const shuffled = [...arr].sort(() => 0.5 - Math.random());
+  return shuffled.slice(0, count);
+};
 
   const data = [
     { month: '3월', 언어발달: 60, 인지발달: 40, 사회성발달: 20, 운동발달: 55, 정서발달: 35 },
@@ -108,7 +125,7 @@ const HomePage = () => {
     운동발달: '#c49cf2',
     정서발달: '#e2dcfc',
   };
-  
+
   const DevelopmentGraph = () => (
     <div style={{ width: '100%', height: 200 }}>
       {/* 그래프만 왼쪽으로 이동 */}
@@ -293,6 +310,20 @@ const HomePage = () => {
     };
   }, [loaded]);
   
+useEffect(() => {
+  const fetchPrograms = async () => {
+    try {
+      const res = await axiosInstance.get("/program");
+      const data: Program[] = res.data;
+      setPrograms(getRandomPrograms(data, 3)); // 랜덤 3개
+      console.log(data)
+    } catch (err) {
+      console.error("학습 프로그램 불러오기 실패:", err);
+    }
+  };
+  fetchPrograms();
+}, []);
+
 
   return (
     <Outer>
@@ -301,28 +332,36 @@ const HomePage = () => {
   <h3>우리 아이 발달 그래프</h3>
   <DevelopmentGraph />
 </Card>
-        <Card>
-          <h3>맞춤 학습 프로그램</h3>
-          <div style={{ display: "flex", gap: "1rem", overflowX: "auto" }}>
-            <div
-              style={{
-                width: 160,
-                height: 100,
-                background: "#e0e0ff",
-                borderRadius: 12,
-              }}
-            />
-            <div
-              style={{
-                width: 160,
-                height: 100,
-                background: "#e0e0ff",
-                borderRadius: 12,
-              }}
-            />
-          </div>
-        </Card>
-
+       <Card>
+  <h3 style={{ fontSize: "18px", fontWeight: "bold", marginBottom: "1rem" }}>맞춤 학습 프로그램</h3>
+  <div style={{ display: "flex", gap: "1rem", overflowX: "auto", scrollSnapType: "x mandatory", paddingBottom: "0.5rem" }}>
+    {programs.map((program) => (
+      <div
+        key={program.id}
+        style={{
+          flex: "0 0 auto",
+          width: 240,
+          scrollSnapAlign: "start",
+          background: "#f7f7fb",
+          borderRadius: 12,
+          overflow: "hidden",
+        }}
+      >
+        <iframe
+          src={program.videoUrl}
+          style={{ width: "100%", height: 140, border: "none" }}
+          allowFullScreen
+        />
+        <div style={{ display: "flex", gap: "1rem", fontSize: 13, fontWeight: 500, color: "#777", padding: "0.8rem 1rem 0 1rem" }}>
+          <span style={{ color: "#7595D3" }}>{program.type}</span>
+          <span>{program.duration}분</span>
+        </div>
+        <div style={{ fontSize: 15, fontWeight: "bold", padding: "0.3rem 1rem 0 1rem" }}>{program.title}</div>
+        <div style={{ fontSize: 13, color: "#666", padding: "0.3rem 1rem 1rem 1rem" }}>{program.description}</div>
+      </div>
+    ))}
+  </div>
+</Card>
         <Card>
           <h3>주변 병원 찾기</h3>
           <MapWrapper>

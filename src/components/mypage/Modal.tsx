@@ -27,6 +27,7 @@ const ModalContainer = styled.div`
 const Title = styled.h3`
   font-size: 18px;
   font-weight: bold;
+  color: black;
   margin-bottom: 0.8rem;
   font-family: Bold;
 `;
@@ -45,6 +46,7 @@ const ButtonRow = styled.div`
 
 const CancelButton = styled.button`
   flex: 1;
+  color: black;
   margin-right: 0.5rem;
   padding: 0.5rem 0;
   background: white;
@@ -55,9 +57,12 @@ const CancelButton = styled.button`
   width: 120px;
   height: 42px;
   font-size: 14px;
-  &:focus {
+ &:focus,
+  &:hover,
+  &:active {
     outline: none;
     box-shadow: none;
+    border: 1px solid #707070;
   }
 `;
 
@@ -73,9 +78,12 @@ const ActionButton = styled.button<{ red?: boolean }>`
   border-radius: 8px;
   cursor: pointer;
   font-size: 14px;
-  &:focus {
+  &:focus,
+  &:hover,
+  &:active {
     outline: none;
     box-shadow: none;
+    border: none;
   }
 `;
 

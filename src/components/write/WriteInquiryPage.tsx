@@ -80,6 +80,7 @@ const Header = styled.div`
   display: flex;
   align-items: center;
   gap: 0.6rem;
+  color: black;
   margin-bottom: 1.5rem;
 `;
 
@@ -91,6 +92,7 @@ const BackIcon = styled.img`
 const Title = styled.h2`
   font-size: 18px;
   font-weight: bold;
+  color: black;
   font-family: Bold;
 `;
 
@@ -98,16 +100,22 @@ const InputTitle = styled.input`
   width: 100%;
   padding: 0.8rem;
   margin-bottom: 1rem;
+  color: black;
   border-radius: 10px;
   border: 1px solid #e0e0e0;
   background: #f9f9f9;
   font-family: Regular;
   font-size: 14px;
   box-sizing: border-box;
+  &:focus {
+    outline: none;
+    box-shadow: none;
+  }
 `;
 
 const Textarea = styled.textarea`
   width: 100%;
+  color: black;
   min-height: 150px;
   padding: 0.8rem;
   margin-bottom: 2rem;
@@ -118,6 +126,10 @@ const Textarea = styled.textarea`
   font-size: 14px;
   resize: none;
   box-sizing: border-box;
+  &:focus {
+    outline: none;
+    box-shadow: none;
+  }
 `;
 
 const SubmitButton = styled.button`
@@ -131,4 +143,8 @@ const SubmitButton = styled.button`
   border: none;
   border-radius: 10px;
   cursor: pointer;
-`;
+  &:focus {
+    outline: none;
+    box-shadow: none;
+  }
+`; 

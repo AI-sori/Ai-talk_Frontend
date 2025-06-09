@@ -145,6 +145,7 @@ const Header = styled.div`
   justify-content: space-between;
   align-items: center;
   margin-bottom: 1.5rem;
+  color: black;
 `;
 
 const BackArea = styled.div`
@@ -161,6 +162,7 @@ const BackIcon = styled.img`
 const Title = styled.h2`
   font-size: 18px;
   font-weight: bold;
+  color: black;
   font-family: Bold;
 `;
 
@@ -180,6 +182,7 @@ const TextButton = styled.button`
 const InquiryTitle = styled.h3`
   font-size: 16px;
   font-weight: bold;
+  color: black;
   margin-bottom: 0.6rem;
   margin-left: 8px;
 `;
@@ -224,6 +227,8 @@ const EditInput = styled.input`
   width: 280px;
   margin-bottom: 1rem;
   padding: 0.7rem;
+  background: #f8fafc;
+  color: black;
   border-radius: 8px;
   border: 1px solid #ccc;
   font-family: Regular;
@@ -232,6 +237,8 @@ const EditInput = styled.input`
 const EditTextarea = styled.textarea`
   font-size: 14px;
   width: 280px;
+  color: black;
+  background: #f8fafc;
   font-family: Regular;
   height: 120px;
   padding: 0.7rem;
@@ -245,6 +252,7 @@ const CancelButton = styled.button`
   padding: 0.5rem 1rem;
   border-radius: 8px;
   border: none;
+  color: black;
   font-family: Regular;
   background: #eee;
   cursor: pointer;

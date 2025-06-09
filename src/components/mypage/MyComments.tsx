@@ -82,6 +82,7 @@ const Header = styled.div`
   align-items: center;
   gap: 0.6rem;
   margin-bottom: 1.2rem;
+   color: black;
 `;
 
 const BackIcon = styled.img`
@@ -93,12 +94,14 @@ const PageTitle = styled.h2`
   font-size: 18px;
   font-weight: bold;
   font-family: Bold;
+  color: black;
 `;
 
 const Card = styled.div`
   background: white;
   border-radius: 16px;
   padding: 1.5rem;
+  color: black;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
 `;
 
@@ -114,11 +117,12 @@ const PostTitle = styled.h3`
   font-size: 15px;
   font-weight: bold;
   margin-bottom: 0.4rem;
+  color: black;
 `;
 
 const CommentText = styled.p`
   font-size: 14px;
-  color: #666;
+  color: black;
   margin-bottom: 0.6rem;
 `;
 

@@ -22,6 +22,10 @@ const CategoryButton = styled.button<{ active?: boolean }>`
   border-radius: 20px;
   padding: 6px 14px;
   cursor: pointer;
+  &:focus {
+    outline: none;
+    box-shadow: none;
+  }
 `;
 
 const SearchBox = styled.div`
@@ -52,6 +56,10 @@ const SearchIcon = styled.button`
   display: flex;
   align-items: center;
   justify-content: center;
+  &:focus {
+    outline: none;
+    box-shadow: none;
+  }
 `;
 
 const PostCard = styled.div`
@@ -78,6 +86,7 @@ const PostTitle = styled.h3`
   font-weight: bold;
   margin-bottom: 0.5rem;
   font-family: ExtraBold;
+   color: black;
 `;
 
 const PostContent = styled.p`
@@ -93,6 +102,30 @@ const PostFooter = styled.div`
   gap: 1.2rem;
   font-size: 12px;
   color: #777;
+`;
+const PaginationButton = styled.button<{ active: boolean }>`
+  padding: 6px 12px;
+  width: 32px;
+  height: 32px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-family: Regular;
+  font-size: 15px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: ${({ active }) => (active ? "#7595D3" : "#fff")};
+  color: ${({ active }) => (active ? "#fff" : "#333")};
+  font-weight: ${({ active }) => (active ? "bold" : "normal")};
+  cursor: pointer;
+
+  &:focus,
+  &:hover,
+  &:active {
+    outline: none;
+    box-shadow: none;
+    border: 1px solid #ccc; 
+  }
 `;
 
 type Post = {
@@ -202,34 +235,27 @@ const filteredPosts = (searchText ? searchedPosts : allPosts).filter(
           </PostFooter>
         </PostCard>
       ))}
+<div
+      style={{
+        marginTop: "1.5rem",
+        textAlign: "center",
+        display: "flex",
+        justifyContent: "center",
+        gap: "8px",
+      }}
+    >
+      {Array.from({ length: totalPages }, (_, i) => (
+        <PaginationButton
+          key={i}
+          onClick={() => setCurrentPage(i)}
+          active={currentPage === i}
+        >
+          {i + 1}
+        </PaginationButton>
+      ))}
 
-      <div style={{ marginTop: "1.5rem", textAlign: "center", display: "flex", justifyContent: "center", gap: "8px" }}>
-        {Array.from({ length: totalPages }, (_, i) => (
-          <button
-            key={i}
-            onClick={() => setCurrentPage(i)}
-            style={{
-              padding: "6px 12px",
-              width: "32px",
-              height: "32px",
-              border: "1px solid #ccc",
-              borderRadius: "6px",
-              fontFamily: "Regular",
-              fontSize: "15px",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              backgroundColor: currentPage === i ? "#7595D3" : "#fff",
-              color: currentPage === i ? "#fff" : "#333",
-              fontWeight: currentPage === i ? "bold" : "normal",
-              cursor: "pointer",
-            }}
-          >
-            {i + 1}
-          </button>
-        ))}
       </div>
-    </>
+      </>
   );
 };
 

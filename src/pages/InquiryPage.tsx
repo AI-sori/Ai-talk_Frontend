@@ -94,7 +94,7 @@ const Header = styled.div`
   font-size: 18px;
   font-weight: bold;
   margin-bottom: 2rem;
-  
+  color: black;
 `;
 
 const Title = styled.h2`
@@ -102,6 +102,7 @@ const Title = styled.h2`
   font-weight: bold;
   font-family: Bold;
   cursor: pointer;
+  color: black;
 `;
 
 const AskButton = styled.button`
@@ -125,6 +126,7 @@ const AskButton = styled.button`
 const InquiryCard = styled.div`
   background: #fff;
   padding: 1rem;
+  color: black;
   border-radius: 12px;
    font-family: Regular;
   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
