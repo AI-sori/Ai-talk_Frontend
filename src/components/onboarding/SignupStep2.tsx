@@ -62,6 +62,7 @@ const Label = styled.label`
 const Input = styled.input`
  width: 350px;
   height: 50px;
+  color: black;
   padding: 12px;
   border-radius: 10px;
    background-color: white;
