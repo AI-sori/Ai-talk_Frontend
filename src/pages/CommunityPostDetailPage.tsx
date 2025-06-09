@@ -88,20 +88,6 @@ const Content = styled.p`
   font-family: Regular;
 `;
 
-const ImageBox = styled.div`
-  width: 100%;
-  height: 200px;
-  background: #ececff;
-  border-radius: 12px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: #aaa;
-  font-size: 20px;
-  margin-bottom: 1rem;
-  font-family: Regular;
-`;
-
 const StatusRow = styled.div`
   display: flex;
   align-items: center;
