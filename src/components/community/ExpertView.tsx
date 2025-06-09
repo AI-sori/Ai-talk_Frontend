@@ -105,6 +105,7 @@ const PostTitle = styled.h3`
   font-weight: bold;
   margin-bottom: 0.5rem;
   font-family: ExtraBold;
+   color: black;
 `;
 
 const PostContent = styled.p`

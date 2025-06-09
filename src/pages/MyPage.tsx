@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import Modal from "../components/mypage/Modal"; 
 import axiosInstance from "../api/axiosInstance";
+import { FaUserCircle } from "react-icons/fa";
 
 const Outer = styled.div`
   width: 100vw;
@@ -36,21 +37,19 @@ const ProfileRow = styled.div`
 
 const ProfileImg = styled.div`
   width: 60px;
-  height: 60px;               
+  height: 60px;
   border-radius: 50%;
-  overflow: hidden;
   background-color: #ddd;
-  flex-shrink: 0;             
+  flex-shrink: 0;
 
   display: flex;
   align-items: center;
   justify-content: center;
 
-  img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    display: block;
+  svg {
+    width: 60px;
+    height: 60px;
+    color: #bbb;
   }
 `;
 
@@ -61,6 +60,7 @@ const Info = styled.div`
 const Name = styled.div`
   font-weight: bold;
   font-size: 20px;
+  color: black;
     font-family: Bold;
 `;
 
@@ -97,6 +97,7 @@ const EditBtn = styled.button`
 const SectionTitle = styled.h3`
   font-size: 18px;
   font-weight: bold;
+  color: black;
   margin-bottom: 1rem;
   font-family: Bold;
 `;
@@ -104,6 +105,7 @@ const SectionTitle = styled.h3`
 const ProgramBox = styled.div`
   margin-bottom: 1rem;
   font-family: Bold;
+  color: black;
 `;
 
 const ProgramTitleRow = styled.div`
@@ -111,12 +113,14 @@ const ProgramTitleRow = styled.div`
   justify-content: space-between;
   font-weight: 600;
   font-size: 14px;
+  color: black;
   margin-bottom: 0.3rem;
 `;
 const ProgramCard = styled.div`
   background: #EEF6FF;
   border-radius: 12px;
   padding: 1rem;
+  color: black;
   margin-bottom: 1rem;
 `;
 
@@ -166,6 +170,7 @@ const ContinueBtn = styled.button`
 const List = styled.ul`
   margin: 0;
   padding: 0;
+  color: black;
   font-family: Regular;
   list-style: none;
 
@@ -246,14 +251,13 @@ const Mypage = () => {
       <Wrapper>
         <Card>
           <ProfileRow>
-            <ProfileImg>
+           <ProfileImg>
   {profile?.profileImage ? (
     <img src={profile.profileImage} alt="프로필 이미지" />
   ) : (
-    <span>이미지 없음</span>
+    <FaUserCircle />
   )}
 </ProfileImg>
-
             <Info>
               <Name>{profile?.nickname ?? "닉네임"}</Name>
               <Email>{profile?.email ?? "이메일"}</Email>

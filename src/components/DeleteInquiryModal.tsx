@@ -43,22 +43,37 @@ const ButtonRow = styled.div`
 const CancelButton = styled.button`
   flex: 1;
   padding: 0.6rem 1rem;
-  font-size: 14px;
+  font-size: 13px;
   background: #f0f0f0;
   border: none;
+  font-family: Regular;
+  color: black;
   border-radius: 8px;
   cursor: pointer;
+  
+     &:focus,
+  &:hover,
+  &:active {
+    outline: none;
+    box-shadow: none;
+    border: 1px solid #ccc; /* 유지하거나 원하면 transparent */
+  }
 `;
 
 const ConfirmButton = styled.button`
   flex: 1;
   padding: 0.6rem 1rem;
-  font-size: 14px;
+  font-size: 13px;
+  font-family: Regular;
   background: #ff6961;
   color: white;
   border: none;
   border-radius: 8px;
   cursor: pointer;
+   &:focus {
+    outline: none;
+    box-shadow: none;
+  }
 `;
 
 const DeleteInquiryModal = ({ onCancel, onConfirm }: DeleteInquiryModalProps) => {

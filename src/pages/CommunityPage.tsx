@@ -36,6 +36,7 @@ const Title = styled.h2`
   font-size: 22px;
   font-weight: bold;
   font-family: ExtraBold;
+   color: black;
 `;
 
 

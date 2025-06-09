@@ -19,6 +19,7 @@ const MyPosts = () => {
     const fetchPosts = async () => {
       try {
         const response = await axiosInstance.get("/community/my-posts");
+        console.log(response.data);
         setPosts(response.data.result);
       } catch (error) {
         console.error("내 게시글 불러오기 실패:", error);
@@ -78,6 +79,7 @@ const Header = styled.div`
   align-items: center;
   gap: 0.6rem;
   margin-bottom: 1.2rem;
+   color: black;
 `;
 
 const BackIcon = styled.img`
@@ -95,6 +97,7 @@ const Card = styled.div`
   background: white;
   border-radius: 16px;
   padding: 1.5rem;
+  color: black;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
 `;
 
@@ -110,6 +113,7 @@ const PostTitle = styled.h3`
   font-size: 15px;
   font-weight: bold;
   margin-bottom: 0.4rem;
+   color: black;
 `;
 
 const PostMeta = styled.div`

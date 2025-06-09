@@ -81,7 +81,7 @@ const Header = styled.div`
   font-size: 18px;
   font-weight: bold;
   margin-bottom: 2rem;
-  
+  color: black;
 `;
 
 const Title = styled.h2`
@@ -89,10 +89,12 @@ const Title = styled.h2`
   font-weight: bold;
   font-family: Bold;
   cursor: pointer;
+  color: black;
 `;
 
 const NoticeCard = styled.div`
   background: #fff;
+  color: black;
   padding: 1rem;
   font-family: Regular;
   border-radius: 12px;

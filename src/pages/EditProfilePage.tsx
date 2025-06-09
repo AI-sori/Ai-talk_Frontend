@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import axiosInstance from "../api/axiosInstance";
 import BackSvg from "../assets/community/Back.svg";
+import { FaUserCircle } from "react-icons/fa";
 
 const Outer = styled.div`
   width: 100vw;
@@ -36,6 +37,7 @@ const Header = styled.div`
 
 const Title = styled.h2`
   font-size: 20px;
+  color: black;
   font-weight: bold;
   font-family: Bold;
 `;
@@ -85,14 +87,22 @@ const ProfileImage = styled.label`
     display: block;
   }
 
+  svg {
+    width: 100%;
+    height: 100%;
+    color: #aaa;
+  }
+
   input {
     display: none;
   }
 `;
 
+
 const Label = styled.label`
   font-size: 14px;
   margin-bottom: 0.3rem;
+  color: black;
   display: block;
   font-family: Medium;
 `;
@@ -103,6 +113,7 @@ const InputWrapper = styled.div`
 
 const Input = styled.input`
   width: 300px;
+  color: black;
   padding: 0.7rem 1rem;
   border: 1px solid #E5E7EB;
   border-radius: 10px;
@@ -148,6 +159,7 @@ const CancelBtn = styled.button`
   cursor: pointer;
   font-size: 15px;
     font-family: Regular;
+    color: black;
     
   &:focus,
   &:focus-visible {
@@ -235,17 +247,18 @@ const EditProfilePage = () => {
 
           <ProfileImageWrapper>
             <ProfileImage>
-              {profileImagePreview ? (
-                <img src={profileImagePreview} alt="프로필 이미지" />
-              ) : (
-                "이미지 없음"
-              )}
-              <input
-                type="file"
-                accept="image/*"
-                onChange={handleImageChange}
-              />
-            </ProfileImage>
+  {profileImagePreview ? (
+    <img src={profileImagePreview} alt="프로필 이미지" />
+  ) : (
+    <FaUserCircle />
+  )}
+  <input
+    type="file"
+    accept="image/*"
+    onChange={handleImageChange}
+  />
+</ProfileImage>
+
             <div style={{ fontSize: "13px", color: "#999", marginTop: "0.5rem" }}>
               프로필 사진 변경
             </div>

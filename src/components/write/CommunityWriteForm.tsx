@@ -29,6 +29,7 @@ const Label = styled.div`
   font-size: 14px;
   font-weight: bold;
   margin-bottom: 0.6rem;
+  color: black;
    font-family: Bold;
 `;
 
@@ -62,6 +63,7 @@ const CategoryButton = styled.button<{ active?: boolean }>`
 const Input = styled.input`
   width: 280px;
   padding: 0.75rem 1rem;
+  color: black;
   border-radius: 10px;
   border: 1px solid #E5E7EB;
   background: #f8f9fb;
@@ -75,6 +77,7 @@ const Textarea = styled.textarea`
   height: 120px;
   padding: 0.75rem 1rem;
   border-radius: 10px;
+  color: black;
  border: 1px solid #E5E7EB;
   background: #f8f9fb;
   resize: none;
@@ -86,6 +89,7 @@ const Textarea = styled.textarea`
 const ImageUploadBox = styled.div`
   width: 60px;
   height: 60px;
+  color: black;
   background: #f1f1f1;
   border-radius: 12px;
   display: flex;
@@ -107,6 +111,7 @@ const CancelBtn = styled.button`
   flex: 1;
   background: #fff;
   border: 1px solid #aaa;
+  color: black;
   padding: 0.7rem;
   border-radius: 10px;
   cursor: pointer;

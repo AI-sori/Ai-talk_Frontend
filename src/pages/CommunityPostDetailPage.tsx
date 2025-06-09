@@ -77,6 +77,7 @@ const Title = styled.h3`
   font-weight: bold;
   margin-bottom: 0.5rem;
   font-family: Bold;
+   color: black;
 `;
 
 const Content = styled.p`
@@ -118,6 +119,7 @@ const CommentTitle = styled.div`
   font-size: 14px;
   font-weight: bold;
   margin-bottom: 1rem;
+  color: black;
   font-family: Regular;
 `;
 
@@ -164,9 +166,15 @@ const CommentInput = styled.input`
   flex: 1;
   padding: 0.7rem 1rem;
   font-size: 14px;
+  color: black;
+  background:rgb(253, 253, 253);
   border-radius: 10px;
   font-family: Regular;
   border: 1px solid #ccc;
+  &:focus {
+    outline: none;
+    box-shadow: none;
+  }
 `;
 
 const SubmitButton = styled.button`
@@ -178,6 +186,10 @@ const SubmitButton = styled.button`
   border: none;
   font-family: Regular;
   cursor: pointer;
+  &:focus {
+    outline: none;
+    box-shadow: none;
+  }
 `;
 
 const LikeBox = styled.div`
@@ -201,6 +213,10 @@ const RightMeta = styled.div`
   align-items: center;
   gap: 0.8rem;
   font-family: Regular;
+   &:focus {
+    outline: none;
+    box-shadow: none;
+  }
 `;
 
 const Action = styled.button`
@@ -211,6 +227,54 @@ const Action = styled.button`
   color: #555;
   cursor: pointer;
   font-family: Regular;
+   &:focus,
+  &:focus-visible {
+    outline: none;
+    box-shadow: none;
+  }
+`;
+const EditTextarea = styled.textarea`
+  width: 280px;
+  height: 80px;
+  font-size: 14px;
+  border-radius: 8px;
+  font-family: Regular;
+  background:rgb(253, 253, 253);
+  padding: 0.5rem;
+  border: 1px solid #ccc;
+  margin-bottom: 0.5rem;
+  color: black;
+  &:focus {
+    outline: none;
+    box-shadow: none;
+  }
+`;
+const EditActionButton = styled.button`
+  font-size: 12px;
+  background: none;
+  border: none;
+  font-family: Regular;
+  cursor: pointer;
+  color: #555;
+
+  &:focus {
+    outline: none;
+    box-shadow: none;
+  }
+`;
+const ThreeDotsButton = styled.button`
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 18.5px;
+  padding: 0;
+  line-height: 1;
+   color: #666;
+  &:focus,
+  &:focus-visible {
+    outline: none;
+    box-shadow: none;
+  }
 `;
 
 type Comment = {
@@ -355,12 +419,10 @@ const handleDeletePost = async () => {
   <span>{post.nickname}</span>
   {user?.userId === post.userId && (
     <div style={{ marginLeft: "auto", position: "relative" }}>
-      <button
-        onClick={() => setShowPostActions((prev) => !prev)}
-        style={{ background: "none", border: "none", cursor: "pointer" }}
-      >
-        ⋮
-      </button>
+     <ThreeDotsButton onClick={() => setShowPostActions((prev) => !prev)}>
+  ⋮
+</ThreeDotsButton>
+
       {showPostActions && (
         <div
           style={{
@@ -426,31 +488,27 @@ const handleDeletePost = async () => {
     </CommentHeader>
 
     {editCommentId === c.id ? (
-      <>
-        <textarea
-          value={editContent}
-          onChange={(e) => setEditContent(e.target.value)}
-          style={{
-            width: "280px",
-            height: "80px",
-            fontSize: "14px",
-            borderRadius: "8px",
-            fontFamily: "Regular",
-            padding: "0.5rem",
-            border: "1px solid #ccc",
-            marginBottom: "0.5rem",
-          }}
-        />
-        <div style={{ display: "flex", justifyContent: "flex-end", gap: "0.5rem" }}>
-          <Action onClick={() => setEditCommentId(null)}>취소</Action>
-          <Action onClick={() => handleUpdateComment(c.id)} style={{ color: "#4171d6" }}>
-            저장
-          </Action>
-        </div>
-      </>
-    ) : (
-      <CommentText>{c.content}</CommentText>
-    )}
+  <>
+    <EditTextarea
+      value={editContent}
+      onChange={(e) => setEditContent(e.target.value)}
+    />
+    <div style={{ display: "flex", justifyContent: "flex-end", gap: "0.5rem" }}>
+      <EditActionButton onClick={() => setEditCommentId(null)}>
+        취소
+      </EditActionButton>
+      <EditActionButton
+        onClick={() => handleUpdateComment(c.id)}
+        style={{ color: "#4171d6" }}
+      >
+        저장
+      </EditActionButton>
+    </div>
+  </>
+) : (
+  <CommentText>{c.content}</CommentText>
+)}
+
   </Comment>
 ))}
               <CommentInputWrapper>
