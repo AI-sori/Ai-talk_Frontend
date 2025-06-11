@@ -1,5 +1,6 @@
 import styled from "styled-components";
 import { useState } from "react";
+import BackSvg from "../../assets/Back.svg";
 
 const Outer = styled.div`
   height: 100dvh;
@@ -21,15 +22,6 @@ const Container = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: center; 
-`;
-
-
-
-const Title = styled.h2`
-  font-size: 26px;
-  color: #7b9acc;
-  text-align: center;
-  margin-bottom: 2rem;
 `;
 
 const Label = styled.label`
@@ -87,9 +79,38 @@ const Button = styled.button`
     box-shadow: none;
   }
 `;
+const HeaderWrapper = styled.div`
+  position: relative;
+  text-align: center;
+  margin-bottom: 2rem;
+`;
 
+const BackButton = styled.button`
+  position: absolute;
+  top: 0;
+  left: 0;
+  background: none;
+  border: none;
+  cursor: pointer;
+
+  img {
+    width: 24px;
+    height: 24px;
+  }
+
+  &:focus {
+    outline: none;
+  }
+`;
+
+const Title = styled.h2`
+  font-size: 26px;
+  color: #7b9acc;
+  margin: 0;
+`;
 const SignupStep1 = ({
   onNext,
+  onBack,
   email,
   setEmail,
   password,
@@ -131,7 +152,12 @@ const SignupStep1 = ({
   return (
     <Outer>
       <Container>
-        <Title>회원가입</Title>
+         <HeaderWrapper>
+  <BackButton onClick={onBack}>
+    <img src={BackSvg} alt="뒤로가기" />
+  </BackButton>
+  <Title>회원가입</Title>
+</HeaderWrapper>
 
         <Label>*이메일</Label>
         <InputWrapper>
