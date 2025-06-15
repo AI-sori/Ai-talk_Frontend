@@ -261,7 +261,7 @@ const Mypage = () => {
         height: '100%',
         borderRadius: '50%',
         objectFit: 'cover',
-        imageRendering: 'auto', // 'crisp-edges'나 'high-quality'도 실험 가능
+        imageRendering: 'auto', 
       }}
     />
   ) : (
@@ -275,30 +275,32 @@ const Mypage = () => {
             </Info>
             <EditBtn onClick={() => navigate("/mypage/edit")}>수정하기</EditBtn>
           </ProfileRow>
-        </Card>
+        </Card> 
 
         <Card>
           <SectionTitle>학습중인 프로그램</SectionTitle>
           {[
-            { title: "기초 수학", date: "2024-01-15", progress: 65 },
-            { title: "한글 읽기", date: "2024-01-14", progress: 40 },
-            { title: "영어 기초", date: "2024-01-13", progress: 25 },
+            { title: "아이의 말을 성장시켜주는 엄마랑 말놀이", date: "2025-06-15", progress: 65 },
+            { title: "지니와 한글놀이", date: "2025-06-10", progress: 40 },
+            { title: "우리 아이 언어발달을 위한 동화 읽어주기", date: "2025-06-13", progress: 25 },
           ].map((item) => (
-            <ProgramCard key={item.title}>
-              <ProgramBox>
-                <ProgramTitleRow>
-                  <span>{item.title}</span>
-                  <span>최근 학습일: {item.date}</span>
-                </ProgramTitleRow>
-                <ProgressBar>
-                  <Progress percent={item.progress} />
-                </ProgressBar>
-                <BottomRow>
-                  <span>진행률: {item.progress}%</span>
-                  <ContinueBtn>계속하기</ContinueBtn>
-                </BottomRow>
-              </ProgramBox>
-            </ProgramCard>
+           <ProgramCard key={item.title}>
+  <ProgramBox>
+    <ProgramTitleRow>
+      <span>{item.title}</span>
+    </ProgramTitleRow>
+    <div style={{ fontSize: '12px', color: '#666', marginBottom: '0.4rem' }}>
+      최근 학습일: {item.date}
+    </div>
+    <ProgressBar>
+      <Progress percent={item.progress} />
+    </ProgressBar>
+    <BottomRow>
+      <span>진행률: {item.progress}%</span>
+       <ContinueBtn onClick={() => navigate(`/learning/`)}>계속하기</ContinueBtn>
+    </BottomRow>
+  </ProgramBox>
+</ProgramCard>
           ))}
         </Card>
 
