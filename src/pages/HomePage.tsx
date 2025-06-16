@@ -190,9 +190,10 @@ const getRandomPrograms = (arr: Program[], count: number) => {
 
   // 병원 검색 함수
 const searchHospitals = (center: kakao.maps.LatLng) => {
+    const { kakao } = window as any;
   const map = mapInstance.current;
   const ps = new (kakao.maps.services.Places as any)();
-   const { kakao } = window as any;
+ 
 
   const keywords = ["소아과", "정신과", "종합병원", "대학병원"];
 
@@ -277,22 +278,24 @@ const searchHospitals = (center: kakao.maps.LatLng) => {
             });
 
             // ✅ 3. 마커 클릭 시 말풍선 열기 (이전 말풍선 닫고 새로 열기)
-          (window.kakao.maps.event as any).addListener(marker, 'click', () => {
-              if (currentInfoOverlay) currentInfoOverlay.setMap(null);
-              infoOverlay.setMap(map);
-              currentInfoOverlay = infoOverlay;
-            });
+          // @ts-ignore
+kakao.maps.event.addListener(marker, 'click', () => {
+  if (currentInfoOverlay) currentInfoOverlay.setMap(null);
+  infoOverlay.setMap(map);
+  currentInfoOverlay = infoOverlay;
+});
 
             markerIndex++;
           });
 
           // ✅ 4. 지도 클릭 시 열려 있던 말풍선 닫기
-          (window.kakao.maps.event as any).addListener(map, 'click', () => {
-            if (currentInfoOverlay) {
-              currentInfoOverlay.setMap(null);
-              currentInfoOverlay = null;
-            }
-          });
+          // @ts-ignore
+kakao.maps.event.addListener(map, 'click', () => {
+  if (currentInfoOverlay) {
+    currentInfoOverlay.setMap(null);
+    currentInfoOverlay = null;
+  }
+});
         }
       },
       {
