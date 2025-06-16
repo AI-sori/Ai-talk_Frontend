@@ -280,9 +280,9 @@ const Mypage = () => {
         <Card>
           <SectionTitle>학습중인 프로그램</SectionTitle>
           {[
-            { title: "아이의 말을 성장시켜주는 엄마랑 말놀이", date: "2025-06-15", progress: 65 },
-            { title: "지니와 한글놀이", date: "2025-06-10", progress: 40 },
-            { title: "우리 아이 언어발달을 위한 동화 읽어주기", date: "2025-06-13", progress: 25 },
+            { title: "마트에 가요", date: "2025-06-15", progress: 10 },
+            { title: "아이의 말을 성장시켜주는 엄마랑 말놀이", date: "2025-06-10", progress: 40 },
+            { title: "지니와 한글놀이", date: "2025-06-13", progress: 25 },
           ].map((item) => (
            <ProgramCard key={item.title}>
   <ProgramBox>
