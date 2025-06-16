@@ -276,7 +276,7 @@ const searchHospitals = (center: kakao.maps.LatLng) => {
             });
 
             // ✅ 3. 마커 클릭 시 말풍선 열기 (이전 말풍선 닫고 새로 열기)
-           (kakao.maps.event as any).addListener(marker, 'click', () => {
+          (window.kakao.maps.event as any).addListener(marker, 'click', () => {
               if (currentInfoOverlay) currentInfoOverlay.setMap(null);
               infoOverlay.setMap(map);
               currentInfoOverlay = infoOverlay;
@@ -286,7 +286,7 @@ const searchHospitals = (center: kakao.maps.LatLng) => {
           });
 
           // ✅ 4. 지도 클릭 시 열려 있던 말풍선 닫기
-          (kakao.maps.event as any).addListener(map, 'click', () => {
+          (window.kakao.maps.event as any).addListener(map, 'click', () => {
             if (currentInfoOverlay) {
               currentInfoOverlay.setMap(null);
               currentInfoOverlay = null;
