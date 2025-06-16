@@ -236,11 +236,12 @@ const searchHospitals = (center: kakao.maps.LatLng) => {
         if (completed === keywords.length) {
           // ✅ 중심과의 거리 계산하여 정렬
           const resultsWithDistance = uniqueResults.map(place => {
-            const dx = place.x - center.getLng();
-            const dy = place.y - center.getLat();
-            const distance = Math.sqrt(dx * dx + dy * dy);
-            return { ...place, distance };
-          });
+  const dx = place.x - (center as any).getLng();
+  const dy = place.y - (center as any).getLat();
+  const distance = Math.sqrt(dx * dx + dy * dy);
+  return { ...place, distance };
+});
+
 
           const sorted = resultsWithDistance.sort((a, b) => a.distance - b.distance);
           const trimmed = sorted.slice(0, 5);
