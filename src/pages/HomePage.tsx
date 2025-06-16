@@ -1,6 +1,5 @@
 import { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
-import { createHospitalOverlay } from '../utils/createHospitalOverlay';
 import HospitalList from '../components/HospitalList';
 import {
   LineChart,
@@ -251,7 +250,6 @@ const searchHospitals = (center: kakao.maps.LatLng) => {
             const marker = new kakao.maps.Marker({
               map,
               position,
-              title: `[${place.tag}] ${place.name}`,
             });
 
             hospitalOverlays.current.push(marker);
@@ -278,7 +276,7 @@ const searchHospitals = (center: kakao.maps.LatLng) => {
             });
 
             // ✅ 3. 마커 클릭 시 말풍선 열기 (이전 말풍선 닫고 새로 열기)
-            kakao.maps.event.addListener(marker, 'click', () => {
+           (kakao.maps.event as any).addListener(marker, 'click', () => {
               if (currentInfoOverlay) currentInfoOverlay.setMap(null);
               infoOverlay.setMap(map);
               currentInfoOverlay = infoOverlay;
@@ -304,10 +302,7 @@ const searchHospitals = (center: kakao.maps.LatLng) => {
   });
 };
 
-
-
-
-
+/*
   // 현재 위치로 지도 이동
   const goToMyLocation = () => {
   const { kakao } = window;
@@ -339,7 +334,7 @@ const searchHospitals = (center: kakao.maps.LatLng) => {
       console.error(err);
     }
   );
-};
+};  */
 
 
   useEffect(() => {
