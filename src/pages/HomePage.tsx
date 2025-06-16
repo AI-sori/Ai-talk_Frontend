@@ -187,40 +187,112 @@ const getRandomPrograms = (arr: Program[], count: number) => {
     }
   }, []);
 
+  
+
   // 병원 검색 함수
-  const searchHospitals = (center: kakao.maps.LatLng) => {
-    const map = mapInstance.current;
-  
-    // 기존 마커 제거
-    hospitalOverlays.current.forEach(marker => marker.setMap(null));
-    hospitalOverlays.current = [];
-  
-    const ps = new (window as any).kakao.maps.services.Places();
-    ps.categorySearch(
-  "HP8",
-  (
-    data: kakao.maps.services.PlacesSearchResult[],
-    status: kakao.maps.services.Status
-  ) => {
-        if (status === 'OK') {
-          //  병원 리스트 저장
+const searchHospitals = (center: kakao.maps.LatLng) => {
+  const map = mapInstance.current;
+  const ps = new kakao.maps.services.Places();
+
+  const keywords = ["소아과", "정신과", "종합병원", "대학병원"];
+
+  hospitalOverlays.current.forEach(marker => marker.setMap(null));
+  hospitalOverlays.current = [];
+
+  const seenIds = new Set<string>();
+  const uniqueResults: {
+    id: string;
+    name: string;
+    address: string;
+    x: number;
+    y: number;
+    tag: string;
+  }[] = [];
+
+  let completed = 0;
+  let markerIndex = 1;
+  let currentInfoOverlay: any = null; // ✅ 현재 열려있는 말풍선 추적
+
+  keywords.forEach((keyword) => {
+    ps.keywordSearch(
+      keyword,
+      (data: kakao.maps.services.PlacesSearchResult[], status: kakao.maps.services.Status) => {
+        if (status === kakao.maps.services.Status.OK) {
+          data.forEach((place) => {
+            if (!seenIds.has(place.id)) {
+              seenIds.add(place.id);
+              uniqueResults.push({
+                id: place.id,
+                name: place.place_name,
+                address: place.address_name,
+                x: Number(place.x),
+                y: Number(place.y),
+                tag: keyword,
+              });
+            }
+          });
+        }
+
+        completed++;
+        if (completed === keywords.length) {
+          const trimmed = uniqueResults.slice(0, 5);
           setHospitalList(
-            data.slice(0, 3).map((place) => ({
+            trimmed.map((place) => ({
               id: place.id,
-              name: place.place_name,
-              address: place.address_name,
+              name: `[${place.tag}] ${place.name}`,
+              address: place.address,
             }))
           );
-  
-          data.forEach((place, idx) => {
-            const overlay = createHospitalOverlay(
+
+          trimmed.forEach((place) => {
+            const position = new kakao.maps.LatLng(place.y, place.x);
+
+            // ✅ 1. 마커 생성 (기본 Kakao 마커)
+            const marker = new kakao.maps.Marker({
               map,
-              Number(place.y),
-              Number(place.x),
-              idx + 1
-            );
-            overlay.setMap(map);
-            hospitalOverlays.current.push(overlay);
+              position,
+              title: `[${place.tag}] ${place.name}`,
+            });
+
+            hospitalOverlays.current.push(marker);
+
+            // ✅ 2. 말풍선(content) 만들기 - 크기 축소됨
+            const infoContent = `
+              <div style="background:white;border-radius:6px;padding:8px 10px;box-shadow:0 1px 4px rgba(0,0,0,0.2);min-width:150px;max-width:200px;font-size:12px;">
+                <div style="font-weight:600;margin-bottom:4px;">[${place.tag}] ${place.name}</div>
+                <div style="color:#555;">${place.address}</div>
+                <div style="margin-top:6px;">
+                  <a href="https://map.kakao.com/link/map/${encodeURIComponent(place.name)},${place.y},${place.x}"
+                     target="_blank"
+                     style="color:#3366cc;text-decoration:underline;font-size:11px;">
+                    카카오맵에서 보기
+                  </a>
+                </div>
+              </div>
+            `;
+
+            const infoOverlay = new kakao.maps.CustomOverlay({
+              content: infoContent,
+              position,
+              yAnchor: 1,
+            });
+
+            // ✅ 3. 마커 클릭 시 말풍선 열기 (이전 말풍선 닫고 새로 열기)
+            kakao.maps.event.addListener(marker, 'click', () => {
+              if (currentInfoOverlay) currentInfoOverlay.setMap(null);
+              infoOverlay.setMap(map);
+              currentInfoOverlay = infoOverlay;
+            });
+
+            markerIndex++;
+          });
+
+          // ✅ 4. 지도 클릭 시 열려 있던 말풍선 닫기
+          kakao.maps.event.addListener(map, 'click', () => {
+            if (currentInfoOverlay) {
+              currentInfoOverlay.setMap(null);
+              currentInfoOverlay = null;
+            }
           });
         }
       },
@@ -229,36 +301,46 @@ const getRandomPrograms = (arr: Program[], count: number) => {
         radius: 3000,
       }
     );
-  };
-  
+  });
+};
+
+
+
+
 
   // 현재 위치로 지도 이동
   const goToMyLocation = () => {
-    const { kakao } = window;
+  const { kakao } = window;
 
-    navigator.geolocation.getCurrentPosition(
-      (pos) => {
-        const userLatLng = new kakao.maps.LatLng(
-          pos.coords.latitude,
-          pos.coords.longitude
-        );
+  if (!mapInstance.current) {
+    console.warn("지도 인스턴스가 아직 초기화되지 않았습니다.");
+    return;
+  }
 
-        const map = mapInstance.current;
-        map.setCenter(userLatLng);
+  navigator.geolocation.getCurrentPosition(
+    (pos) => {
+      const userLatLng = new kakao.maps.LatLng(
+        pos.coords.latitude,
+        pos.coords.longitude
+      );
 
-        new kakao.maps.Marker({
-          position: userLatLng,
-          map,
-        });
+      const map = mapInstance.current;
+      map.setCenter(userLatLng);
 
-        searchHospitals(userLatLng);
-      },
-      (err) => {
-        alert("위치 정보를 가져올 수 없습니다.");
-        console.error(err);
-      }
-    );
-  };
+      new kakao.maps.Marker({
+        position: userLatLng,
+        map,
+      });
+
+      searchHospitals(userLatLng);
+    },
+    (err) => {
+      alert("위치 정보를 가져올 수 없습니다. 브라우저 위치 권한을 확인하세요.");
+      console.error(err);
+    }
+  );
+};
+
 
   useEffect(() => {
     if (!loaded || !mapRef.current) return;
@@ -367,9 +449,7 @@ useEffect(() => {
               <ControlButton onClick={() => searchHospitals(mapInstance.current.getCenter())}>
                 이 위치에서 다시 찾기
               </ControlButton>
-              <ControlButton onClick={goToMyLocation}>
-                내 위치로 이동
-              </ControlButton>
+
             </MapControl>
             <div
               ref={mapRef}
