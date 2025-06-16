@@ -123,12 +123,58 @@ const PostFooter = styled.div`
   color: #777;
 `;
 
+const dummyPosts = [
+  {
+    id: 1,
+    category: "발달지연",
+    status: "답변완료",
+    date: "2024.01.15",
+    title: "언어발달이 또래보다 느린 것 같아요",
+    content: "36개월 아이인데 또래보다 언어발달이 느린 것 같아 걱정입니다. 전문가 상담이 필요할까요?",
+    views: 45,
+    likes: 12,
+    comments: 8,
+  },
+  {
+    id: 2,
+    category: "심리상담",
+    status: "답변대기",
+    date: "2024.02.03",
+    title: "아이의 분리불안이 심한 편이에요",
+    content: "어린이집에 등원할 때마다 아이가 격하게 울고 불안 증세를 보여 걱정입니다.",
+    views: 62,
+    likes: 9,
+    comments: 5,
+  },
+  {
+    id: 3,
+    category: "교육",
+    status: "답변완료",
+    date: "2024.03.10",
+    title: "집중력이 너무 짧은 것 같아요",
+    content: "아이의 집중력이 매우 짧아 놀이나 활동을 5분 이상 지속하기 어려워요.",
+    views: 31,
+    likes: 7,
+    comments: 2,
+  },
+  {
+    id: 4,
+    category: "발달지연",
+    status: "답변대기",
+    date: "2024.04.01",
+    title: "걸음마가 너무 늦어요",
+    content: "18개월이 되었는데 아직도 걷지 못하고 기기만 해서 걱정입니다.",
+    views: 50,
+    likes: 11,
+    comments: 4,
+  }
+];
+
 const ExpertView = () => {
   const navigate = useNavigate();
-  const dummyIds = [1, 2];
+
   return (
     <>
-
       <CategoryRow>
         {["전체", "심리상담", "발달지연", "교육"].map((label, idx) => (
           <CategoryButton key={label} active={idx === 0}>
@@ -140,40 +186,39 @@ const ExpertView = () => {
       <SearchBox>
         <SearchInput placeholder="검색어를 입력하세요" />
         <SearchIcon>
-  <img src={SearchSvg} alt="검색" width={20} height={20} />
-</SearchIcon>
+          <img src={SearchSvg} alt="검색" width={20} height={20} />
+        </SearchIcon>
       </SearchBox>
 
-      {dummyIds.map((id) => (
-  <PostCard
-    key={id}
-    onClick={() => navigate(`/consult/${id}`)} //  임시로 ID 기반 상세 페이지 이동
-    style={{ cursor: "pointer" }} // 클릭 가능한 커서
-  >
-    <BadgeRow>
-      <Badge bg="#E9DFFF" color="#6A4CA4">발달지연</Badge>
-      <Badge bg="#F0F0F0" color="#666">단답형</Badge>
-      <Badge bg="#E1F8EA" color="#27854D">답변완료</Badge>
-    </BadgeRow>
-    <PostMeta>2024.01.15</PostMeta>
-    <PostTitle>언어발달이 또래보다 느린 것 같아요</PostTitle>
-    <PostContent>
-      36개월 아이인데 또래보다 언어발달이 느린 것 같아 걱정입니다. 전문가 상담이 필요할까요?
-    </PostContent>
-    <PostFooter>
-      <span>👁 45</span>
-      <span style={{ display: "flex", alignItems: "center", gap: "4px" }}>
-        <img src={LikeSvg} alt="좋아요" width={14} height={14} />
-        12
-      </span>
-      <span style={{ display: "flex", alignItems: "center", gap: "4px" }}>
-        <img src={WriteSvg} alt="댓글" width={14} height={14} />
-        8
-      </span>
-    </PostFooter>
-  </PostCard>
-))}
-
+      {dummyPosts.map((post) => (
+        <PostCard
+          key={post.id}
+          onClick={() => navigate(`/consult/${post.id}`)}
+          style={{ cursor: "pointer" }}
+        >
+          <BadgeRow>
+            <Badge bg="#E9DFFF" color="#6A4CA4">{post.category}</Badge>
+    
+            <Badge bg={post.status === "답변완료" ? "#E1F8EA" : "#FFF6DA"} color={post.status === "답변완료" ? "#27854D" : "#B39B00"}>
+              {post.status}
+            </Badge>
+          </BadgeRow>
+          <PostMeta>{post.date}</PostMeta>
+          <PostTitle>{post.title}</PostTitle>
+          <PostContent>{post.content}</PostContent>
+          <PostFooter>
+            <span>👁 {post.views}</span>
+            <span style={{ display: "flex", alignItems: "center", gap: "4px" }}>
+              <img src={LikeSvg} alt="좋아요" width={14} height={14} />
+              {post.likes}
+            </span>
+            <span style={{ display: "flex", alignItems: "center", gap: "4px" }}>
+              <img src={WriteSvg} alt="댓글" width={14} height={14} />
+              {post.comments}
+            </span>
+          </PostFooter>
+        </PostCard>
+      ))}
     </>
   );
 };
