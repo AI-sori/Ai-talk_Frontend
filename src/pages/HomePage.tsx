@@ -190,10 +190,9 @@ const getRandomPrograms = (arr: Program[], count: number) => {
 
   // 병원 검색 함수
 const searchHospitals = (center: kakao.maps.LatLng) => {
-    const { kakao } = window as any;
+  const { kakao } = window as any;
   const map = mapInstance.current;
-  const ps = new (kakao.maps.services.Places as any)();
- 
+  const ps = new kakao.maps.services.Places();
 
   const keywords = ["소아과", "정신과", "종합병원", "대학병원"];
 
@@ -211,14 +210,13 @@ const searchHospitals = (center: kakao.maps.LatLng) => {
   }[] = [];
 
   let completed = 0;
-  let markerIndex = 1;
-  let currentInfoOverlay: any = null; // ✅ 현재 열려있는 말풍선 추적
+  let currentInfoOverlay: any = null;
 
   keywords.forEach((keyword) => {
     ps.keywordSearch(
       keyword,
       (data: kakao.maps.services.PlacesSearchResult[], status: kakao.maps.services.Status) => {
-        if (status === 'OK') {
+        if (status === kakao.maps.services.Status.OK) {
           data.forEach((place) => {
             if (!seenIds.has(place.id)) {
               seenIds.add(place.id);
@@ -236,7 +234,17 @@ const searchHospitals = (center: kakao.maps.LatLng) => {
 
         completed++;
         if (completed === keywords.length) {
-          const trimmed = uniqueResults.slice(0, 5);
+          // ✅ 중심과의 거리 계산하여 정렬
+          const resultsWithDistance = uniqueResults.map(place => {
+            const dx = place.x - center.getLng();
+            const dy = place.y - center.getLat();
+            const distance = Math.sqrt(dx * dx + dy * dy);
+            return { ...place, distance };
+          });
+
+          const sorted = resultsWithDistance.sort((a, b) => a.distance - b.distance);
+          const trimmed = sorted.slice(0, 5);
+
           setHospitalList(
             trimmed.map((place) => ({
               id: place.id,
@@ -248,15 +256,9 @@ const searchHospitals = (center: kakao.maps.LatLng) => {
           trimmed.forEach((place) => {
             const position = new kakao.maps.LatLng(place.y, place.x);
 
-            // ✅ 1. 마커 생성 (기본 Kakao 마커)
-            const marker = new kakao.maps.Marker({
-              map,
-              position,
-            });
-
+            const marker = new kakao.maps.Marker({ map, position });
             hospitalOverlays.current.push(marker);
 
-            // ✅ 2. 말풍선(content) 만들기 - 크기 축소됨
             const infoContent = `
               <div style="background:white;border-radius:6px;padding:8px 10px;box-shadow:0 1px 4px rgba(0,0,0,0.2);min-width:150px;max-width:200px;font-size:12px;">
                 <div style="font-weight:600;margin-bottom:4px;">[${place.tag}] ${place.name}</div>
@@ -277,25 +279,21 @@ const searchHospitals = (center: kakao.maps.LatLng) => {
               yAnchor: 1,
             });
 
-            // ✅ 3. 마커 클릭 시 말풍선 열기 (이전 말풍선 닫고 새로 열기)
-          // @ts-ignore
-kakao.maps.event.addListener(marker, 'click', () => {
-  if (currentInfoOverlay) currentInfoOverlay.setMap(null);
-  infoOverlay.setMap(map);
-  currentInfoOverlay = infoOverlay;
-});
-
-            markerIndex++;
+            // @ts-ignore
+            kakao.maps.event.addListener(marker, 'click', () => {
+              if (currentInfoOverlay) currentInfoOverlay.setMap(null);
+              infoOverlay.setMap(map);
+              currentInfoOverlay = infoOverlay;
+            });
           });
 
-          // ✅ 4. 지도 클릭 시 열려 있던 말풍선 닫기
           // @ts-ignore
-kakao.maps.event.addListener(map, 'click', () => {
-  if (currentInfoOverlay) {
-    currentInfoOverlay.setMap(null);
-    currentInfoOverlay = null;
-  }
-});
+          kakao.maps.event.addListener(map, 'click', () => {
+            if (currentInfoOverlay) {
+              currentInfoOverlay.setMap(null);
+              currentInfoOverlay = null;
+            }
+          });
         }
       },
       {
@@ -305,6 +303,7 @@ kakao.maps.event.addListener(map, 'click', () => {
     );
   });
 };
+
 
 /*
   // 현재 위치로 지도 이동
