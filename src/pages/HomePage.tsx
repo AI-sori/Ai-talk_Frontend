@@ -192,6 +192,7 @@ const getRandomPrograms = (arr: Program[], count: number) => {
 const searchHospitals = (center: kakao.maps.LatLng) => {
   const map = mapInstance.current;
   const ps = new (kakao.maps.services.Places as any)();
+   const { kakao } = window as any;
 
   const keywords = ["소아과", "정신과", "종합병원", "대학병원"];
 
