@@ -191,7 +191,7 @@ const getRandomPrograms = (arr: Program[], count: number) => {
   // 병원 검색 함수
 const searchHospitals = (center: kakao.maps.LatLng) => {
   const map = mapInstance.current;
-  const ps = new kakao.maps.services.Places();
+  const ps = new (kakao.maps.services.Places as any)();
 
   const keywords = ["소아과", "정신과", "종합병원", "대학병원"];
 
@@ -216,7 +216,7 @@ const searchHospitals = (center: kakao.maps.LatLng) => {
     ps.keywordSearch(
       keyword,
       (data: kakao.maps.services.PlacesSearchResult[], status: kakao.maps.services.Status) => {
-        if (status === kakao.maps.services.Status.OK) {
+        if (status === 'OK') {
           data.forEach((place) => {
             if (!seenIds.has(place.id)) {
               seenIds.add(place.id);
@@ -286,7 +286,7 @@ const searchHospitals = (center: kakao.maps.LatLng) => {
           });
 
           // ✅ 4. 지도 클릭 시 열려 있던 말풍선 닫기
-          kakao.maps.event.addListener(map, 'click', () => {
+          (kakao.maps.event as any).addListener(map, 'click', () => {
             if (currentInfoOverlay) {
               currentInfoOverlay.setMap(null);
               currentInfoOverlay = null;
