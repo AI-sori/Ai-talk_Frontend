@@ -461,3 +461,4 @@ useEffect(() => {
     </Outer>
   );
 };
+export default HomePage;
