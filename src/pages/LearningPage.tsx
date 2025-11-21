@@ -1,6 +1,5 @@
 import styled from 'styled-components';
-import { useEffect, useState } from 'react';
-import axiosInstance from '../api/axiosInstance';
+import { useState } from 'react';
 
 const Outer = styled.div`
   width: 100vw;
@@ -18,91 +17,22 @@ const Wrapper = styled.div`
   box-sizing: border-box;
 `;
 
-// 공통 카드 스타일
 const Card = styled.div`
   background: white;
   border-radius: 16px;
   padding: 1.5rem;
-   color: black;
   margin-bottom: 1.5rem;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+  color: black;
 `;
 
-// 타이틀
 const SectionTitle = styled.h3`
   font-family: Bold;
   font-size: 18px;
-   color: black;
   margin-bottom: 1rem;
+  color: black;
 `;
 
-// 진행중인 학습 카드 컴포넌트 (섹션)
-const OngoingCard = styled.div`
-  background: #F8FAFC;
-  border-radius: 14px;
-  display: flex;
-   color: black;
-  align-items: center;
-  padding: 1rem;
-  gap: 1rem;
-`;
-
-const ThumbnailBox = styled.div`
-  width: 80px;
-  height: 80px;
-  border-radius: 12px;
-  overflow: hidden;
-  flex-shrink: 0;
-`;
-
-const InfoBox = styled.div`
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-`;
-
-const TagRow = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  margin-bottom: 0.3rem;
-`;
-
-const Tag = styled.span`
-  background: #E9F0FF;
-  color: #7595D3;
-  padding: 2px 8px;
-  font-size: 12px;
-  font-weight: 600;
-  border-radius: 20px;
-`;
-
-const TimeText = styled.span`
-  font-size: 13px;
-  color: #999;
-`;
-
-const OngoingTitle = styled.div`
-  font-size: 15px;
-  font-weight: bold;
-   color: black;
-  margin-bottom: 0.4rem;
-`;
-
-const OngoingBar = styled.div`
-  height: 6px;
-  background: #e0e0e0;
-  border-radius: 10px;
-  overflow: hidden;
-`;
-
-const OngoingFill = styled.div`
-  height: 100%;
-  width: 60%; /* 예시 진행도 */
-  background: #9FC9FF;
-`;
-
-// 추천 영상 섹션 스타일
 const HorizontalScroll = styled.div`
   display: flex;
   gap: 1rem;
@@ -147,81 +77,158 @@ const Description = styled.div`
   padding: 0.3rem 1rem 1rem 1rem;
 `;
 
+const LearningSection = styled.div`
+  margin-top: 1.5rem;
+`;
+
+const CardBox = styled.div`
+  width: 100%;
+  background: white;
+  border-radius: 16px;
+  padding: 1.3rem;
+  margin-bottom: 1.2rem;
+  box-shadow: 0 3px 6px rgba(0,0,0,0.05);
+`;
+
+const ImageBox = styled.div`
+  width: 100%;
+  height: 160px;
+  background: #f3f4f6;
+  border-radius: 14px;
+  overflow: hidden;
+  margin-bottom: 1rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;
+
+const WordText = styled.div`
+  font-size: 20px;
+  font-weight: bold;
+  text-align: center;
+  margin-bottom: 0.8rem;
+`;
+
+const ButtonRow = styled.div`
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+`;
+
+const Btn = styled.button`
+  padding: 8px 14px;
+  border-radius: 12px;
+  border: none;
+  font-size: 14px;
+  background: #e8eeff;
+  color: #4a68a1;
+`;
+
 const LearningPage = () => {
-  const [programs, setPrograms] = useState([]);
+  // 🔹 레벨 추천 더미데이터
+  const levelRecommend = [
+    {
+      id: 'L1',
+      title: 'Level 2 추천 | 말 따라하기 리듬훈련',
+      type: '언어발달',
+      duration: 5,
+      videoUrl: 'https://www.youtube.com/embed/y6120QOlsfU',
+      description: '집중력 향상 + 언어 리듬 인지 훈련 영상',
+    },
+    {
+      id: 'L2',
+      title: 'Level 2 추천 | 스토리 기반 단어 확장',
+      type: '어휘',
+      duration: 6,
+      videoUrl: 'https://www.youtube.com/embed/MB5IX-np5fE',
+      description: '스토리를 통해 단어를 자연스럽게 습득해요',
+    },
+  ];
 
-  useEffect(() => {
-    const fetchPrograms = async () => {
-      try {
-        const response = await axiosInstance.get('/program');
-        console.log('/program 응답 데이터:', response.data);
-        setPrograms(response.data);
-      } catch (error) {
-        console.error('프로그램 데이터를 불러오는 중 오류 발생:', error);
-      }
-    };
-    fetchPrograms();
-  }, []);
+  // 🔹 일반 학습 섹션 데이터
+  const dummyPrograms = {
+    '동요': [
+      {
+        id: 1,
+        title: 'ABC Song',
+        type: '동요',
+        duration: 3,
+        videoUrl: 'https://www.youtube.com/embed/75p-N9YKqNo',
+        description: '알파벳을 노래로 익혀요',
+      },
+    ],
+    '동화': [
+      {
+        id: 2,
+        title: '잠자는 숲속의 공주',
+        type: '동화',
+        duration: 5,
+        videoUrl: 'https://www.youtube.com/embed/EyOaYbBd7F8',
+        description: '상상력을 키우는 동화 시간',
+      },
+    ],
+    '한글': [
+      {
+        id: 3,
+        title: '기초 자음 배우기',
+        type: '한글',
+        duration: 4,
+        videoUrl: 'https://www.youtube.com/embed/s2L4hVzP0tc',
+        description: '기초 자음 발음 배우기',
+      },
+    ],
+  };
 
-  const filterByCategory = (category: string) =>
-    programs.filter((item: any) => item.category === category);
+  const renderProgramCards = (title: string, items: any[]) => (
+    <Card>
+      <SectionTitle>{title}</SectionTitle>
+      <HorizontalScroll>
+        {items.map(item => (
+          <ProgramCard key={item.id}>
+            <Video src={item.videoUrl} allowFullScreen />
+            <MetaRow>
+              <span style={{ color: '#7595D3' }}>{item.type}</span>
+              <span>{item.duration}분</span>
+            </MetaRow>
+            <ProgramTitle>{item.title}</ProgramTitle>
+            <Description>{item.description}</Description>
+          </ProgramCard>
+        ))}
+      </HorizontalScroll>
+    </Card>
+  );
 
-  const renderProgramCards = (category: string) => {
-    const filtered = filterByCategory(category);
-    return (
-      <Card>
-        <SectionTitle>{category}</SectionTitle>
-        <HorizontalScroll>
-          {filtered.map((item: any) => (
-            <ProgramCard key={item.id}>
-              <Video src={item.videoUrl} allowFullScreen />
-              <MetaRow>
-                <span style={{ color: '#7595D3' }}>{item.type}</span>
-                <span>{item.duration}분</span>
-              </MetaRow>
-              <ProgramTitle>{item.title}</ProgramTitle>
-              <Description>{item.description}</Description>
-            </ProgramCard>
-          ))}
-        </HorizontalScroll>
-      </Card>
-    );
+  // 🔹 학습 카드 영역
+  const dummyWord = {
+    image: '/assets/dog.png', // 실제 프로젝트에 맞게 교체
+    word: '강아지',
+    sentence: '강아지가 뛰어요.',
   };
 
   return (
     <Outer>
       <Wrapper>
-        {/* 진행중인 학습*/}
-        <Card>
-          <SectionTitle>진행중인 학습</SectionTitle>
-          <OngoingCard>
-            <ThumbnailBox>
-              <iframe
-                width="80"
-                height="80"
-                src="https://www.youtube.com/embed/P2zGhgMYyrA?si=jh3LMiiTI5j3mu_4"
-                title="YouTube video"
-                frameBorder="0"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                allowFullScreen
-              />
-            </ThumbnailBox>
-            <InfoBox>
-              <TagRow>
-                <Tag>운동발달</Tag>
-                <TimeText>20분</TimeText>
-              </TagRow>
-              <OngoingTitle>소근육 발달 미술활동</OngoingTitle>
-              <OngoingBar>
-                <OngoingFill />
-              </OngoingBar>
-            </InfoBox>
-          </OngoingCard>
-        </Card>
 
-        {renderProgramCards('동요')}
-        {renderProgramCards('동화')} 
-        {renderProgramCards('한글')} 
+        {/* 🔥 ① 추천 학습 (레벨 기반) */}
+        {renderProgramCards('추천 학습 (레벨 2)', levelRecommend)}
+
+        {/* 🔥 ③ 실제 학습 (그림·단어·문장) */}
+        <LearningSection>
+          <SectionTitle>오늘의 그림 카드</SectionTitle>
+
+          <CardBox>
+            <ImageBox>
+              <img src={dummyWord.image} alt="" style={{ width: '85%' }} />
+            </ImageBox>
+            <WordText>{dummyWord.word}</WordText>
+
+            <ButtonRow>
+              <Btn>발음 듣기 🔊</Btn>
+              <Btn>따라 말하기 🎤</Btn>
+            </ButtonRow>
+          </CardBox>
+        </LearningSection>
+
       </Wrapper>
     </Outer>
   );
