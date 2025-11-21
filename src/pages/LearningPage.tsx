@@ -145,39 +145,7 @@ const LearningPage = () => {
     },
   ];
 
-  // 🔹 일반 학습 섹션 데이터
-  const dummyPrograms = {
-    '동요': [
-      {
-        id: 1,
-        title: 'ABC Song',
-        type: '동요',
-        duration: 3,
-        videoUrl: 'https://www.youtube.com/embed/75p-N9YKqNo',
-        description: '알파벳을 노래로 익혀요',
-      },
-    ],
-    '동화': [
-      {
-        id: 2,
-        title: '잠자는 숲속의 공주',
-        type: '동화',
-        duration: 5,
-        videoUrl: 'https://www.youtube.com/embed/EyOaYbBd7F8',
-        description: '상상력을 키우는 동화 시간',
-      },
-    ],
-    '한글': [
-      {
-        id: 3,
-        title: '기초 자음 배우기',
-        type: '한글',
-        duration: 4,
-        videoUrl: 'https://www.youtube.com/embed/s2L4hVzP0tc',
-        description: '기초 자음 발음 배우기',
-      },
-    ],
-  };
+  
 
   const renderProgramCards = (title: string, items: any[]) => (
     <Card>
