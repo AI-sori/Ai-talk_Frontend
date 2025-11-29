@@ -11,7 +11,7 @@ interface InquiryDetail {
   title: string;
   content: string;
   reply: string;
-  userId: number; 
+  userId?: number;   // 🔹 userId를 optional로 변경
 }
 
 const InquiryDetailPage = () => {
@@ -69,21 +69,33 @@ const InquiryDetailPage = () => {
         <Container>
           <Header>
             <BackArea>
-              <BackIcon src={BackSvg} onClick={() => navigate("/mypage/inquiry")} />
+              <BackIcon
+                src={BackSvg}
+                onClick={() => navigate("/mypage/inquiry")}
+              />
               <Title>문의하기</Title>
             </BackArea>
-            {user?.userId === inquiry.userId && !isEditing && (
-              <ButtonGroup>
-               <TextButton onClick={() => setIsEditing(true)}>수정</TextButton>
-               <TextButton onClick={() => setShowDeleteModal(true)}>삭제</TextButton>
-              </ButtonGroup>
-              )} 
+
+            {user?.userId &&
+              inquiry.userId &&
+              Number(user.userId) === Number(inquiry.userId) && !isEditing && (
+                <ButtonGroup>
+                  <TextButton onClick={() => setIsEditing(true)}>수정</TextButton>
+                  <TextButton onClick={() => setShowDeleteModal(true)}>삭제</TextButton>
+                </ButtonGroup>
+              )}
           </Header>
 
           {isEditing ? (
             <>
-              <EditInput value={editTitle} onChange={(e) => setEditTitle(e.target.value)} />
-              <EditTextarea value={editContent} onChange={(e) => setEditContent(e.target.value)} />
+              <EditInput
+                value={editTitle}
+                onChange={(e) => setEditTitle(e.target.value)}
+              />
+              <EditTextarea
+                value={editContent}
+                onChange={(e) => setEditContent(e.target.value)}
+              />
               <ButtonGroup style={{ marginTop: "1rem" }}>
                 <CancelButton onClick={() => setIsEditing(false)}>취소</CancelButton>
                 <SaveButton onClick={handleUpdate}>저장</SaveButton>
@@ -116,7 +128,7 @@ const InquiryDetailPage = () => {
 
 export default InquiryDetailPage;
 
-// 스타일 컴포넌트
+// 스타일 코드 👇 (그대로 사용)
 const Outer = styled.div`
   width: 100vw;
   min-height: 100dvh;
