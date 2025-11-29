@@ -103,25 +103,29 @@ const handleLogin = async () => {
 
     console.log("로그인 응답:", response.data);
 
-const sessionId =
-  response.data?.result ||
-  response.data?.sessionId ||
-  response.data?.sessionID;
+    let sessionId = null;
+
+    if (typeof response.data?.data === "string" && response.data.data.includes(":")) {
+      sessionId = response.data.data.split(":")[1].trim(); 
+    }
+
+    console.log("추출된 sessionId:", sessionId);
 
     if (!sessionId) {
       alert("로그인 정보가 올바르지 않습니다.");
       return;
     }
 
-    login({ sessionId });
+    login({ sessionId });  // 수정 
 
     alert("로그인 성공!");
     navigate("/home");
-  } catch (error: any) {
+  } catch (error) {
     console.error("로그인 요청 실패:", error);
     alert("서버 오류로 로그인에 실패했습니다.");
   }
 };
+
 
   return (
     <Outer>
