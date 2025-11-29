@@ -268,6 +268,7 @@ type Comment = {
   nickname: string;
   content: string;
   createdAt: string;
+  userId?: number;
 };
 
 const CommunityPostDetailPage = () => {
@@ -287,18 +288,18 @@ const CommunityPostDetailPage = () => {
   const fetchPost = async () => {
     try {
       const res = await axiosInstance.get(`/community/${id}`);
-       console.log("📦 게시글 상세 응답:", res.data);
+      console.log("📦 게시글 상세 응답:", res.data);
       const fixedComments = res.data.comments.map((c: any) => ({
-      id: c.id,
-      userId: c.userId,
-      nickname: c.nickname,
-      content: c.content,
-      createdAt: c.createdAt,
-    }));
+        id: c.id,
+        userId: c.userId,
+        nickname: c.nickname,
+        content: c.content,
+        createdAt: c.createdAt,
+      }));
       setPost({
-      ...res.data,
-      comments: fixedComments,
-    });
+        ...res.data,
+        comments: fixedComments,
+      });
       setLiked(res.data.liked);
       setLikeCount(res.data.likeCount);
     } catch (error) {
@@ -310,84 +311,16 @@ const CommunityPostDetailPage = () => {
     if (id) fetchPost();
   }, [id]);
 
-  const handleLikeToggle = async () => {
-    if (!id) return;
+  const handleDeletePost = async () => {
     try {
-      if (liked) {
-        await axiosInstance.delete(`/community/${id}/like`);
-        setLiked(false);
-        setLikeCount((prev) => prev - 1);
-      } else {
-        await axiosInstance.post(`/community/${id}/like`);
-        setLiked(true);
-        setLikeCount((prev) => prev + 1);
-      }
+      if (!post?.postId) return;
+      await axiosInstance.delete(`/community/post/${post.postId}`);
+      setShowDeleteModal(false);
+      navigate("/community");
     } catch (error) {
-      console.error("좋아요 처리 실패:", error);
+      console.error("게시글 삭제 실패:", error);
     }
   };
-
-  const handleSubmitComment = async () => {
-    if (!id || !comment.trim()) return;
-    try {
-      await axiosInstance.post("/community/comments", {
-        postId: Number(id),
-        content: comment.trim(),
-      });
-      setComment("");
-      fetchPost(); // 새로고침 없이 최신 댓글 반영
-    } catch (error) {
-      console.error("댓글 등록 실패:", error);
-    }
-  };
-const handleUpdateComment = async (commentId: number) => {
-  if (!editContent.trim()) return;
-  try {
-    await axiosInstance.put(`/community/comments/${commentId}`, {
-      postId: Number(id),
-      content: editContent,
-    });
-    setEditCommentId(null);
-    setEditContent("");
-    fetchPost();
-  } catch (error) {
-    console.error("댓글 수정 실패:", error);
-  }
-};
-const handleStartEdit = (commentId: number, content: string) => {
-  setEditCommentId(commentId);
-  setEditContent(content);
-};
-
-  const formatDate = (dateStr: string) => {
-    const date = new Date(dateStr);
-    return `${date.getFullYear()}.${(date.getMonth() + 1).toString().padStart(2, "0")}.${date.getDate().toString().padStart(2, "0")}`;
-
-  };
-
-  const handleDeleteConfirm = async () => {
-  if (!deleteTargetId) return;
-  try {
-    await axiosInstance.delete(`/community/comments/${deleteTargetId}`);
-    setDeleteTargetId(null);
-    fetchPost(); // 최신 목록 갱신
-  } catch (error) {
-    console.error("댓글 삭제 실패:", error);
-  }
-};
-
-const handleDeletePost = async () => {
-  try {
-    if (!post?.postId) return;
-    await axiosInstance.delete(`/community/post/${post.postId}`);
-    setShowDeleteModal(false);
-    navigate("/community");
-  } catch (error) {
-    console.error("게시글 삭제 실패:", error);
-  }
-};
-
-
 
   return (
     <Outer>
@@ -400,131 +333,182 @@ const handleDeletePost = async () => {
 
           {post ? (
             <>
-             <Meta>
-  <Tag>{post.category}</Tag>
-  <span>{post.nickname}</span>
-  {user?.userId === post.userId && (
-    <div style={{ marginLeft: "auto", position: "relative" }}>
-     <ThreeDotsButton onClick={() => setShowPostActions((prev) => !prev)}>
-  ⋮
-</ThreeDotsButton>
+              <Meta>
+                <Tag>{post.category}</Tag>
+                <span>{post.nickname}</span>
 
-      {showPostActions && (
-        <div
-          style={{
-            position: "absolute",
-            top: "20px",
-            right: 0,
-            background: "white",
-            border: "1px solid #ccc",
-            borderRadius: "8px",
-            boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
-            zIndex: 10,
-          }}
-        >
-         <Action onClick={() => navigate(`/community/edit/${post.postId}`)}>수정</Action>
-          <Action onClick={() => {
-            setShowPostActions(false);
-            setShowDeleteModal(true);
-          }}>삭제</Action>
-        </div>
-      )}
-    </div>
-  )}
-</Meta>
+                {user?.userId &&
+                  post.userId &&
+                  Number(user.userId) === Number(post.userId) && (
+                    <div style={{ marginLeft: "auto", position: "relative" }}>
+                      <ThreeDotsButton
+                        onClick={() => setShowPostActions((prev) => !prev)}
+                      >
+                        ⋮
+                      </ThreeDotsButton>
 
+                      {showPostActions && (
+                        <div
+                          style={{
+                            position: "absolute",
+                            top: "20px",
+                            right: 0,
+                            background: "white",
+                            border: "1px solid #ccc",
+                            borderRadius: "8px",
+                            boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
+                            zIndex: 10,
+                          }}
+                        >
+                          <Action
+                            onClick={() =>
+                              navigate(`/community/edit/${post.postId}`)
+                            }
+                          >
+                            수정
+                          </Action>
+                          <Action
+                            onClick={() => {
+                              setShowPostActions(false);
+                              setShowDeleteModal(true);
+                            }}
+                          >
+                            삭제
+                          </Action>
+                        </div>
+                      )}
+                    </div>
+                  )}
+              </Meta>
 
               <Title>{post.title}</Title>
               <Content>{post.content}</Content>
 
               {post.image && (
-  <img
-    src={post.image}
-    alt="게시글 이미지"
-    style={{ width: "100%", borderRadius: "12px", marginBottom: "1rem" }}
-  />
-)}
-
+                <img
+                  src={post.image}
+                  alt="게시글 이미지"
+                  style={{
+                    width: "100%",
+                    borderRadius: "12px",
+                    marginBottom: "1rem",
+                  }}
+                />
+              )}
 
               <StatusRow>
                 <LikeBox onClick={handleLikeToggle}>
-                  <img src={liked ? LikeAfterIcon : LikeIcon} alt="좋아요" />
+                  <img
+                    src={liked ? LikeAfterIcon : LikeIcon}
+                    alt="좋아요"
+                  />
                   <span>{likeCount}</span>
                 </LikeBox>
               </StatusRow>
 
               <CommentTitle>댓글 {post.comments.length}</CommentTitle>
 
-        {post.comments.map((c: any) => (
-  <Comment key={c.id}>
-    <CommentHeader>
-      <div style={{ display: "flex", gap: "8px", alignItems: "center" }}>
-        <CommentAuthor>{c.nickname}</CommentAuthor>
-        <span>·</span>
-        <CommentDate>{formatDate(c.createdAt)}</CommentDate>
-      </div>
+              {post.comments.map((c: any) => (
+                <Comment key={c.id}>
+                  <CommentHeader>
+                    <div
+                      style={{
+                        display: "flex",
+                        gap: "8px",
+                        alignItems: "center",
+                      }}
+                    >
+                      <CommentAuthor>{c.nickname}</CommentAuthor>
+                      <span>·</span>
+                      <CommentDate>{formatDate(c.createdAt)}</CommentDate>
+                    </div>
 
-      {user?.userId === c.userId && (
-        <RightMeta>
-          <Action onClick={() => handleStartEdit(c.id, c.content)}>수정</Action>
-          <Action onClick={() => setDeleteTargetId(c.id)}>삭제</Action>
-        </RightMeta>
-      )}
-    </CommentHeader>
+                    {user?.userId &&
+                      c.userId &&
+                      Number(user.userId) === Number(c.userId) && (
+                        <RightMeta>
+                          <Action
+                            onClick={() =>
+                              handleStartEdit(c.id, c.content)
+                            }
+                          >
+                            수정
+                          </Action>
+                          <Action
+                            onClick={() => setDeleteTargetId(c.id)}
+                          >
+                            삭제
+                          </Action>
+                        </RightMeta>
+                      )}
+                  </CommentHeader>
 
-    {editCommentId === c.id ? (
-  <>
-    <EditTextarea
-      value={editContent}
-      onChange={(e) => setEditContent(e.target.value)}
-    />
-    <div style={{ display: "flex", justifyContent: "flex-end", gap: "0.5rem" }}>
-      <EditActionButton onClick={() => setEditCommentId(null)}>
-        취소
-      </EditActionButton>
-      <EditActionButton
-        onClick={() => handleUpdateComment(c.id)}
-        style={{ color: "#4171d6" }}
-      >
-        저장
-      </EditActionButton>
-    </div>
-  </>
-) : (
-  <CommentText>{c.content}</CommentText>
-)}
+                  {editCommentId === c.id ? (
+                    <>
+                      <EditTextarea
+                        value={editContent}
+                        onChange={(e) =>
+                          setEditContent(e.target.value)
+                        }
+                      />
+                      <div
+                        style={{
+                          display: "flex",
+                          justifyContent: "flex-end",
+                          gap: "0.5rem",
+                        }}
+                      >
+                        <EditActionButton
+                          onClick={() => setEditCommentId(null)}
+                        >
+                          취소
+                        </EditActionButton>
+                        <EditActionButton
+                          onClick={() => handleUpdateComment(c.id)}
+                          style={{ color: "#4171d6" }}
+                        >
+                          저장
+                        </EditActionButton>
+                      </div>
+                    </>
+                  ) : (
+                    <CommentText>{c.content}</CommentText>
+                  )}
+                </Comment>
+              ))}
 
-  </Comment>
-))}
               <CommentInputWrapper>
                 <CommentInput
                   placeholder="댓글을 입력해주세요"
                   value={comment}
                   onChange={(e) => setComment(e.target.value)}
                 />
-                <SubmitButton onClick={handleSubmitComment}>등록</SubmitButton>
+                <SubmitButton onClick={handleSubmitComment}>
+                  등록
+                </SubmitButton>
               </CommentInputWrapper>
             </>
           ) : (
             <p>로딩 중...</p>
           )}
         </Container>
-        {deleteTargetId !== null && (
-  <DeleteModal
-    onCancel={() => setDeleteTargetId(null)}
-    onConfirm={handleDeleteConfirm}
-  />
-)}
-{showDeleteModal && (
-  <DeletePostModal
-    onCancel={() => setShowDeleteModal(false)}
-    onConfirm={handleDeletePost}
-  />
-)}
 
+        {deleteTargetId !== null && (
+          <DeleteModal
+            onCancel={() => setDeleteTargetId(null)}
+            onConfirm={handleDeleteConfirm}
+          />
+        )}
+
+        {showDeleteModal && (
+          <DeletePostModal
+            onCancel={() => setShowDeleteModal(false)}
+            onConfirm={handleDeletePost}
+          />
+        )}
       </Wrapper>
     </Outer>
   );
 };
 
-export default CommunityPostDetailPage; 
+export default CommunityPostDetailPage;
