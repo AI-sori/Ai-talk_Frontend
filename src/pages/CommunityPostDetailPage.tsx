@@ -321,6 +321,74 @@ const CommunityPostDetailPage = () => {
       console.error("게시글 삭제 실패:", error);
     }
   };
+  const handleLikeToggle = async () => {
+  if (!id) return;
+  try {
+    if (liked) {
+      await axiosInstance.delete(`/community/${id}/like`);
+      setLiked(false);
+      setLikeCount((prev) => prev - 1);
+    } else {
+      await axiosInstance.post(`/community/${id}/like`);
+      setLiked(true);
+      setLikeCount((prev) => prev + 1);
+    }
+  } catch (error) {
+    console.error("좋아요 처리 실패:", error);
+  }
+};
+
+const handleSubmitComment = async () => {
+  if (!id || !comment.trim()) return;
+  try {
+    await axiosInstance.post(`/community/comments`, {
+      postId: Number(id),
+      content: comment.trim(),
+    });
+    setComment("");
+    fetchPost();
+  } catch (error) {
+    console.error("댓글 등록 실패:", error);
+  }
+};
+
+const handleStartEdit = (commentId: number, content: string) => {
+  setEditCommentId(commentId);
+  setEditContent(content);
+};
+
+const handleUpdateComment = async (commentId: number) => {
+  if (!editContent.trim()) return;
+  try {
+    await axiosInstance.put(`/community/comments/${commentId}`, {
+      postId: Number(id),
+      content: editContent.trim(),
+    });
+    setEditCommentId(null);
+    setEditContent("");
+    fetchPost();
+  } catch (error) {
+    console.error("댓글 수정 실패:", error);
+  }
+};
+
+const handleDeleteConfirm = async () => {
+  if (!deleteTargetId) return;
+  try {
+    await axiosInstance.delete(`/community/comments/${deleteTargetId}`);
+    setDeleteTargetId(null);
+    fetchPost();
+  } catch (error) {
+    console.error("댓글 삭제 실패:", error);
+  }
+};
+
+const formatDate = (dateStr: string) => {
+  const date = new Date(dateStr);
+  return `${date.getFullYear()}.${(date.getMonth() + 1)
+    .toString()
+    .padStart(2, "0")}.${date.getDate().toString().padStart(2, "0")}`;
+};
 
   return (
     <Outer>
