@@ -103,10 +103,10 @@ const handleLogin = async () => {
 
     console.log("로그인 응답:", response.data);
 
-    const sessionId =
-      response.data?.sessionID ||
-      response.data?.sessionId ||
-      response.data;
+const sessionId =
+  response.data?.result ||
+  response.data?.sessionId ||
+  response.data?.sessionID;
 
     if (!sessionId) {
       alert("로그인 정보가 올바르지 않습니다.");
