@@ -268,7 +268,7 @@ type Comment = {
   nickname: string;
   content: string;
   createdAt: string;
-  userId?: number;
+  sessionId?: string; 
 };
 
 const CommunityPostDetailPage = () => {
@@ -278,7 +278,7 @@ const CommunityPostDetailPage = () => {
   const [liked, setLiked] = useState(false);
   const [likeCount, setLikeCount] = useState(0);
   const [comment, setComment] = useState("");
-  const { user } = useAuthStore();
+  const { user } = useAuthStore(); 
   const [editCommentId, setEditCommentId] = useState<number | null>(null);
   const [editContent, setEditContent] = useState("");
   const [deleteTargetId, setDeleteTargetId] = useState<number | null>(null);
@@ -291,7 +291,7 @@ const CommunityPostDetailPage = () => {
       console.log("📦 게시글 상세 응답:", res.data);
       const fixedComments = res.data.comments.map((c: any) => ({
         id: c.id,
-        userId: c.userId,
+        sessionId: c.sessionId, 
         nickname: c.nickname,
         content: c.content,
         createdAt: c.createdAt,
@@ -337,48 +337,46 @@ const CommunityPostDetailPage = () => {
                 <Tag>{post.category}</Tag>
                 <span>{post.nickname}</span>
 
-                {user?.userId &&
-                  post.userId &&
-                  Number(user.userId) === Number(post.userId) && (
-                    <div style={{ marginLeft: "auto", position: "relative" }}>
-                      <ThreeDotsButton
-                        onClick={() => setShowPostActions((prev) => !prev)}
-                      >
-                        ⋮
-                      </ThreeDotsButton>
+                {user?.sessionId === post.sessionId && (
+                  <div style={{ marginLeft: "auto", position: "relative" }}>
+                    <ThreeDotsButton
+                      onClick={() => setShowPostActions((prev) => !prev)}
+                    >
+                      ⋮
+                    </ThreeDotsButton>
 
-                      {showPostActions && (
-                        <div
-                          style={{
-                            position: "absolute",
-                            top: "20px",
-                            right: 0,
-                            background: "white",
-                            border: "1px solid #ccc",
-                            borderRadius: "8px",
-                            boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
-                            zIndex: 10,
+                    {showPostActions && (
+                      <div
+                        style={{
+                          position: "absolute",
+                          top: "20px",
+                          right: 0,
+                          background: "white",
+                          border: "1px solid #ccc",
+                          borderRadius: "8px",
+                          boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
+                          zIndex: 10,
+                        }}
+                      >
+                        <Action
+                          onClick={() =>
+                            navigate(`/community/edit/${post.postId}`)
+                          }
+                        >
+                          수정
+                        </Action>
+                        <Action
+                          onClick={() => {
+                            setShowPostActions(false);
+                            setShowDeleteModal(true);
                           }}
                         >
-                          <Action
-                            onClick={() =>
-                              navigate(`/community/edit/${post.postId}`)
-                            }
-                          >
-                            수정
-                          </Action>
-                          <Action
-                            onClick={() => {
-                              setShowPostActions(false);
-                              setShowDeleteModal(true);
-                            }}
-                          >
-                            삭제
-                          </Action>
-                        </div>
-                      )}
-                    </div>
-                  )}
+                          삭제
+                        </Action>
+                      </div>
+                    )}
+                  </div>
+                )}
               </Meta>
 
               <Title>{post.title}</Title>
@@ -423,24 +421,22 @@ const CommunityPostDetailPage = () => {
                       <CommentDate>{formatDate(c.createdAt)}</CommentDate>
                     </div>
 
-                    {user?.userId &&
-                      c.userId &&
-                      Number(user.userId) === Number(c.userId) && (
-                        <RightMeta>
-                          <Action
-                            onClick={() =>
-                              handleStartEdit(c.id, c.content)
-                            }
-                          >
-                            수정
-                          </Action>
-                          <Action
-                            onClick={() => setDeleteTargetId(c.id)}
-                          >
-                            삭제
-                          </Action>
-                        </RightMeta>
-                      )}
+                    {user?.sessionId === c.sessionId && (
+                      <RightMeta>
+                        <Action
+                          onClick={() =>
+                            handleStartEdit(c.id, c.content)
+                          }
+                        >
+                          수정
+                        </Action>
+                        <Action
+                          onClick={() => setDeleteTargetId(c.id)}
+                        >
+                          삭제
+                        </Action>
+                      </RightMeta>
+                    )}
                   </CommentHeader>
 
                   {editCommentId === c.id ? (
