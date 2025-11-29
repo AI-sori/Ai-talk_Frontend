@@ -11,13 +11,13 @@ interface InquiryDetail {
   title: string;
   content: string;
   reply: string;
-  userId?: number;   // 🔹 userId를 optional로 변경
+  sessionId?: string;  
 }
 
 const InquiryDetailPage = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const { user } = useAuthStore();
+  const { user } = useAuthStore(); 
   const [inquiry, setInquiry] = useState<InquiryDetail | null>(null);
   const [isEditing, setIsEditing] = useState(false);
   const [editTitle, setEditTitle] = useState("");
@@ -76,14 +76,12 @@ const InquiryDetailPage = () => {
               <Title>문의하기</Title>
             </BackArea>
 
-            {user?.userId &&
-              inquiry.userId &&
-              Number(user.userId) === Number(inquiry.userId) && !isEditing && (
-                <ButtonGroup>
-                  <TextButton onClick={() => setIsEditing(true)}>수정</TextButton>
-                  <TextButton onClick={() => setShowDeleteModal(true)}>삭제</TextButton>
-                </ButtonGroup>
-              )}
+            {user?.sessionId === inquiry.sessionId && !isEditing && (
+              <ButtonGroup>
+                <TextButton onClick={() => setIsEditing(true)}>수정</TextButton>
+                <TextButton onClick={() => setShowDeleteModal(true)}>삭제</TextButton>
+              </ButtonGroup>
+            )}
           </Header>
 
           {isEditing ? (
@@ -128,7 +126,6 @@ const InquiryDetailPage = () => {
 
 export default InquiryDetailPage;
 
-// 스타일 코드 👇 (그대로 사용)
 const Outer = styled.div`
   width: 100vw;
   min-height: 100dvh;
