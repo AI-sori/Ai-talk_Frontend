@@ -7,12 +7,11 @@ const axiosInstance = axios.create({
   headers: { "Content-Type": "application/json" },
 });
 
-//세션 아이디 관련 추가
 axiosInstance.interceptors.request.use((config) => {
-  const { user } = useAuthStore.getState();
+  const sessionId = useAuthStore.getState().user?.sessionId;
 
-  if (user?.sessionId) {
-    config.headers["sessionId"] = user.sessionId;   
+  if (sessionId) {
+    config.headers["sessionId"] = sessionId;
   }
 
   return config;
