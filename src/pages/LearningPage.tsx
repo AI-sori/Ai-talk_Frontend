@@ -1,5 +1,7 @@
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
+import axiosInstance from '../api/axiosInstance';
+import { useEffect, useState } from 'react';
 
 const Outer = styled.div`
   width: 100vw;
@@ -100,37 +102,39 @@ const Description = styled.div`
 const LearningPage = () => {
   const navigate = useNavigate();
 
-  const levelRecommend = [
-    {
-      id: 'L1',
-      title: 'Level 2 추천 | 말 따라하기 리듬훈련',
-      type: '언어발달',
-      duration: 5,
-      videoUrl: 'https://www.youtube.com/embed/y6120QOlsfU',
-      description: '집중력 향상 + 언어 리듬 인지 훈련 영상',
-    },
-    {
-      id: 'L2',
-      title: 'Level 2 추천 | 스토리 기반 단어 확장',
-      type: '어휘',
-      duration: 6,
-      videoUrl: 'https://www.youtube.com/embed/MB5IX-np5fE',
-      description: '스토리를 통해 단어를 자연스럽게 습득해요',
-    },
-  ];
+  const [programList, setProgramList] = useState<any[]>([]);
 
-  const renderProgramCards = (title: string, items: any[]) => (
+  useEffect(() => {
+    const fetchPrograms = async () => {
+      try {
+        const res = await axiosInstance.get("/program");
+        setProgramList(res.data.data); 
+      } catch (err) {
+        console.error("프로그램 목록 불러오기 실패:", err);
+      }
+    };
+
+    fetchPrograms();
+  }, []);
+
+  const levelGroups: any = {};
+  programList.forEach((p) => {
+    if (!levelGroups[p.level]) levelGroups[p.level] = [];
+    levelGroups[p.level].push(p);
+  });
+
+  const renderProgramCards = (level: string, items: any[]) => (
     <Card>
-      <SectionTitle>{title}</SectionTitle>
+      <SectionTitle>추천 학습 ({level})</SectionTitle>
+
       <HorizontalScroll>
         {items.map((item) => (
           <ProgramCard key={item.id}>
             <Video src={item.videoUrl} allowFullScreen />
             <MetaRow>
-              <span style={{ color: '#7595D3' }}>{item.type}</span>
-              <span>{item.duration}분</span>
+              <span style={{ color: '#7595D3' }}>{item.category}</span>
             </MetaRow>
-            <ProgramTitle>{item.title}</ProgramTitle>
+            <ProgramTitle>{item.category}</ProgramTitle>
             <Description>{item.description}</Description>
           </ProgramCard>
         ))}
@@ -142,18 +146,17 @@ const LearningPage = () => {
     <Outer>
       <Wrapper>
 
-        {renderProgramCards('추천 학습 (레벨 2)', levelRecommend)}
+        {Object.keys(levelGroups).map((level) =>
+          renderProgramCards(level, levelGroups[level])
+        )}
 
         <Card>
           <SectionTitle>그림 카드</SectionTitle>
           <SimpleDesc>
             단어의 의미를 명확하게 이해하고 이름을 정확히 말하는 연습을 해요.
           </SimpleDesc>
-
           <ButtonRow>
-            <StartBtn onClick={() => navigate('/learning/word')}>
-              학습하기 
-            </StartBtn>
+            <StartBtn onClick={() => navigate('/learning/word')}>학습하기</StartBtn>
           </ButtonRow>
         </Card>
 
@@ -162,11 +165,8 @@ const LearningPage = () => {
           <SimpleDesc>
             자연스러운 문장 구조를 듣고 따라 말하며 유창성을 키워요.
           </SimpleDesc>
-
           <ButtonRow>
-            <StartBtn onClick={() => navigate('/learning/sentence')}>
-              학습하기 
-            </StartBtn>
+            <StartBtn onClick={() => navigate('/learning/sentence')}>학습하기</StartBtn>
           </ButtonRow>
         </Card>
 
@@ -175,11 +175,8 @@ const LearningPage = () => {
           <SimpleDesc>
             짧은 이야기를 읽으며 문맥 속에서 단어와 표현을 익혀요.
           </SimpleDesc>
-
           <ButtonRow>
-            <StartBtn onClick={() => navigate('/learning/story')}>
-              학습하기 
-            </StartBtn>
+            <StartBtn onClick={() => navigate('/learning/story')}>학습하기</StartBtn>
           </ButtonRow>
         </Card>
 
