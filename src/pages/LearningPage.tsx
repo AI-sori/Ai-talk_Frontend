@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const Outer = styled.div`
   width: 100vw;
@@ -23,14 +23,34 @@ const Card = styled.div`
   padding: 1.5rem;
   margin-bottom: 1.5rem;
   box-shadow: 0 2px 6px rgba(0,0,0,0.05);
-  color: black;
 `;
 
 const SectionTitle = styled.h3`
   font-family: Bold;
   font-size: 18px;
-  margin-bottom: 1rem;
-  color: black;
+  margin-bottom: 0.6rem;
+`;
+
+const SimpleDesc = styled.div`
+  font-size: 14px;
+  color: #666;
+  margin-bottom: 1.2rem;
+  line-height: 1.5;
+`;
+
+const ButtonRow = styled.div`
+  display: flex;
+  justify-content: center;
+`;
+
+const StartBtn = styled.button`
+  padding: 10px 20px;
+  border-radius: 12px;
+  border: none;
+  font-size: 15px;
+  background: #e8eeff;
+  color: #4a68a1;
+  font-weight: 600;
 `;
 
 const HorizontalScroll = styled.div`
@@ -77,69 +97,9 @@ const Description = styled.div`
   padding: 0.3rem 1rem 1rem 1rem;
 `;
 
-const ImageBox = styled.div`
-  width: 100%;
-  height: 160px;
-  background: #f3f4f6;
-  border-radius: 14px;
-  overflow: hidden;
-  margin-bottom: 1rem;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-`;
-
-const WordText = styled.div`
-  font-size: 20px;
-  font-weight: bold;
-  text-align: center;
-  margin-bottom: 0.8rem;
-`;
-
-const SentenceText = styled.div`
-  font-size: 17px;
-  text-align: center;
-  margin-bottom: 1rem;
-  color: #333;
-`;
-
-const StoryImage = styled.div`
-  width: 100%;
-  height: 120px;
-  border-radius: 14px;
-  background: #eef1f6;
-  margin-bottom: 1rem;
-`;
-
-const StoryText = styled.div`
-  font-size: 15px;
-  line-height: 1.4;
-  color: #444;
-  text-align: center;
-  margin-bottom: 1rem;
-`;
-
-const ButtonRow = styled.div`
-  display: flex;
-  justify-content: center;
-  gap: 1rem;
-`;
-
-const Btn = styled.button`
-  padding: 8px 14px;
-  border-radius: 12px;
-  border: none;
-  font-size: 14px;
-  background: #e8eeff;
-  color: #4a68a1;
-`;
-
-
 const LearningPage = () => {
+  const navigate = useNavigate();
 
-  // -----------------------------
-  // ① 추천 영상 더미데이터
-  // -----------------------------
   const levelRecommend = [
     {
       id: 'L1',
@@ -178,120 +138,48 @@ const LearningPage = () => {
     </Card>
   );
 
-
-  // -----------------------------
-  // 🔥 ② 명확성 학습 : 그림 카드
-  // -----------------------------
-  const wordCards = [
-    { image: '/assets/dog.png', word: '강아지' },
-    { image: '/assets/apple.png', word: '사과' },
-    { image: '/assets/car.png', word: '자동차' },
-  ];
-
-  const [wordIndex, setWordIndex] = useState(0);
-
-  const nextWord = () => {
-    setWordIndex((prev) => (prev + 1) % wordCards.length);
-  };
-
-
-  // -----------------------------
-  // 🔥 ③ 유창성 학습 : 문장 따라 말하기
-  // -----------------------------
-  const sentences = [
-    "강아지가 공을 가지고 놀아요.",
-    "사과가 빨갛게 익었어요.",
-    "자동차가 길을 달리고 있어요."
-  ];
-
-  const [sentenceIndex, setSentenceIndex] = useState(0);
-
-  const nextSentence = () => {
-    setSentenceIndex((prev) => (prev + 1) % sentences.length);
-  };
-
-
-  // -----------------------------
-  // 🔥 ④ 읽기 학습 : 미니 스토리북
-  // -----------------------------
-  const storyPages = [
-    { text: "강아지는 아침마다 정원에서 산책을 해요." },
-    { text: "그러다 예쁜 빨간 공을 발견했어요." },
-    { text: "강아지는 신나게 공을 가지고 놀기 시작했어요!" },
-  ];
-
-  const [storyIndex, setStoryIndex] = useState(0);
-
-  const nextStory = () => {
-    setStoryIndex((prev) => (prev + 1) % storyPages.length);
-  };
-
-  const prevStory = () => {
-    setStoryIndex((prev) => (prev - 1 + storyPages.length) % storyPages.length);
-  };
-
-
   return (
     <Outer>
       <Wrapper>
 
-        {/* ---------------------- */}
-        {/* 🔥 추천 학습 섹션 */}
-        {/* ---------------------- */}
         {renderProgramCards('추천 학습 (레벨 2)', levelRecommend)}
 
-        {/* ---------------------- */}
-        {/* 🔥 명확성 학습 : 그림 카드 */}
-        {/* ---------------------- */}
         <Card>
           <SectionTitle>그림 카드</SectionTitle>
-
-          <ImageBox>
-            <img 
-              src={wordCards[wordIndex].image} 
-              alt=""
-              style={{ width: "85%" }}
-            />
-          </ImageBox>
-
-          <WordText>{wordCards[wordIndex].word}</WordText>
+          <SimpleDesc>
+            단어의 의미를 명확하게 이해하고 이름을 정확히 말하는 연습을 해요.
+          </SimpleDesc>
 
           <ButtonRow>
-            <Btn onClick={() => alert("발음 재생 (추후 연결 가능)")}>발음 듣기 🔊</Btn>
-            <Btn onClick={() => alert("따라 말하기 기능")}>따라 말하기 🎤</Btn>
-            <Btn onClick={nextWord}>다음 카드 ➜</Btn>
+            <StartBtn onClick={() => navigate('/learning/word')}>
+              학습하기 
+            </StartBtn>
           </ButtonRow>
         </Card>
 
-
-        {/* ---------------------- */}
-        {/* 🔥 유창성 학습 : 문장 따라 말하기 */}
-        {/* ---------------------- */}
         <Card>
           <SectionTitle>문장 따라 말하기</SectionTitle>
-
-          <SentenceText>{sentences[sentenceIndex]}</SentenceText>
+          <SimpleDesc>
+            자연스러운 문장 구조를 듣고 따라 말하며 유창성을 키워요.
+          </SimpleDesc>
 
           <ButtonRow>
-            <Btn onClick={() => alert("문장 듣기 🔊")}>듣기 🔊</Btn>
-            <Btn onClick={() => alert("따라 말하기 🎤")}>말하기 🎤</Btn>
-            <Btn onClick={nextSentence}>다음 문장 ➜</Btn>
+            <StartBtn onClick={() => navigate('/learning/sentence')}>
+              학습하기 
+            </StartBtn>
           </ButtonRow>
         </Card>
 
-
-        {/* ---------------------- */}
-        {/* 🔥 읽기 학습 : 미니 스토리북 */}
-        {/* ---------------------- */}
         <Card>
           <SectionTitle>미니 스토리북</SectionTitle>
-
-          <StoryImage />
-          <StoryText>{storyPages[storyIndex].text}</StoryText>
+          <SimpleDesc>
+            짧은 이야기를 읽으며 문맥 속에서 단어와 표현을 익혀요.
+          </SimpleDesc>
 
           <ButtonRow>
-            <Btn onClick={prevStory}>⬅ 이전</Btn>
-            <Btn onClick={nextStory}>다음 ➜</Btn>
+            <StartBtn onClick={() => navigate('/learning/story')}>
+              학습하기 
+            </StartBtn>
           </ButtonRow>
         </Card>
 
