@@ -105,16 +105,16 @@ const DevelopmentalDiagnosisPage = () => {
   return (
     <div style={{ width: "100vw", height: "100dvh" }}>
       <iframe
-  src="https://reading-analysis-system.onrender.com/"
-  title="시선추적 분석 시스템"
-  width="100%"
-  height="100%"
-  style={{ border: "none" }}
-  allow="camera; microphone"
-/>
-
+        src="https://ai-talkai-production.up.railway.app"
+        title="시선추적 분석 시스템"
+        width="100%"
+        height="100%"
+        style={{ border: "none" }}
+        allow="camera; microphone"
+      />
     </div>
   );
 };
 
 export default DevelopmentalDiagnosisPage;
+
