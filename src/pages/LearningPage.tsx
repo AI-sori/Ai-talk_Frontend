@@ -108,15 +108,21 @@ const LearningPage = () => {
     const fetchPrograms = async () => {
       try {
         const res = await axiosInstance.get("/program");
-        setProgramList(res.data.data); 
-      } catch (err) {
+        setProgramList(res.data.data || []); 
+      } catch (err: any) {
         console.error("프로그램 목록 불러오기 실패:", err);
+
+        // 서버가 404 던지는 경우 → data null → UI는 빈칸으로 표시됨
+        if (err.response && err.response.status === 404) {
+          setProgramList([]); 
+        }
       }
     };
 
     fetchPrograms();
   }, []);
 
+  // 레벨별 그룹화
   const levelGroups: any = {};
   programList.forEach((p) => {
     if (!levelGroups[p.level]) levelGroups[p.level] = [];
@@ -146,9 +152,11 @@ const LearningPage = () => {
     <Outer>
       <Wrapper>
 
-        {Object.keys(levelGroups).map((level) =>
-          renderProgramCards(level, levelGroups[level])
-        )}
+        {Object.keys(levelGroups).length > 0 &&
+          Object.keys(levelGroups).map((level) =>
+            renderProgramCards(level, levelGroups[level])
+          )
+        }
 
         <Card>
           <SectionTitle>그림 카드</SectionTitle>
