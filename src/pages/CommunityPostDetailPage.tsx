@@ -285,27 +285,33 @@ const CommunityPostDetailPage = () => {
   const [showPostActions, setShowPostActions] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
 
-  const fetchPost = async () => {
-    try {
-      const res = await axiosInstance.get(`/community/${id}`);
-      console.log("📦 게시글 상세 응답:", res.data);
-      const fixedComments = res.data.comments.map((c: any) => ({
-        id: c.id,
-        sessionId: c.sessionId, 
-        nickname: c.nickname,
-        content: c.content,
-        createdAt: c.createdAt,
-      }));
-      setPost({
-        ...res.data,
-        comments: fixedComments,
-      });
-      setLiked(res.data.liked);
-      setLikeCount(res.data.likeCount);
-    } catch (error) {
-      console.error("게시글 상세 불러오기 실패:", error);
-    }
-  };
+const fetchPost = async () => {
+  try {
+    const res = await axiosInstance.get(`/community/${id}`);
+    const data = res.data.data; 
+
+    console.log("게시글 상세 응답(data):", data);
+
+    const fixedComments = (data.comments || []).map((c: any) => ({
+      id: c.id,
+      sessionId: c.sessionId,
+      nickname: c.nickname,
+      content: c.content,
+      createdAt: c.createdAt,
+    }));
+
+    setPost({
+      ...data,
+      comments: fixedComments,
+    });
+
+    setLiked(data.liked);
+    setLikeCount(data.likeCount);
+  } catch (error) {
+    console.error("게시글 상세 불러오기 실패:", error);
+  }
+};
+
 
   useEffect(() => {
     if (id) fetchPost();
