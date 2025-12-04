@@ -95,7 +95,7 @@ const LoginPage = () => {
   const login = useAuthStore((state) => state.login);
 
 const handleLogin = async () => {
-  try {
+  try { 
     const response = await axiosInstance.post("/members/login", {
       email,
       password,

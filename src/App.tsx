@@ -20,6 +20,9 @@ import MyPosts from './components/mypage/MyPosts';
 import MyComments from './components/mypage/MyComments';
 import MyLikes from './components/mypage/MyLikes';
 import CommunityEditPage from './pages/CommunityEditPage'; 
+import WordLearningPage from "./pages/WordLearningPage";
+import SentenceLearningPage from "./pages/SentenceLearningPage";
+import StoryLearningPage from "./pages/StoryLearningPage";
 
 
 const queryClient = new QueryClient();
@@ -54,6 +57,9 @@ function AppLayout() {
         <Route path="/mypage/mycomments" element={<MyComments />} />
         <Route path="/mypage/mylikes" element={<MyLikes />} />
         <Route path="/community/edit/:id" element={<CommunityEditPage />} />
+        <Route path="/learning/word" element={<WordLearningPage />} />
+        <Route path="/learning/sentence" element={<SentenceLearningPage />} />
+        <Route path="/learning/story" element={<StoryLearningPage />} />
       </Routes>
     </>
   );

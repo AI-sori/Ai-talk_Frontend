@@ -233,18 +233,19 @@ const Mypage = () => {
     setModalType(null);
   };
 
-  useEffect(() => {
-    const fetchProfile = async () => {
-      try {
-        const res = await axiosInstance.get("/members/profile");
-        setProfile(res.data.result);
-         console.log("프로필 조회:", res.data.result);
-      } catch (error) {
-        console.error("프로필 조회 실패:", error);
-      }
-    };
-    fetchProfile();
-  }, []);
+useEffect(() => {
+  const fetchProfile = async () => {
+    try {
+      const res = await axiosInstance.get("/members/profile");
+      setProfile(res.data.data);
+      console.log("프로필 조회:", res.data.data);
+    } catch (error) {
+      console.error("프로필 조회 실패:", error);
+    }
+  };
+  fetchProfile();
+}, []);
+
 
   return (
     <Outer>
