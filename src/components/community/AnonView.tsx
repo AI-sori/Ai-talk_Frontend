@@ -142,7 +142,7 @@ const fetchAllPosts = async () => {
   const res = await axiosInstance.get("/community", {
     params: { sortBy: "id", direction: "desc" },
   });
-  return res.data;
+  return res.data.data;  
 };
 
 const fetchSearchPosts = async (keyword: string) => {
