@@ -15,19 +15,19 @@ const MyPosts = () => {
   const navigate = useNavigate();
   const [posts, setPosts] = useState<Post[]>([]);
 
-  useEffect(() => {
-    const fetchPosts = async () => {
-      try {
-        const response = await axiosInstance.get("/community/my-posts");
-        console.log(response.data);
-        setPosts(response.data.result);
-      } catch (error) {
-        console.error("내 게시글 불러오기 실패:", error);
-      }
-    };
+useEffect(() => {
+  const fetchPosts = async () => {
+    try {
+      const response = await axiosInstance.get("/community/my-posts");
+      console.log("내 게시글 조회:", response.data.data);
+      setPosts(response.data.data);
+    } catch (error) {
+      console.error("내 게시글 불러오기 실패:", error);
+    }
+  };
 
-    fetchPosts();
-  }, []);
+  fetchPosts();
+}, []);
 
   return (
     <Outer>
