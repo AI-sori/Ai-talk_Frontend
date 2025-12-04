@@ -15,18 +15,19 @@ const MyComments = () => {
   const navigate = useNavigate();
   const [comments, setComments] = useState<CommentItem[]>([]);
 
-  useEffect(() => {
-    const fetchComments = async () => {
-      try {
-        const res = await axiosInstance.get("/community/my-comments");
-        setComments(res.data.result);
-      } catch (err) {
-        console.error("댓글 불러오기 실패:", err);
-      }
-    };
+useEffect(() => {
+  const fetchComments = async () => {
+    try {
+      const res = await axiosInstance.get("/community/my-comments");
+      setComments(res.data.data);
+      console.log("내 댓글 조회:", res.data.data);
+    } catch (err) {
+      console.error("댓글 불러오기 실패:", err);
+    }
+  };
 
-    fetchComments();
-  }, []);
+  fetchComments();
+}, []);  
 
   return (
     <Outer>

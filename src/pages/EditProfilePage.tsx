@@ -186,21 +186,22 @@ const EditProfilePage = () => {
   const [profileImagePreview, setProfileImagePreview] = useState<string>("");
   const [profileImageFile, setProfileImageFile] = useState<File | null>(null);
 
-  useEffect(() => {
-    const fetchProfile = async () => {
-      try {
-        const res = await axiosInstance.get("/members/profile");
-        const data = res.data.result;
-        setOriginal(data);
-        setNickname(data.nickname);
-        setEmail(data.email);
-        setProfileImagePreview(data.profileImage);
-      } catch (err) {
-        console.error("프로필 불러오기 실패:", err);
-      }
-    };
-    fetchProfile();
-  }, []);
+useEffect(() => {
+  const fetchProfile = async () => {
+    try {
+      const res = await axiosInstance.get("/members/profile");
+      const data = res.data.data;
+
+      setOriginal(data);
+      setNickname(data.nickname);
+      setEmail(data.email);
+      setProfileImagePreview(data.profileImage);
+    } catch (err) {
+      console.error("프로필 불러오기 실패:", err);
+    }
+  };
+  fetchProfile();
+}, []);  
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
