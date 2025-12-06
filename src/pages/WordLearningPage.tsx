@@ -1,6 +1,7 @@
 import styled from "styled-components";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import BackSvg from "../assets/community/Back.svg"; 
 
 const Container = styled.div`
   width: 100vw;
@@ -8,11 +9,36 @@ const Container = styled.div`
   background: #f9f9f9;
   padding: 1.5rem;
   box-sizing: border-box;
+  display: flex;
+  justify-content: center;
+`;
+
+const Inner = styled.div`
+  width: 100%;
+  max-width: 420px;
+`;
+
+const Back = styled.button`
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  font-size: 19px;
+  border: none;
+  background: transparent;
+  margin-bottom: 1.2rem;
+  cursor: pointer;
+  font-weight: bold;
+  color: #333;
+  font-family: ExtraBold;
+  margin-left: -20px;
+
+  &:focus,
+  &:focus-visible {
+    outline: none;
+  }
 `;
 
 const Card = styled.div`
-  max-width: 420px;
-  margin: 0 auto;
   background: white;
   padding: 1.5rem;
   border-radius: 16px;
@@ -145,38 +171,47 @@ const WordLearningPage = () => {
 
   return (
     <Container>
-      <Card>
-        <Title>그림 카드 학습</Title>
+      <Inner>
 
-        <ImageBox>
-          <img src={words[index].image} style={{ width: "80%" }} />
-        </ImageBox>
+        {/* 🔙 예시 코드 스타일 그대로 적용한 뒤로가기 버튼 */}
+        <Back onClick={() => navigate(-1)}>
+          <img src={BackSvg} alt="뒤로가기" width={20} height={20} />
+          학습으로 돌아가기
+        </Back>
 
-        <WordText>{words[index].text}</WordText>
+        <Card>
+          <Title>그림 카드 학습</Title>
 
-        <BtnRow>
-          <Btn onClick={() => speak(words[index].text)}>듣기 🔊</Btn>
-          <Btn onClick={startRecognition}>말하기 🎤</Btn>
-          <Btn onClick={next}>다음 ➜</Btn>
-        </BtnRow>
+          <ImageBox>
+            <img src={words[index].image} style={{ width: "80%" }} />
+          </ImageBox>
 
-        {spoken && (
-          <Result style={{ color: isCorrect ? "green" : "red" }}>
-            {isCorrect ? "🎉 정답이에요!" : "다시 말해볼까요?"}
-            <br />
-            인식된 말: {spoken}
-          </Result>
-        )}
+          <WordText>{words[index].text}</WordText>
 
-        <AccuracyBox>
-          정답률: {accuracy}% ({correctCount} / {totalTry})
-          {accuracy >= 70 && totalTry >= 3 && (
-            <div style={{ color: "#4a68a1", marginTop: "6px" }}>
-              난이도가 올라갑니다! 문장 학습으로 이동 중...
-            </div>
+          <BtnRow>
+            <Btn onClick={() => speak(words[index].text)}>듣기 🔊</Btn>
+            <Btn onClick={startRecognition}>말하기 🎤</Btn>
+            <Btn onClick={next}>다음 ➜</Btn>
+          </BtnRow>
+
+          {spoken && (
+            <Result style={{ color: isCorrect ? "green" : "red" }}>
+              {isCorrect ? "🎉 정답이에요!" : "다시 말해볼까요?"}
+              <br />
+              인식된 말: {spoken}
+            </Result>
           )}
-        </AccuracyBox>
-      </Card>
+
+          <AccuracyBox>
+            정답률: {accuracy}% ({correctCount} / {totalTry})
+            {accuracy >= 70 && totalTry >= 3 && (
+              <div style={{ color: "#4a68a1", marginTop: "6px" }}>
+                난이도가 올라갑니다! 문장 학습으로 이동 중...
+              </div>
+            )}
+          </AccuracyBox>
+        </Card>
+      </Inner>
     </Container>
   );
 };
