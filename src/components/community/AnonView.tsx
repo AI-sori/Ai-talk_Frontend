@@ -71,7 +71,21 @@ const PostCard = styled.div`
   margin-top: 1rem;
   border-left: 5px solid #C9E6FF;
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+`;
+
+const PostText = styled.div`
+  flex: 1;
+`;
+
+const Thumbnail = styled.img`
+  width: 80px;
+  height: 80px;
+  border-radius: 12px;
+  object-fit: cover;
 `;
 
 const PostMeta = styled.div`
@@ -86,7 +100,7 @@ const PostTitle = styled.h3`
   font-weight: bold;
   margin-bottom: 0.5rem;
   font-family: ExtraBold;
-   color: black;
+  color: black;
 `;
 
 const PostContent = styled.p`
@@ -103,6 +117,7 @@ const PostFooter = styled.div`
   font-size: 12px;
   color: #777;
 `;
+
 const PaginationButton = styled.button<{ active: boolean }>`
   padding: 6px 12px;
   width: 32px;
@@ -124,7 +139,7 @@ const PaginationButton = styled.button<{ active: boolean }>`
   &:active {
     outline: none;
     box-shadow: none;
-    border: 1px solid #ccc; 
+    border: 1px solid #ccc;
   }
 `;
 
@@ -134,7 +149,7 @@ type Post = {
   category: string;
   title: string;
   content: string;
-  image: string;
+  image: string;   // ← 이미지 URL
   likeCount: number;
 };
 
@@ -142,14 +157,14 @@ const fetchAllPosts = async () => {
   const res = await axiosInstance.get("/community", {
     params: { sortBy: "id", direction: "desc" },
   });
-  return res.data.data;  
+  return res.data.data;
 };
 
 const fetchSearchPosts = async (keyword: string) => {
   const res = await axiosInstance.get("/community/search", {
     params: { keyword },
   });
-  return res.data;
+  return res.data.data ?? [];
 };
 
 const AnonView = () => {
@@ -172,10 +187,10 @@ const AnonView = () => {
     enabled: !!searchText,
   });
 
-const filteredPosts = (searchText ? searchedPosts : allPosts).filter(
-  (post: Post) => selectedCategory === "전체" ? true : post.category === selectedCategory
-);
-
+  const filteredPosts = (searchText ? searchedPosts : allPosts).filter(
+    (post: Post) =>
+      selectedCategory === "전체" ? true : post.category === selectedCategory
+  );
 
   const totalPages = Math.ceil(filteredPosts.length / pageSize);
   const paginatedPosts = filteredPosts.slice(
@@ -222,40 +237,47 @@ const filteredPosts = (searchText ? searchedPosts : allPosts).filter(
         <PostCard
           key={post.postId}
           onClick={() => navigate(`/community/${post.postId}`)}
-          style={{ cursor: "pointer" }}
         >
-          <PostMeta>{post.category} · {post.nickname}</PostMeta>
-          <PostTitle>{post.title}</PostTitle>
-          <PostContent>{post.content}</PostContent>
-          <PostFooter>
-            <span style={{ display: "flex", alignItems: "center", gap: "4px" }}>
-              <img src={LikeSvg} alt="좋아요" width={14} height={14} />
-              {post.likeCount}
-            </span>
-          </PostFooter>
+          <PostText>
+            <PostMeta>{post.category} · {post.nickname}</PostMeta>
+            <PostTitle>{post.title}</PostTitle>
+            <PostContent>{post.content}</PostContent>
+
+            <PostFooter>
+              <span style={{ display: "flex", alignItems: "center", gap: "4px" }}>
+                <img src={LikeSvg} alt="좋아요" width={14} height={14} />
+                {post.likeCount}
+              </span>
+            </PostFooter>
+          </PostText>
+
+          {/* 여기 이미지 표시 */}
+          {post.image && (
+            <Thumbnail src={post.image} alt="썸네일" />
+          )}
         </PostCard>
       ))}
-<div
-      style={{
-        marginTop: "1.5rem",
-        textAlign: "center",
-        display: "flex",
-        justifyContent: "center",
-        gap: "8px",
-      }}
-    >
-      {Array.from({ length: totalPages }, (_, i) => (
-        <PaginationButton
-          key={i}
-          onClick={() => setCurrentPage(i)}
-          active={currentPage === i}
-        >
-          {i + 1}
-        </PaginationButton>
-      ))}
 
+      <div
+        style={{
+          marginTop: "1.5rem",
+          textAlign: "center",
+          display: "flex",
+          justifyContent: "center",
+          gap: "8px",
+        }}
+      >
+        {Array.from({ length: totalPages }, (_, i) => (
+          <PaginationButton
+            key={i}
+            onClick={() => setCurrentPage(i)}
+            active={currentPage === i}
+          >
+            {i + 1}
+          </PaginationButton>
+        ))}
       </div>
-      </>
+    </>
   );
 };
 
