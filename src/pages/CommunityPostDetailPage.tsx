@@ -268,7 +268,7 @@ type Comment = {
   nickname: string;
   content: string;
   createdAt: string;
-  userId?: number; 
+  sessionId?: string; 
 };
 
 const CommunityPostDetailPage = () => {
@@ -278,40 +278,40 @@ const CommunityPostDetailPage = () => {
   const [liked, setLiked] = useState(false);
   const [likeCount, setLikeCount] = useState(0);
   const [comment, setComment] = useState("");
-  const { user } = useAuthStore(); // user.userId 있어야 함
+  const { user } = useAuthStore(); 
   const [editCommentId, setEditCommentId] = useState<number | null>(null);
   const [editContent, setEditContent] = useState("");
   const [deleteTargetId, setDeleteTargetId] = useState<number | null>(null);
   const [showPostActions, setShowPostActions] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
 
-  const fetchPost = async () => {
-    try {
-      const res = await axiosInstance.get(`/community/${id}`);
-      const data = res.data.data;
+const fetchPost = async () => {
+  try {
+    const res = await axiosInstance.get(`/community/${id}`);
+    const data = res.data.data; 
 
-      console.log("📌 게시글 상세 응답:", data);
+    console.log("게시글 상세 응답(data):", data);
 
-      // 댓글 userId 기반으로 변환
-      const fixedComments = (data.comments || []).map((c: any) => ({
-        id: c.id,
-        userId: c.userId,
-        nickname: c.nickname,
-        content: c.content,
-        createdAt: c.createdAt,
-      }));
+    const fixedComments = (data.comments || []).map((c: any) => ({
+      id: c.id,
+      sessionId: c.sessionId,
+      nickname: c.nickname,
+      content: c.content,
+      createdAt: c.createdAt,
+    }));
 
-      setPost({
-        ...data,
-        comments: fixedComments,
-      });
+    setPost({
+      ...data,
+      comments: fixedComments,
+    });
 
-      setLiked(data.liked);
-      setLikeCount(data.likeCount);
-    } catch (error) {
-      console.error("게시글 상세 불러오기 실패:", error);
-    }
-  };
+    setLiked(data.liked);
+    setLikeCount(data.likeCount);
+  } catch (error) {
+    console.error("게시글 상세 불러오기 실패:", error);
+  }
+};
+
 
   useEffect(() => {
     if (id) fetchPost();
@@ -327,81 +327,74 @@ const CommunityPostDetailPage = () => {
       console.error("게시글 삭제 실패:", error);
     }
   };
-
   const handleLikeToggle = async () => {
-    if (!id) return;
-
-    try {
-      if (liked) {
-        await axiosInstance.delete(`/community/${id}/like`);
-        setLiked(false);
-        setLikeCount((prev) => prev - 1);
-      } else {
-        await axiosInstance.post(`/community/${id}/like`);
-        setLiked(true);
-        setLikeCount((prev) => prev + 1);
-      }
-    } catch (error) {
-      console.error("좋아요 처리 실패:", error);
+  if (!id) return;
+  try {
+    if (liked) {
+      await axiosInstance.delete(`/community/${id}/like`);
+      setLiked(false);
+      setLikeCount((prev) => prev - 1);
+    } else {
+      await axiosInstance.post(`/community/${id}/like`);
+      setLiked(true);
+      setLikeCount((prev) => prev + 1);
     }
-  };
+  } catch (error) {
+    console.error("좋아요 처리 실패:", error);
+  }
+};
 
-  const handleSubmitComment = async () => {
-    if (!id || !comment.trim()) return;
+const handleSubmitComment = async () => {
+  if (!id || !comment.trim()) return;
+  try {
+    await axiosInstance.post(`/community/comments`, {
+      postId: Number(id),
+      content: comment.trim(),
+    });
+    setComment("");
+    fetchPost();
+  } catch (error) {
+    console.error("댓글 등록 실패:", error);
+  }
+};
 
-    try {
-      await axiosInstance.post(`/community/comments`, {
-        postId: Number(id),
-        content: comment.trim(),
-      });
+const handleStartEdit = (commentId: number, content: string) => {
+  setEditCommentId(commentId);
+  setEditContent(content);
+};
 
-      setComment("");
-      fetchPost();
-    } catch (error) {
-      console.error("댓글 등록 실패:", error);
-    }
-  };
+const handleUpdateComment = async (commentId: number) => {
+  if (!editContent.trim()) return;
+  try {
+    await axiosInstance.put(`/community/comments/${commentId}`, {
+      postId: Number(id),
+      content: editContent.trim(),
+    });
+    setEditCommentId(null);
+    setEditContent("");
+    fetchPost();
+  } catch (error) {
+    console.error("댓글 수정 실패:", error);
+  }
+};
 
-  const handleStartEdit = (commentId: number, content: string) => {
-    setEditCommentId(commentId);
-    setEditContent(content);
-  };
+const handleDeleteConfirm = async () => {
+  if (!deleteTargetId) return;
+  try {
+    await axiosInstance.delete(`/community/comments/${deleteTargetId}`);
+    setDeleteTargetId(null);
+    fetchPost();
+  } catch (error) {
+    console.error("댓글 삭제 실패:", error);
+  }
+};
 
-  const handleUpdateComment = async (commentId: number) => {
-    if (!editContent.trim()) return;
-
-    try {
-      await axiosInstance.put(`/community/comments/${commentId}`, {
-        postId: Number(id),
-        content: editContent.trim(),
-      });
-
-      setEditCommentId(null);
-      setEditContent("");
-      fetchPost();
-    } catch (error) {
-      console.error("댓글 수정 실패:", error);
-    }
-  };
-
-  const handleDeleteConfirm = async () => {
-    if (!deleteTargetId) return;
-
-    try {
-      await axiosInstance.delete(`/community/comments/${deleteTargetId}`);
-      setDeleteTargetId(null);
-      fetchPost();
-    } catch (error) {
-      console.error("댓글 삭제 실패:", error);
-    }
-  };
-
-  const formatDate = (dateStr: string) => {
-    const date = new Date(dateStr);
-    return `${date.getFullYear()}.${(date.getMonth() + 1)
-      .toString()
-      .padStart(2, "0")}.${date.getDate().toString().padStart(2, "0")}`;
-  };
+const formatDate = (dateStr: string) => {
+  const date = new Date(dateStr);
+  return `${date.getFullYear()}.${(date.getMonth() + 1)
+    .toString()
+    .padStart(2, "0")}.${date.getDate().toString().padStart(2, "0")}`;
+};
 
   return (
     <Outer>
@@ -418,8 +411,7 @@ const CommunityPostDetailPage = () => {
                 <Tag>{post.category}</Tag>
                 <span>{post.nickname}</span>
 
-                {/* 게시글 작성자 = 로그인 유저일 때만 수정/삭제 가능 */}
-                {user?.userId === post.userId && (
+                {user?.sessionId === post.sessionId && (
                   <div style={{ marginLeft: "auto", position: "relative" }}>
                     <ThreeDotsButton
                       onClick={() => setShowPostActions((prev) => !prev)}
@@ -478,7 +470,10 @@ const CommunityPostDetailPage = () => {
 
               <StatusRow>
                 <LikeBox onClick={handleLikeToggle}>
-                  <img src={liked ? LikeAfterIcon : LikeIcon} alt="좋아요" />
+                  <img
+                    src={liked ? LikeAfterIcon : LikeIcon}
+                    alt="좋아요"
+                  />
                   <span>{likeCount}</span>
                 </LikeBox>
               </StatusRow>
@@ -500,15 +495,18 @@ const CommunityPostDetailPage = () => {
                       <CommentDate>{formatDate(c.createdAt)}</CommentDate>
                     </div>
 
-                    {/* 댓글 작성자 비교도 userId로 체크 */}
-                    {user?.userId === c.userId && (
+                    {user?.sessionId === c.sessionId && (
                       <RightMeta>
                         <Action
-                          onClick={() => handleStartEdit(c.id, c.content)}
+                          onClick={() =>
+                            handleStartEdit(c.id, c.content)
+                          }
                         >
                           수정
                         </Action>
-                        <Action onClick={() => setDeleteTargetId(c.id)}>
+                        <Action
+                          onClick={() => setDeleteTargetId(c.id)}
+                        >
                           삭제
                         </Action>
                       </RightMeta>
@@ -519,7 +517,9 @@ const CommunityPostDetailPage = () => {
                     <>
                       <EditTextarea
                         value={editContent}
-                        onChange={(e) => setEditContent(e.target.value)}
+                        onChange={(e) =>
+                          setEditContent(e.target.value)
+                        }
                       />
                       <div
                         style={{

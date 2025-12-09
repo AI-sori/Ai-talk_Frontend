@@ -1,7 +1,6 @@
 import { create } from "zustand";
 
 interface User {
-  userId: number;
   sessionId: string;
 }
 
