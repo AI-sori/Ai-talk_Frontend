@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 import HospitalList from '../components/HospitalList';
+import { useNavigate } from "react-router-dom";
 import {
   LineChart,
   Line,
@@ -92,29 +93,47 @@ const ControlButton = styled.button`
 `;
 const BannerContainer = styled.div`
   width: 100%;
-  max-width: 400px;
   height: 140px;
   margin: 1rem 0;
-  border-radius: 16px;
   overflow: hidden;
+  border-radius: 18px;
   position: relative;
 `;
 
 const BannerWrapper = styled.div<{ index: number }>`
   display: flex;
-  width: 300%;
-  transform: translateX(${(props) => -props.index * 100}%);
-  transition: transform 0.4s ease-in-out;
+  transition: transform 0.5s ease;
+  transform: translateX(${(props) => `-${props.index * 56.5}vw`});
 `;
 
-const BannerSlide = styled.div`
+
+const BannerCard = styled.div`
   width: 100%;
   flex-shrink: 0;
-  height: 140px;
-  border-radius: 16px;
+  padding: 1.2rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  border-radius: 18px;
+  color: #333;
+  font-family: Pretendard;
   cursor: pointer;
-  background-size: cover;
-  background-position: center;
+`;
+
+const BannerIcon = styled.div`
+  font-size: 28px;
+  margin-bottom: 6px;
+`;
+
+const BannerTitle = styled.div`
+  font-size: 17px;
+  font-weight: 700;
+  margin-bottom: 4px;
+`;
+
+const BannerDesc = styled.div`
+  font-size: 13px;
+  opacity: 0.85;
 `;
 
 const BannerDots = styled.div`
@@ -130,29 +149,44 @@ const Dot = styled.div<{ active: boolean }>`
   width: 8px;
   height: 8px;
   border-radius: 50%;
-  background: ${(props) => (props.active ? "#ffffff" : "rgba(255,255,255,0.5)")};
-  transition: background 0.3s;
+  background: ${(props) => (props.active ? "#fff" : "rgba(255,255,255,0.5)")};
 `;
+
+const banners = [
+  {
+    icon: "🧠",
+    title: "발달 진단 하러가기",
+    desc: "우리 아이 발달 단계를 빠르게 확인해보세요.",
+    bg: "linear-gradient(135deg, #A3D8FF 0%, #D0E8FF 100%)",
+    link: "/assessment",
+  },
+  {
+    icon: "💬",
+    title: "부모 커뮤니티 참여하기",
+    desc: "다른 부모들과 경험을 나누고 도움을 받아요.",
+    bg: "linear-gradient(135deg, #FFE3A3 0%, #FFD18C 100%)",
+    link: "/community",
+  },
+  {
+    icon: "🤖",
+    title: "AI 학습 프로그램 추천",
+    desc: "우리 아이에게 꼭 맞는 학습 계획을 받아보세요.",
+    bg: "linear-gradient(135deg, #D3C6FF 0%, #E8DDFF 100%)",
+    link: "/ai-program",
+  },
+];
 
 
 const HomePage = () => {
   const [loaded, setLoaded] = useState(false);
   const [hospitalList, setHospitalList] = useState<Hospital[]>([]);
   const [graphData, setGraphData] = useState<any[]>([]);
+const navigate = useNavigate();
 
   const mapRef = useRef<HTMLDivElement>(null);
   const mapInstance = useRef<any>(null);
   const hospitalOverlays = useRef<any[]>([]);
 const [index, setIndex] = useState(0);
-const navigate = useNavigate();
-
-// 자동 슬라이드 (3초마다)
-useEffect(() => {
-  const interval = setInterval(() => {
-    setIndex((prev) => (prev + 1) % banners.length);
-  }, 3000);
-  return () => clearInterval(interval);
-}, []);
 
   // ---------------------- 1) 그래프 불러오기
   useEffect(() => {
@@ -176,83 +210,137 @@ useEffect(() => {
 
     fetchGraph();
   }, []);
-
+// 자동 슬라이드 (3초마다)
+useEffect(() => {
+  const interval = setInterval(() => {
+    setIndex((prev) => (prev + 1) % banners.length);
+  }, 3000);
+  return () => clearInterval(interval);
+}, []);
   // ---------------------- 2) 그래프 컴포넌트
   const DevelopmentGraph = () => {
-    if (graphData.length === 0) {
-      return <div style={{ color: "#777", marginTop: 10 }}>아직 평가 기록이 없어요.</div>;
-    }
-
-    const colorMap = {
-      집중력: "#a2b7f3",
-      명확성: "#3f52dd",
-      유창성: "#e2dcfc",
-    };
-
-const banners = [
-  {
-    img: "https://images.unsplash.com/photo-1581091870632-1c89b097e30b",
-    link: "/assessment",
-  },
-  {
-    img: "https://images.unsplash.com/photo-1551434678-e076c223a692",
-    link: "/community",
-  },
-  {
-    img: "https://images.unsplash.com/photo-1552664730-d307ca884978",
-    link: "/ai-program",
-  },
-];
-
+  //  기록 없을 때: 안내 UI
+  if (graphData.length === 0) {
     return (
-      <div style={{ width: "100%", height: 200 }}>
-        <div style={{ width: "100%", height: 160, marginLeft: "-30px" }}>
-          <ResponsiveContainer width="100%" height="100%">
-            <LineChart data={graphData}>
-              <CartesianGrid stroke="#f0f0f0" vertical={false} />
-              <XAxis dataKey="date" tick={{ fontSize: 12 }} />
-              <YAxis
-                domain={[0, 100]}
-                tick={{ fontSize: 12 }}
-                label={{ value: "점수", angle: -90, position: "insideLeft" }}
-              />
-              <Tooltip
-                formatter={(value) => `${value}점`}
-                labelFormatter={(label) => `평가일: ${label}`}
-              />
-
-              {Object.keys(colorMap).map((key) => (
-                <Line
-                  key={key}
-                  dataKey={key}
-                  stroke={colorMap[key as keyof typeof colorMap]}
-                  strokeWidth={2}
-                  dot={false}
-                />
-              ))}
-            </LineChart>
-          </ResponsiveContainer>
+      <div
+        style={{
+          width: "100%",
+          padding: "0.5rem 0rem",
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          gap: "12px",
+        }}
+      >
+        <div
+          style={{
+            fontSize: "17px",
+            fontWeight: 700,
+            color: "#333",
+            textAlign: "center",
+            lineHeight: 1.4,
+          }}
+        >
+          아직 평가 기록이 없어요
         </div>
 
-        <div style={{ display: "flex", justifyContent: "center", marginTop: 8 }}>
-          {Object.entries(colorMap).map(([label, color]) => (
-            <div key={label} style={{ display: "flex", alignItems: "center", margin: "0 8px" }}>
-              <div
-                style={{
-                  width: 8,
-                  height: 8,
-                  borderRadius: "50%",
-                  backgroundColor: color,
-                  marginRight: 6,
-                }}
-              />
-              <span style={{ fontSize: 12 }}>{label}</span>
-            </div>
-          ))}
+        <div
+          style={{
+            fontSize: "13.3px",
+            color: "#777",
+            lineHeight: 1.5,
+            textAlign: "center",
+            maxWidth: "260px",
+          }}
+        >
+          발달 진단을 먼저 진행하면<br />
+          우리 아이의 발달 변화를 확인할 수 있어요.
         </div>
+
+        <button
+          onClick={() =>
+            (window.location.href =
+              "https://ai-talkk.netlify.app/diagnosis")
+          }
+          style={{
+            marginTop: "4px",
+            padding: "10px 20px",
+            background:
+              "linear-gradient(135deg, #6d8dff 0%, #89a8ff 100%)",
+            border: "none",
+            borderRadius: "14px",
+            color: "white",
+            fontSize: "14px",
+            fontWeight: 600,
+            cursor: "pointer",
+            boxShadow: "0 3px 10px rgba(0,0,0,0.12)",
+          }}
+        >
+          발달 진단 하러가기
+        </button>
       </div>
     );
+  }
+
+  //  기록 있을 때: 원래 그래프 UI
+  const colorMap = {
+    집중력: "#a2b7f3",
+    명확성: "#3f52dd",
+    유창성: "#e2dcfc",
   };
+
+  return (
+    <div style={{ width: "100%", height: 200 }}>
+      <div style={{ width: "100%", height: 160, marginLeft: "-30px" }}>
+        <ResponsiveContainer width="100%" height="100%">
+          <LineChart data={graphData}>
+            <CartesianGrid stroke="#f0f0f0" vertical={false} />
+            <XAxis dataKey="date" tick={{ fontSize: 12 }} />
+            <YAxis
+              domain={[0, 100]}
+              tick={{ fontSize: 12 }}
+              label={{ angle: -90, position: "insideLeft" }}
+            />
+            <Tooltip
+              formatter={(value) => `${value}점`}
+              labelFormatter={(label) => `평가일: ${label}`}
+            />
+
+            {Object.keys(colorMap).map((key) => (
+              <Line
+                key={key}
+                dataKey={key}
+                stroke={colorMap[key as keyof typeof colorMap]}
+                strokeWidth={2}
+                dot={false}
+              />
+            ))}
+          </LineChart>
+        </ResponsiveContainer>
+      </div>
+
+      <div style={{ display: "flex", justifyContent: "center", marginTop: 8 }}>
+        {Object.entries(colorMap).map(([label, color]) => (
+          <div
+            key={label}
+            style={{ display: "flex", alignItems: "center", margin: "0 8px" }}
+          >
+            <div
+              style={{
+                width: 8,
+                height: 8,
+                borderRadius: "50%",
+                backgroundColor: color,
+                marginRight: 6,
+              }}
+            />
+            <span style={{ fontSize: 12 }}>{label}</span>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+};
 
   // ---------------------- 3) 카카오맵 로드
   useEffect(() => {
@@ -394,20 +482,19 @@ const banners = [
   return (
     <Outer>
       <Container>
-        <Card>
-          <h3>우리 아이 발달 그래프</h3>
-          <DevelopmentGraph />
-        </Card>
+       <Card> {graphData.length > 0 && <h3>우리 아이 발달 그래프</h3>} <DevelopmentGraph /> </Card>
 <BannerContainer>
-  <BannerWrapper index={index}>
+  <BannerWrapper count={banners.length} index={index}>
     {banners.map((b, i) => (
-      <BannerSlide
+      <BannerCard
         key={i}
-        style={{
-          backgroundImage: `url(${b.img})`,
-        }}
+        style={{ background: b.bg }}
         onClick={() => navigate(b.link)}
-      />
+      >
+        <BannerIcon>{b.icon}</BannerIcon>
+        <BannerTitle>{b.title}</BannerTitle>
+        <BannerDesc>{b.desc}</BannerDesc>
+      </BannerCard>
     ))}
   </BannerWrapper>
 
@@ -417,6 +504,7 @@ const banners = [
     ))}
   </BannerDots>
 </BannerContainer>
+
 
         <Card>
           <h3>주변 병원 찾기</h3>
