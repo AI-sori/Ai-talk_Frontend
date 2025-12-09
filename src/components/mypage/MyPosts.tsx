@@ -8,26 +8,29 @@ interface Post {
   postId: number;
   title: string;
   category: string;
-  createdAt: string;
+  nickname: string;
+  image: string;
+  likeCount: number;
+  commentCount: number;
 }
 
 const MyPosts = () => {
   const navigate = useNavigate();
   const [posts, setPosts] = useState<Post[]>([]);
 
-useEffect(() => {
-  const fetchPosts = async () => {
-    try {
-      const response = await axiosInstance.get("/community/my-posts");
-      console.log("내 게시글 조회:", response.data.data);
-      setPosts(response.data.data);
-    } catch (error) {
-      console.error("내 게시글 불러오기 실패:", error);
-    }
-  };
+  useEffect(() => {
+    const fetchPosts = async () => {
+      try {
+        const response = await axiosInstance.get("/community/my-posts");
+        console.log("내 게시글 조회:", response.data.data);
+        setPosts(response.data.data);
+      } catch (error) {
+        console.error("내 게시글 불러오기 실패:", error);
+      }
+    };
 
-  fetchPosts();
-}, []);
+    fetchPosts();
+  }, []);
 
   return (
     <Outer>
@@ -41,9 +44,10 @@ useEffect(() => {
           {posts.map((post) => (
             <PostCard key={post.postId}>
               <PostTitle>{post.title}</PostTitle>
+
               <PostMeta>
-                <span>{new Date(post.createdAt).toLocaleDateString()}</span>
                 <span>{post.category}</span>
+                <span>{post.commentCount} 댓글 · {post.likeCount} 좋아요</span>
               </PostMeta>
             </PostCard>
           ))}
@@ -54,7 +58,6 @@ useEffect(() => {
 };
 
 export default MyPosts;
-
 
 // ----- 스타일 -----
 
@@ -79,7 +82,7 @@ const Header = styled.div`
   align-items: center;
   gap: 0.6rem;
   margin-bottom: 1.2rem;
-   color: black;
+  color: black;
 `;
 
 const BackIcon = styled.img`
@@ -113,7 +116,7 @@ const PostTitle = styled.h3`
   font-size: 15px;
   font-weight: bold;
   margin-bottom: 0.4rem;
-   color: black;
+  color: black;
 `;
 
 const PostMeta = styled.div`

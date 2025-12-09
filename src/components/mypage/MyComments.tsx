@@ -6,6 +6,7 @@ import BackSvg from "../../assets/community/Back.svg";
 
 interface CommentItem {
   commentId: number;
+  postId: number;
   postTitle: string;
   content: string;
   createdAt: string;
@@ -15,19 +16,19 @@ const MyComments = () => {
   const navigate = useNavigate();
   const [comments, setComments] = useState<CommentItem[]>([]);
 
-useEffect(() => {
-  const fetchComments = async () => {
-    try {
-      const res = await axiosInstance.get("/community/my-comments");
-      setComments(res.data.data);
-      console.log("내 댓글 조회:", res.data.data);
-    } catch (err) {
-      console.error("댓글 불러오기 실패:", err);
-    }
-  };
+  useEffect(() => {
+    const fetchComments = async () => {
+      try {
+        const res = await axiosInstance.get("/community/my-comments");
+        setComments(res.data.data);
+        console.log("내 댓글 조회:", res.data.data);
+      } catch (err) {
+        console.error("댓글 불러오기 실패:", err);
+      }
+    };
 
-  fetchComments();
-}, []);  
+    fetchComments();
+  }, []);
 
   return (
     <Outer>
@@ -39,17 +40,22 @@ useEffect(() => {
 
         <Card>
           {comments.map((item) => (
-            <CommentCard key={item.commentId}>
+            <PostCard
+              key={item.commentId}
+              onClick={() => navigate(`/community/${item.postId}`)}
+            >
               <PostTitle>{item.postTitle}</PostTitle>
-              <CommentText>{item.content}</CommentText>
-              <MetaText>
+
+              <CommentPreview>{item.content}</CommentPreview>
+
+              <PostMeta>
                 {new Date(item.createdAt).toLocaleDateString("ko-KR", {
                   year: "numeric",
                   month: "2-digit",
                   day: "2-digit",
                 })}
-              </MetaText>
-            </CommentCard>
+              </PostMeta>
+            </PostCard>
           ))}
         </Card>
       </Wrapper>
@@ -59,8 +65,7 @@ useEffect(() => {
 
 export default MyComments;
 
-
-// ----- 스타일 -----
+/* ----- 스타일 ----- */
 
 const Outer = styled.div`
   width: 100vw;
@@ -83,7 +88,7 @@ const Header = styled.div`
   align-items: center;
   gap: 0.6rem;
   margin-bottom: 1.2rem;
-   color: black;
+  color: black;
 `;
 
 const BackIcon = styled.img`
@@ -101,17 +106,18 @@ const PageTitle = styled.h2`
 const Card = styled.div`
   background: white;
   border-radius: 16px;
-  padding: 1.5rem;
-  color: black;
+  padding: 1.3rem;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+  color: black;
 `;
 
-const CommentCard = styled.div`
+const PostCard = styled.div`
   background: #fff;
-  border-radius: 12px;
+  border-radius: 14px;
   padding: 1rem;
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
   margin-bottom: 1rem;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
+  cursor: pointer;
 `;
 
 const PostTitle = styled.h3`
@@ -121,13 +127,14 @@ const PostTitle = styled.h3`
   color: black;
 `;
 
-const CommentText = styled.p`
+const CommentPreview = styled.p`
   font-size: 14px;
-  color: black;
-  margin-bottom: 0.6rem;
+  color: #444;
+  line-height: 1.4;
+  margin-bottom: 0.5rem;
 `;
 
-const MetaText = styled.div`
+const PostMeta = styled.div`
   font-size: 12px;
   color: #999;
 `;
