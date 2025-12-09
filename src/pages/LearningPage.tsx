@@ -17,6 +17,7 @@ const Wrapper = styled.div`
   background: #f8fafc;
   padding: 1.5rem;
   box-sizing: border-box;
+  color: #000;
 `;
 
 const Card = styled.div`
@@ -62,19 +63,12 @@ const TabButton = styled.button<{ active: boolean }>`
   background: ${(p) => (p.active ? "#6d8dff" : "transparent")};
   color: ${(p) => (p.active ? "white" : "#5a5a5a")};
   box-shadow: ${(p) => (p.active ? "0 4px 12px rgba(77,107,255,0.35)" : "none")};
-
-  /* 🔥 버튼 클릭/탭 시 생기는 외곽선 완벽 제거 */
   outline: none;
-  &:focus {
-    outline: none;
-    box-shadow: ${(p) => (p.active ? "0 4px 12px rgba(77,107,255,0.35)" : "none")};
-  }
 
   &:active {
     transform: scale(0.97);
   }
 `;
-
 
 const ButtonRow = styled.div`
   display: flex;
@@ -186,6 +180,27 @@ const toEmbedUrl = (url: string) => {
   return url;
 };
 
+/* ---------------------------------------------------
+레벨 & 카테고리 한국어 변환
+--------------------------------------------------- */
+const translateLevel = (level: string) => {
+  const map: any = {
+    BEGINNER: "초급",
+    INTERMEDIATE: "중급",
+    ADVANCED: "고급",
+  };
+  return map[level] || level;
+};
+
+const translateCategory = (category: string) => {
+  const map: any = {
+    CONCENTRATION: "집중력",
+    CLARITY: "명확성",
+    FLUENCY: "유창성",
+  };
+  return map[category] || category;
+};
+
 const LearningPage = () => {
   const navigate = useNavigate();
   const [programList, setProgramList] = useState<any[]>([]);
@@ -203,6 +218,7 @@ const LearningPage = () => {
     load();
   }, []);
 
+  // LEVEL 그룹화
   const levelGroups: any = {};
   programList.forEach((p) => {
     if (!levelGroups[p.level]) levelGroups[p.level] = [];
@@ -211,16 +227,21 @@ const LearningPage = () => {
 
   const renderProgramCards = (level: string, items: any[]) => (
     <Card key={level}>
-      <SectionTitle>추천 학습 ({level})</SectionTitle>
+      <SectionTitle>추천 학습 ({translateLevel(level)})</SectionTitle>
+
       <HorizontalScroll>
         {items.map((item) => (
           <ProgramCard key={item.id}>
             <Video src={toEmbedUrl(item.videoUrl)} allowFullScreen />
+
             <MetaRow>
-              <span style={{ color: "#7595D3" }}>{item.category}</span>
-              <span>| {item.level}</span>
+              <span style={{ color: "#7595D3" }}>
+                {translateCategory(item.category)}
+              </span>
+              <span>| {translateLevel(item.level)}</span>
             </MetaRow>
-            <ProgramTitle>{item.category}</ProgramTitle>
+
+            <ProgramTitle>{translateCategory(item.category)}</ProgramTitle>
             <Description>{item.description}</Description>
           </ProgramCard>
         ))}
@@ -232,6 +253,7 @@ const LearningPage = () => {
     <Outer>
       <Wrapper>
 
+        {/* 빈 상태 */}
         {programList.length === 0 && (
           <Card>
             <EmptyState>
@@ -240,7 +262,9 @@ const LearningPage = () => {
                 진단을 진행하면 우리 아이에게 꼭 맞는 추천 학습 영상을 제공해드려요 😊
               </EmptyText>
               <GoDiagnosisBtn
-                onClick={() => (window.location.href = "https://ai-talkk.netlify.app/diagnosis")}
+                onClick={() =>
+                  (window.location.href = "https://ai-talkk.netlify.app/diagnosis")
+                }
               >
                 발달 진단 하러가기
               </GoDiagnosisBtn>
@@ -248,14 +272,23 @@ const LearningPage = () => {
           </Card>
         )}
 
+        {/* 추천 학습 카드 */}
         {Object.keys(levelGroups).map((lv) => renderProgramCards(lv, levelGroups[lv]))}
 
+        {/* 탭 */}
         <Tabs>
-          <TabButton active={tab === "word"} onClick={() => setTab("word")}>그림 카드</TabButton>
-          <TabButton active={tab === "sentence"} onClick={() => setTab("sentence")}>문장 연습</TabButton>
-          <TabButton active={tab === "story"} onClick={() => setTab("story")}>스토리북</TabButton>
+          <TabButton active={tab === "word"} onClick={() => setTab("word")}>
+            그림 카드
+          </TabButton>
+          <TabButton active={tab === "sentence"} onClick={() => setTab("sentence")}>
+            문장 연습
+          </TabButton>
+          <TabButton active={tab === "story"} onClick={() => setTab("story")}>
+            스토리북
+          </TabButton>
         </Tabs>
 
+        {/* 탭 내용 */}
         {tab === "word" && (
           <Card>
             <SectionTitle>그림 카드</SectionTitle>
