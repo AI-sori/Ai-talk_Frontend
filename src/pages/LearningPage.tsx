@@ -102,12 +102,15 @@ const ProgramCard = styled.div`
   overflow: hidden;
 `;
 
-const Video = styled.iframe`
+const Video = styled.iframe.attrs({
+  allow:
+    "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture",
+  allowFullScreen: true,
+})`
   width: 100%;
   height: 140px;
   border: none;
 `;
-
 const MetaRow = styled.div`
   display: flex;
   gap: 1rem;
