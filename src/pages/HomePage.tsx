@@ -484,7 +484,8 @@ useEffect(() => {
       <Container>
        <Card> {graphData.length > 0 && <h3>우리 아이 발달 그래프</h3>} <DevelopmentGraph /> </Card>
 <BannerContainer>
-  <BannerWrapper count={banners.length} index={index}>
+<BannerWrapper index={index}>
+
     {banners.map((b, i) => (
       <BannerCard
         key={i}
