@@ -479,73 +479,51 @@ const formatDate = (dateStr: string) => {
               </StatusRow>
 
               <CommentTitle>댓글 {post.comments.length}</CommentTitle>
+{post.comments.map((c: any) => (
+  <Comment key={c.id}>
+    <CommentHeader>
+      <div style={{ display: "flex", gap: "8px", alignItems: "center" }}>
+        <CommentAuthor>{c.nickname}</CommentAuthor>
+        <span>·</span>
+        <CommentDate>{formatDate(c.createdAt)}</CommentDate>
+      </div>
 
-              {post.comments.map((c: any) => (
-                <Comment key={c.id}>
-                  <CommentHeader>
-                    <div
-                      style={{
-                        display: "flex",
-                        gap: "8px",
-                        alignItems: "center",
-                      }}
-                    >
-                      <CommentAuthor>{c.nickname}</CommentAuthor>
-                      <span>·</span>
-                      <CommentDate>{formatDate(c.createdAt)}</CommentDate>
-                    </div>
+      {c.writer && (   //  ← 댓글 작성자 true이면 수정/삭제 표시
+        <RightMeta>
+          <Action onClick={() => handleStartEdit(c.id, c.content)}>
+            수정
+          </Action>
+          <Action onClick={() => setDeleteTargetId(c.id)}>
+            삭제
+          </Action>
+        </RightMeta>
+      )}
+    </CommentHeader>
 
-                    {user?.sessionId === c.sessionId && (
-                      <RightMeta>
-                        <Action
-                          onClick={() =>
-                            handleStartEdit(c.id, c.content)
-                          }
-                        >
-                          수정
-                        </Action>
-                        <Action
-                          onClick={() => setDeleteTargetId(c.id)}
-                        >
-                          삭제
-                        </Action>
-                      </RightMeta>
-                    )}
-                  </CommentHeader>
+    {editCommentId === c.id ? (
+      <>
+        <EditTextarea
+          value={editContent}
+          onChange={(e) => setEditContent(e.target.value)}
+        />
+        <div style={{ display: "flex", justifyContent: "flex-end", gap: "0.5rem" }}>
+          <EditActionButton onClick={() => setEditCommentId(null)}>
+            취소
+          </EditActionButton>
+          <EditActionButton
+            onClick={() => handleUpdateComment(c.id)}
+            style={{ color: "#4171d6" }}
+          >
+            저장
+          </EditActionButton>
+        </div>
+      </>
+    ) : (
+      <CommentText>{c.content}</CommentText>
+    )}
+  </Comment>
+))}
 
-                  {editCommentId === c.id ? (
-                    <>
-                      <EditTextarea
-                        value={editContent}
-                        onChange={(e) =>
-                          setEditContent(e.target.value)
-                        }
-                      />
-                      <div
-                        style={{
-                          display: "flex",
-                          justifyContent: "flex-end",
-                          gap: "0.5rem",
-                        }}
-                      >
-                        <EditActionButton
-                          onClick={() => setEditCommentId(null)}
-                        >
-                          취소
-                        </EditActionButton>
-                        <EditActionButton
-                          onClick={() => handleUpdateComment(c.id)}
-                          style={{ color: "#4171d6" }}
-                        >
-                          저장
-                        </EditActionButton>
-                      </div>
-                    </>
-                  ) : (
-                    <CommentText>{c.content}</CommentText>
-                  )}
-                </Comment>
-              ))}
 
               <CommentInputWrapper>
                 <CommentInput
