@@ -168,7 +168,7 @@ const fetchSearchPosts = async (keyword: string) => {
 };
 
 const AnonView = () => {
-  const navigate = useNavigate();
+ 
   const [selectedCategory, setSelectedCategory] = useState("전체");
   const [currentPage, setCurrentPage] = useState(0);
   const [keyword, setKeyword] = useState("");
