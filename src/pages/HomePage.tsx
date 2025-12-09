@@ -90,6 +90,50 @@ const ControlButton = styled.button`
     background-color: #7ca9e0;
   }
 `;
+const BannerContainer = styled.div`
+  width: 100%;
+  max-width: 400px;
+  height: 140px;
+  margin: 1rem 0;
+  border-radius: 16px;
+  overflow: hidden;
+  position: relative;
+`;
+
+const BannerWrapper = styled.div<{ index: number }>`
+  display: flex;
+  width: 300%;
+  transform: translateX(${(props) => -props.index * 100}%);
+  transition: transform 0.4s ease-in-out;
+`;
+
+const BannerSlide = styled.div`
+  width: 100%;
+  flex-shrink: 0;
+  height: 140px;
+  border-radius: 16px;
+  cursor: pointer;
+  background-size: cover;
+  background-position: center;
+`;
+
+const BannerDots = styled.div`
+  position: absolute;
+  bottom: 10px;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  gap: 6px;
+`;
+
+const Dot = styled.div<{ active: boolean }>`
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: ${(props) => (props.active ? "#ffffff" : "rgba(255,255,255,0.5)")};
+  transition: background 0.3s;
+`;
+
 
 const HomePage = () => {
   const [loaded, setLoaded] = useState(false);
@@ -99,6 +143,16 @@ const HomePage = () => {
   const mapRef = useRef<HTMLDivElement>(null);
   const mapInstance = useRef<any>(null);
   const hospitalOverlays = useRef<any[]>([]);
+const [index, setIndex] = useState(0);
+const navigate = useNavigate();
+
+// 자동 슬라이드 (3초마다)
+useEffect(() => {
+  const interval = setInterval(() => {
+    setIndex((prev) => (prev + 1) % banners.length);
+  }, 3000);
+  return () => clearInterval(interval);
+}, []);
 
   // ---------------------- 1) 그래프 불러오기
   useEffect(() => {
@@ -134,6 +188,21 @@ const HomePage = () => {
       명확성: "#3f52dd",
       유창성: "#e2dcfc",
     };
+
+const banners = [
+  {
+    img: "https://images.unsplash.com/photo-1581091870632-1c89b097e30b",
+    link: "/assessment",
+  },
+  {
+    img: "https://images.unsplash.com/photo-1551434678-e076c223a692",
+    link: "/community",
+  },
+  {
+    img: "https://images.unsplash.com/photo-1552664730-d307ca884978",
+    link: "/ai-program",
+  },
+];
 
     return (
       <div style={{ width: "100%", height: 200 }}>
@@ -329,6 +398,25 @@ const HomePage = () => {
           <h3>우리 아이 발달 그래프</h3>
           <DevelopmentGraph />
         </Card>
+<BannerContainer>
+  <BannerWrapper index={index}>
+    {banners.map((b, i) => (
+      <BannerSlide
+        key={i}
+        style={{
+          backgroundImage: `url(${b.img})`,
+        }}
+        onClick={() => navigate(b.link)}
+      />
+    ))}
+  </BannerWrapper>
+
+  <BannerDots>
+    {banners.map((_, i) => (
+      <Dot key={i} active={i === index} />
+    ))}
+  </BannerDots>
+</BannerContainer>
 
         <Card>
           <h3>주변 병원 찾기</h3>
