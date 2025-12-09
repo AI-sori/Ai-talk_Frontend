@@ -82,11 +82,14 @@ const PostText = styled.div`
 `;
 
 const Thumbnail = styled.img`
-  width: 80px;
-  height: 80px;
+  width: 100%;
+  height: auto;
+  max-height: 220px;
   border-radius: 12px;
   object-fit: cover;
+  margin: 0.7rem 0;
 `;
+
 
 const PostMeta = styled.div`
   font-size: 13px;
@@ -167,6 +170,7 @@ const fetchSearchPosts = async (keyword: string) => {
   return res.data.data ?? [];
 };
 
+
 const AnonView = () => {
  const navigate = useNavigate();
   const [selectedCategory, setSelectedCategory] = useState("전체");
@@ -241,8 +245,15 @@ const AnonView = () => {
   >
     <PostText>
       <PostMeta>{post.category} · {post.nickname}</PostMeta>
+
       <PostTitle>{post.title}</PostTitle>
+
       <PostContent>{post.content}</PostContent>
+
+  
+      {post.image && (
+        <Thumbnail src={post.image} alt="썸네일" />
+      )}
 
       <PostFooter>
         <span style={{ display: "flex", alignItems: "center", gap: "4px" }}>
@@ -251,10 +262,9 @@ const AnonView = () => {
         </span>
       </PostFooter>
     </PostText>
-
-    {post.image && <Thumbnail src={post.image} alt="썸네일" />}
   </PostCard>
 ))}
+
 
       <div
         style={{
