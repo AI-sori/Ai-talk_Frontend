@@ -28,6 +28,7 @@ const Back = styled.button`
   margin-top: 10px;
   cursor: pointer;
   font-weight: bold;
+  color: #000;
   margin-left: -20px;
 
   &:focus {
@@ -45,6 +46,7 @@ const Card = styled.div`
 const Title = styled.h2`
   font-size: 18px;
   font-weight: bold;
+  color: #000;
   margin-bottom: 1.2rem;
 `;
 
@@ -56,6 +58,7 @@ const SentenceBox = styled.div`
   font-weight: 600;
   line-height: 1.5;
   background: none;
+  color: #000;
   padding: 0;
   border: none;
   box-shadow: none;

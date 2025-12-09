@@ -91,7 +91,7 @@ const ControlButton = styled.button`
     background-color: #7ca9e0;
   }
 `;
-const BannerContainer = styled.div`
+/* const BannerContainer = styled.div`
   width: 100%;
   height: 140px;
   margin: 1rem 0;
@@ -174,7 +174,7 @@ const banners = [
     bg: "linear-gradient(135deg, #D3C6FF 0%, #E8DDFF 100%)",
     link: "/ai-program",
   },
-];
+]; */
 
 
 const HomePage = () => {
@@ -289,8 +289,8 @@ useEffect(() => {
     유창성: "#e2dcfc",
   };
 
-  return (
-    <div style={{ width: "100%", height: 200 }}>
+return (
+    <div style={{ width: "100%", height: 200, color: "#000" }}>
       <div style={{ width: "100%", height: 160, marginLeft: "-30px" }}>
         <ResponsiveContainer width="100%" height="100%">
           <LineChart data={graphData}>
@@ -482,33 +482,13 @@ useEffect(() => {
   return (
     <Outer>
       <Container>
-       <Card> {graphData.length > 0 && <h3>우리 아이 발달 그래프</h3>} <DevelopmentGraph /> </Card>
-<BannerContainer>
-<BannerWrapper index={index}>
-
-    {banners.map((b, i) => (
-      <BannerCard
-        key={i}
-        style={{ background: b.bg }}
-        onClick={() => navigate(b.link)}
-      >
-        <BannerIcon>{b.icon}</BannerIcon>
-        <BannerTitle>{b.title}</BannerTitle>
-        <BannerDesc>{b.desc}</BannerDesc>
-      </BannerCard>
-    ))}
-  </BannerWrapper>
-
-  <BannerDots>
-    {banners.map((_, i) => (
-      <Dot key={i} active={i === index} />
-    ))}
-  </BannerDots>
-</BannerContainer>
+       <Card> {graphData.length > 0 && <h3 style={{ color: "#000" }}>우리 아이 발달 그래프</h3>
+} <DevelopmentGraph /> </Card>
 
 
         <Card>
-          <h3>주변 병원 찾기</h3>
+          <h3 style={{ color: "#000" }}>주변 병원 찾기</h3>
+
           <MapWrapper>
             <MapControl>
               <ControlButton onClick={() => searchHospitals(mapInstance.current.getCenter())}>

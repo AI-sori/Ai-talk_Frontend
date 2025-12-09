@@ -27,6 +27,7 @@ const Back = styled.button`
   margin-bottom: 1rem;
   margin-top: 10px;
   cursor: pointer;
+  color: #000;
   font-weight: bold;
   margin-left: -20px;
 
@@ -45,6 +46,7 @@ const Card = styled.div`
 const Title = styled.h2`
   font-size: 18px;
   font-weight: bold;
+  color: #000;
   margin-bottom: 1.2rem;
 `;
 
@@ -55,6 +57,7 @@ const SentenceBox = styled.div`
   font-size: 18px;
   font-weight: 600;
   line-height: 1.5;
+  color: #000;
   background: none;   
   padding: 0;         
   border: none;       

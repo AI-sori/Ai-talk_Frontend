@@ -28,6 +28,7 @@ const Back = styled.button`
   cursor: pointer;
   font-weight: bold;
   margin-left: -20px;
+  color: #000;
 
   &:focus {
     outline: none;
@@ -44,6 +45,7 @@ const Card = styled.div`
 const Title = styled.h2`
   font-size: 20px;
   font-weight: bold;
+  color: #000;
   margin-bottom: 1.2rem;
 `;
 
@@ -80,6 +82,7 @@ const ImageBox = styled.div`
 const WordText = styled.div`
   text-align: center;
   font-size: 22px;
+  color: #000;
   font-weight: bold;
   margin-bottom: 1.5rem;
 `;
