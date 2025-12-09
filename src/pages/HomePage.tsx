@@ -181,12 +181,12 @@ const HomePage = () => {
   const [loaded, setLoaded] = useState(false);
   const [hospitalList, setHospitalList] = useState<Hospital[]>([]);
   const [graphData, setGraphData] = useState<any[]>([]);
-const navigate = useNavigate();
+//const navigate = useNavigate();
 
   const mapRef = useRef<HTMLDivElement>(null);
   const mapInstance = useRef<any>(null);
   const hospitalOverlays = useRef<any[]>([]);
-const [index, setIndex] = useState(0);
+//const [index, setIndex] = useState(0);
 
   // ---------------------- 1) 그래프 불러오기
   useEffect(() => {
@@ -211,12 +211,12 @@ const [index, setIndex] = useState(0);
     fetchGraph();
   }, []);
 // 자동 슬라이드 (3초마다)
-useEffect(() => {
+/* useEffect(() => {
   const interval = setInterval(() => {
     setIndex((prev) => (prev + 1) % banners.length);
   }, 3000);
   return () => clearInterval(interval);
-}, []);
+}, []);*/ 
   // ---------------------- 2) 그래프 컴포넌트
   const DevelopmentGraph = () => {
   //  기록 없을 때: 안내 UI
