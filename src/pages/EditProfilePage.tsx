@@ -35,17 +35,19 @@ const Header = styled.div`
   margin-bottom: 2rem;
 `;
 
-const Title = styled.h2`
+/*const Title = styled.h2`
   font-size: 20px;
   color: black;
   font-weight: bold;
   font-family: Bold;
-`;
+  
+`;*/
 
 const BackBtn = styled.button`
   display: flex;
   align-items: center;
   gap: 6px;
+  margin-left: -25px;
   font-size: 14px;
   font-family: Regular;
   background: transparent;
@@ -239,11 +241,11 @@ useEffect(() => {
       <Wrapper>
         <Container>
           <Header>
-            <Title>프로필 수정</Title>
             <BackBtn onClick={() => navigate("/mypage")}>
               <img src={BackSvg} alt="뒤로가기" width={18} />
               뒤로가기
             </BackBtn>
+            
           </Header>
 
           <ProfileImageWrapper>

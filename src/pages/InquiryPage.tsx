@@ -17,17 +17,21 @@ const InquiryPage = () => {
   const [inquiries, setInquiries] = useState<Inquiry[]>([]);
 
   useEffect(() => {
-    const fetchInquiries = async () => {
-      try {
-        const response = await axiosInstance.get<Inquiry[]>("/qna");
-        setInquiries(response.data);
-      } catch (error) {
-        console.error("문의 내역 조회 실패:", error);
-      }
-    };
+  const fetchInquiries = async () => {
+    try {
+      const response = await axiosInstance.get("/qna");
+      const data = response.data?.data;
 
-    fetchInquiries();
-  }, []);
+      setInquiries(Array.isArray(data) ? data : []);
+    } catch (error) {
+      console.error("문의 내역 조회 실패:", error);
+      setInquiries([]);
+    }
+  };
+
+  fetchInquiries();
+}, []);
+
 
   return (
     <Outer>
