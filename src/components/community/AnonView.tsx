@@ -234,28 +234,23 @@ const AnonView = () => {
       </SearchBox>
 
       {paginatedPosts.map((post: Post) => (
-        <PostCard
-          key={post.postId}
-          onClick={() => navigate(`/community/${post.postId}`)}
-        >
-          <PostText>
-            <PostMeta>{post.category} · {post.nickname}</PostMeta>
-            <PostTitle>{post.title}</PostTitle>
-            <PostContent>{post.content}</PostContent>
+<PostCard>
+  <PostText>
+    <PostMeta>{post.category} · {post.nickname}</PostMeta>
+    <PostTitle>{post.title}</PostTitle>
+    <PostContent>{post.content}</PostContent>
 
-            <PostFooter>
-              <span style={{ display: "flex", alignItems: "center", gap: "4px" }}>
-                <img src={LikeSvg} alt="좋아요" width={14} height={14} />
-                {post.likeCount}
-              </span>
-            </PostFooter>
-          </PostText>
+    <PostFooter>
+      <span style={{ display: "flex", alignItems: "center", gap: "4px" }}>
+        <img src={LikeSvg} width={14} />
+        {post.likeCount}
+      </span>
+    </PostFooter>
+  </PostText>
 
-          {/* 여기 이미지 표시 */}
-          {post.image && (
-            <Thumbnail src={post.image} alt="썸네일" />
-          )}
-        </PostCard>
+  {post.image && <Thumbnail src={post.image} alt="썸네일" />}
+</PostCard>
+
       ))}
 
       <div
