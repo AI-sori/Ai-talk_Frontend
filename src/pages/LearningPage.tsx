@@ -117,12 +117,6 @@ const MetaRow = styled.div`
   padding: 0.8rem 1rem 0 1rem;
 `;
 
-const ProgramTitle = styled.div`
-  font-size: 15px;
-  font-weight: bold;
-  padding: 0.3rem 1rem 0 1rem;
-`;
-
 const Description = styled.div`
   font-size: 13px;
   color: #666;
@@ -227,7 +221,7 @@ const LearningPage = () => {
 
   const renderProgramCards = (level: string, items: any[]) => (
     <Card key={level}>
-      <SectionTitle>추천 학습 ({translateLevel(level)})</SectionTitle>
+      <SectionTitle>추천 학습 </SectionTitle>
 
       <HorizontalScroll>
         {items.map((item) => (
@@ -240,8 +234,6 @@ const LearningPage = () => {
               </span>
               <span>| {translateLevel(item.level)}</span>
             </MetaRow>
-
-            <ProgramTitle>{translateCategory(item.category)}</ProgramTitle>
             <Description>{item.description}</Description>
           </ProgramCard>
         ))}
