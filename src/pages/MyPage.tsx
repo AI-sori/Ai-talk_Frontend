@@ -102,71 +102,6 @@ const SectionTitle = styled.h3`
   font-family: Bold;
 `;
 
-const ProgramBox = styled.div`
-  margin-bottom: 1rem;
-  font-family: Bold;
-  color: black;
-`;
-
-const ProgramTitleRow = styled.div`
-  display: flex;
-  justify-content: space-between;
-  font-weight: 600;
-  font-size: 14px;
-  color: black;
-  margin-bottom: 0.3rem;
-`;
-const ProgramCard = styled.div`
-  background: #EEF6FF;
-  border-radius: 12px;
-  padding: 1rem;
-  color: black;
-  margin-bottom: 1rem;
-`;
-
-
-const ProgressBar = styled.div`
-  background: #eee;
-  border-radius: 10px;
-  height: 8px;
-  overflow: hidden; 
-`;
-
-const Progress = styled.div<{ percent: number }>`
-  width: ${({ percent }) => percent}%;
-  height: 100%; 
-  background: #9fc9ff;
-`;
-
-const BottomRow = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  font-size: 13px;
-  margin-top: 0.3rem;
-`;
-
-const ContinueBtn = styled.button`
-  background: #abcfff;
-  color: white;
-  font-family: Regular;
-  border: none;
-  width: 80px;
-  height: 35px;
-  border-radius: 8px;
-  font-size: 13px;
-  padding: 0.3rem 0.8rem;
-  cursor: pointer;
-
-  &:hover {
-    background: #94b5e9;
-  }
-    &:focus {
-    outline: none;
-    box-shadow: none;
-  }
-`;
-
 const List = styled.ul`
   margin: 0;
   padding: 0;
@@ -277,34 +212,7 @@ useEffect(() => {
             <EditBtn onClick={() => navigate("/mypage/edit")}>수정하기</EditBtn>
           </ProfileRow>
         </Card> 
-
-        <Card>
-          <SectionTitle>학습중인 프로그램</SectionTitle>
-          {[
-            { title: "마트에 가요", date: "2025-06-15", progress: 10 },
-            { title: "아이의 말을 성장시켜주는 엄마랑 말놀이", date: "2025-06-10", progress: 40 },
-            { title: "지니와 한글놀이", date: "2025-06-13", progress: 25 },
-          ].map((item) => (
-           <ProgramCard key={item.title}>
-  <ProgramBox>
-    <ProgramTitleRow>
-      <span>{item.title}</span>
-    </ProgramTitleRow>
-    <div style={{ fontSize: '12px', color: '#666', marginBottom: '0.4rem' }}>
-      최근 학습일: {item.date}
-    </div>
-    <ProgressBar>
-      <Progress percent={item.progress} />
-    </ProgressBar>
-    <BottomRow>
-      <span>진행률: {item.progress}%</span>
-       <ContinueBtn onClick={() => navigate(`/learning/`)}>계속하기</ContinueBtn>
-    </BottomRow>
-  </ProgramBox>
-</ProgramCard>
-          ))}
-        </Card>
-
+          
         <Card>
           <SectionTitle>커뮤니티 활동</SectionTitle>
           <List>

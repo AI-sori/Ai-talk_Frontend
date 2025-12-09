@@ -24,18 +24,19 @@ const MyLikes = () => {
   const navigate = useNavigate();
   const [likedPosts, setLikedPosts] = useState<LikePost[]>([]);
 
-  useEffect(() => {
-    const fetchLikedPosts = async () => {
-      try {
-        const response = await axiosInstance.get("/community/my-likes");
-        setLikedPosts(response.data);
-      } catch (error) {
-        console.error("좋아요한 글 불러오기 실패:", error);
-      }
-    };
+ useEffect(() => {
+  const fetchLikedPosts = async () => {
+    try {
+      const response = await axiosInstance.get("/community/my-likes");
+      setLikedPosts(response.data.data);  
+    } catch (error) {
+      console.error("좋아요한 글 불러오기 실패:", error);
+    }
+  };
 
-    fetchLikedPosts();
-  }, []);
+  fetchLikedPosts();
+}, []);
+
 
   return (
     <Outer>
