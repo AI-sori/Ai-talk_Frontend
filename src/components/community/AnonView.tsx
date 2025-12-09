@@ -168,7 +168,7 @@ const fetchSearchPosts = async (keyword: string) => {
 };
 
 const AnonView = () => {
-  const navigate = useNavigate();
+ const navigate = useNavigate();
   const [selectedCategory, setSelectedCategory] = useState("전체");
   const [currentPage, setCurrentPage] = useState(0);
   const [keyword, setKeyword] = useState("");
@@ -234,24 +234,27 @@ const AnonView = () => {
       </SearchBox>
 
       {paginatedPosts.map((post: Post) => (
-<PostCard>
-  <PostText>
-    <PostMeta>{post.category} · {post.nickname}</PostMeta>
-    <PostTitle>{post.title}</PostTitle>
-    <PostContent>{post.content}</PostContent>
+  <PostCard
+    key={post.postId}
+    onClick={() => navigate(`/community/${post.postId}`)}
+    style={{ cursor: "pointer" }}
+  >
+    <PostText>
+      <PostMeta>{post.category} · {post.nickname}</PostMeta>
+      <PostTitle>{post.title}</PostTitle>
+      <PostContent>{post.content}</PostContent>
 
-    <PostFooter>
-      <span style={{ display: "flex", alignItems: "center", gap: "4px" }}>
-        <img src={LikeSvg} width={14} />
-        {post.likeCount}
-      </span>
-    </PostFooter>
-  </PostText>
+      <PostFooter>
+        <span style={{ display: "flex", alignItems: "center", gap: "4px" }}>
+          <img src={LikeSvg} width={14} />
+          {post.likeCount}
+        </span>
+      </PostFooter>
+    </PostText>
 
-  {post.image && <Thumbnail src={post.image} alt="썸네일" />}
-</PostCard>
-
-      ))}
+    {post.image && <Thumbnail src={post.image} alt="썸네일" />}
+  </PostCard>
+))}
 
       <div
         style={{
